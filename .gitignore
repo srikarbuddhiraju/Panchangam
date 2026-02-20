@@ -3,6 +3,9 @@
 # ======================
 # Never commit these to a public repo
 
+# Android SDK licenses (created by sdkmanager, not part of project)
+licenses/
+
 .env
 .env.*
 *.env
