@@ -1,0 +1,130 @@
+# ======================
+# SECRETS & CREDENTIALS
+# ======================
+# Never commit these to a public repo
+
+.env
+.env.*
+*.env
+secrets.dart
+secrets.json
+
+# Firebase config (contains API keys — add manually after cloning)
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+
+# Android signing keystore (your app signing key — losing this = can't update app)
+*.jks
+*.keystore
+key.properties
+
+# iOS signing
+*.p12
+*.mobileprovision
+
+# Service account keys
+*-service-account.json
+service-account*.json
+firebase-adminsdk*.json
+
+
+# ======================
+# FLUTTER / DART
+# ======================
+# Build outputs
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# Coverage
+coverage/
+
+
+# ======================
+# ANDROID
+# ======================
+app/android/.gradle/
+app/android/captures/
+app/android/gradlew
+app/android/gradlew.bat
+app/android/local.properties
+app/android/GeneratedPluginRegistrant.java
+app/android/app/debug/
+app/android/app/release/
+app/android/app/profile/
+*.apk
+*.aab
+
+
+# ======================
+# IOS
+# ======================
+app/ios/.symlinks/
+app/ios/Flutter/flutter_export_environment.sh
+app/ios/Flutter/Generated.xcconfig
+app/ios/Pods/
+app/ios/Podfile.lock
+*.ipa
+
+
+# ======================
+# WEB
+# ======================
+app/web/
+
+
+# ======================
+# IDE & EDITOR FILES
+# ======================
+# VS Code
+.vscode/
+*.code-workspace
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Xcode
+xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+
+
+# ======================
+# OS FILES
+# ======================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Linux
+*~
+.fuse_hidden*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# ======================
+# LOGS & TEMP
+# ======================
+*.log
+*.tmp
+*.temp
+log/
+logs/
