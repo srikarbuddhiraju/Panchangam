@@ -7,7 +7,13 @@ import '../../../core/utils/app_strings.dart';
 import '../../../app/theme.dart';
 import 'day_cell.dart';
 
-/// 7-column grid showing all days of a month.
+/// Transposed calendar grid.
+///
+/// Rows  = days of the week (Sun → Sat), 7 rows.
+/// Columns = weeks in the month (4–6 columns).
+///
+/// This gives roughly square cells on a portrait phone, unlike the traditional
+/// 7-column layout where cells are very tall and narrow.
 class CalendarGrid extends ConsumerWidget {
   final List<DayData> days;
   final DateTime month; // first day of the displayed month
@@ -21,83 +27,105 @@ class CalendarGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DateTime today = DateTime.now();
+
+    // 0 = Sunday, 1 = Monday, … 6 = Saturday  (weekday % 7 maps Dart's Mon=1…Sun=7)
     final int firstWeekday = DateTime(month.year, month.month, 1).weekday % 7;
-    // firstWeekday: 0=Sunday, 1=Monday, ... 6=Saturday
+    final int numWeeks = ((firstWeekday + days.length) / 7).ceil();
 
-    return Column(
-      children: [
-        // ── Weekday headers ───────────────────────────────────────────────
-        _WeekdayHeader(),
+    // grid[dow][week] = DayData or null
+    // dow  : 0=Sun … 6=Sat
+    // week : 0 = first week of month
+    final List<List<DayData?>> grid = List.generate(7, (dow) {
+      return List.generate(numWeeks, (week) {
+        final int dayIndex = week * 7 + dow - firstWeekday;
+        if (dayIndex < 0 || dayIndex >= days.length) return null;
+        return days[dayIndex];
+      });
+    });
 
-        const Divider(height: 1, thickness: 0.5),
+    final List<String> dowLabels = S.weekdayHeaders; // Sun…Sat
+    const double labelWidth = 36.0;
 
-        // ── Day grid ──────────────────────────────────────────────────────
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final int numRows = ((firstWeekday + days.length) / 7).ceil();
-              final double cellW = constraints.maxWidth / 7;
-              final double cellH = constraints.maxHeight / numRows;
-              final double ratio = cellW / cellH;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double cellWidth =
+            (constraints.maxWidth - labelWidth - 1) / numWeeks;
+        final double cellHeight = constraints.maxHeight / 7;
 
-              return GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 7,
-                  childAspectRatio: ratio,
-                ),
-                itemCount: firstWeekday + days.length,
-                itemBuilder: (context, index) {
-                  if (index < firstWeekday) return const EmptyDayCell();
-
-                  final DayData data = days[index - firstWeekday];
-                  final bool isToday = data.date.year == today.year &&
-                      data.date.month == today.month &&
-                      data.date.day == today.day;
-
-                  return DayCell(
-                    data: data,
-                    isToday: isToday,
-                    onTap: () {
-                      final String dateStr =
-                          DateFormat('yyyy-MM-dd').format(data.date);
-                      context.push('/panchangam/$dateStr');
-                    },
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Day-of-week label column ──────────────────────────────────
+            SizedBox(
+              width: labelWidth,
+              child: Column(
+                children: List.generate(7, (dow) {
+                  final bool isWeekend = dow == 0 || dow == 6;
+                  return SizedBox(
+                    height: cellHeight,
+                    child: Center(
+                      child: Text(
+                        dowLabels[dow],
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: isWeekend ? AppTheme.kKumkum : null,
+                        ),
+                      ),
+                    ),
                   );
-                },
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _WeekdayHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final List<String> headers = S.weekdayHeaders;
-    return Row(
-      children: headers.map((h) {
-        return Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Text(
-                h,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: h == headers[0] || h == headers[6]
-                      ? AppTheme.kKumkum // Sun/Sat in red
-                      : null,
-                ),
+                }),
               ),
             ),
-          ),
+
+            // Thin vertical divider separating labels from cells
+            const VerticalDivider(width: 1, thickness: 0.5),
+
+            // ── Week columns ─────────────────────────────────────────────
+            Expanded(
+              child: Column(
+                children: List.generate(7, (dow) {
+                  return SizedBox(
+                    height: cellHeight,
+                    child: Row(
+                      children: List.generate(numWeeks, (week) {
+                        final DayData? data = grid[dow][week];
+
+                        // Empty slot (before day 1 or after last day)
+                        if (data == null) {
+                          return SizedBox(
+                            width: cellWidth,
+                            height: cellHeight,
+                          );
+                        }
+
+                        final bool isToday =
+                            data.date.year == today.year &&
+                            data.date.month == today.month &&
+                            data.date.day == today.day;
+
+                        return SizedBox(
+                          width: cellWidth,
+                          height: cellHeight,
+                          child: DayCell(
+                            data: data,
+                            isToday: isToday,
+                            onTap: () {
+                              final String dateStr =
+                                  DateFormat('yyyy-MM-dd').format(data.date);
+                              context.push('/panchangam/$dateStr');
+                            },
+                          ),
+                        );
+                      }),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
         );
-      }).toList(),
+      },
     );
   }
 }
