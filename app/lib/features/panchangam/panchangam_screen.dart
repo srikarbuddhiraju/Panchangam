@@ -13,6 +13,8 @@ import 'widgets/context_card.dart';
 import '../../core/calculations/panchangam_engine.dart';
 import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
+import '../festivals/festival_provider.dart';
+import 'widgets/festival_card.dart';
 
 /// Full-screen Panchangam detail view for a single date.
 class PanchangamScreen extends ConsumerWidget {
@@ -86,6 +88,7 @@ class _PanchangamContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final eclipse = ref.watch(eclipseForDateProvider(data.date)).valueOrNull;
+    final festivals = ref.watch(festivalsForDateProvider(data.date));
 
     return ListView(
       padding: const EdgeInsets.all(12),
@@ -97,6 +100,12 @@ class _PanchangamContent extends ConsumerWidget {
         // ── Eclipse alert (shown only on eclipse days) ────────────────────
         if (eclipse != null) ...[
           EclipseCard(eclipse: eclipse),
+          const SizedBox(height: 8),
+        ],
+
+        // ── Festivals (shown only on festival days) ───────────────────────
+        if (festivals.isNotEmpty) ...[
+          FestivalCard(festivals: festivals),
           const SizedBox(height: 8),
         ],
 

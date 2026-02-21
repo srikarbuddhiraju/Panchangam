@@ -319,6 +319,9 @@ class DayData {
   final bool isFestival;
   final List<String> festivalNamesTe;
   final List<String> festivalNamesEn;
+  final bool hasEclipse;
+  final String eclipseNameTe;
+  final String eclipseNameEn;
 
   const DayData({
     required this.date,
@@ -331,6 +334,9 @@ class DayData {
     this.isFestival = false,
     this.festivalNamesTe = const [],
     this.festivalNamesEn = const [],
+    this.hasEclipse = false,
+    this.eclipseNameTe = '',
+    this.eclipseNameEn = '',
   });
 
   /// Compute a DayData (lighter than full PanchangamData) for the calendar grid.

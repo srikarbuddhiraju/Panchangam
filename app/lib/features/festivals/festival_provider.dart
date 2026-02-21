@@ -4,6 +4,8 @@ import '../settings/settings_provider.dart';
 import 'festival_calculator.dart';
 import 'festival_data.dart';
 
+export 'festival_data.dart' show Festival;
+
 /// Provider that holds festival data for the current year.
 ///
 /// Recomputes when the city (lat/lng) changes.
@@ -33,3 +35,12 @@ Map<DateTime, List<Festival>> _computeFestivals(_FestivalParams params) {
     lng: params.lng,
   );
 }
+
+/// Festivals on a specific date, derived from the year-level cache.
+/// Returns empty list while loading.
+final festivalsForDateProvider =
+    Provider.autoDispose.family<List<Festival>, DateTime>((ref, date) {
+  final Map<DateTime, List<Festival>> map =
+      ref.watch(festivalProvider(date.year)).valueOrNull ?? {};
+  return map[DateTime(date.year, date.month, date.day)] ?? [];
+});

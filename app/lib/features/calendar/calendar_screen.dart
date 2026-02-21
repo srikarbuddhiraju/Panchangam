@@ -26,6 +26,31 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return DateTime(totalMonths ~/ 12, totalMonths % 12 + 1);
   }
 
+  int _monthToPage(DateTime month) {
+    final DateTime now = DateTime.now();
+    final int nowTotal = now.year * 12 + now.month - 1;
+    final int monthTotal = month.year * 12 + month.month - 1;
+    return _initialPage + (monthTotal - nowTotal);
+  }
+
+  void _goToPrevMonth() {
+    final displayed = ref.read(displayedMonthProvider);
+    _pageController.animateToPage(
+      _monthToPage(DateTime(displayed.year, displayed.month - 1)),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _goToNextMonth() {
+    final displayed = ref.read(displayedMonthProvider);
+    _pageController.animateToPage(
+      _monthToPage(DateTime(displayed.year, displayed.month + 1)),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -85,7 +110,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       ),
       body: Column(
         children: [
-          const MonthHeader(),
+          MonthHeader(onPrev: _goToPrevMonth, onNext: _goToNextMonth),
           const Divider(height: 1),
           Expanded(
             child: PageView.builder(

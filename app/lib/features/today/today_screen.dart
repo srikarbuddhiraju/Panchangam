@@ -13,6 +13,8 @@ import '../panchangam/widgets/muhurtha_card.dart';
 import '../panchangam/widgets/context_card.dart';
 import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
+import '../festivals/festival_provider.dart';
+import '../panchangam/widgets/festival_card.dart';
 
 /// The day currently shown in the Today tab (starts at today, navigable).
 final todayTabDateProvider = StateProvider<DateTime>((ref) {
@@ -141,11 +143,17 @@ class _TodayContent extends ConsumerWidget {
     final eclipseAsync = ref.watch(eclipseForDateProvider(data.date));
     final eclipse = eclipseAsync.valueOrNull;
 
+    final festivals = ref.watch(festivalsForDateProvider(data.date));
+
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
         if (eclipse != null) ...[
           EclipseCard(eclipse: eclipse),
+          const SizedBox(height: 8),
+        ],
+        if (festivals.isNotEmpty) ...[
+          FestivalCard(festivals: festivals),
           const SizedBox(height: 8),
         ],
         FiveLimbsCard(data: data, use24h: use24h),

@@ -9,7 +9,10 @@ import '../calendar_provider.dart';
 
 /// Month navigation header: Telugu month + Samvatsara, prev/next arrows, today button.
 class MonthHeader extends ConsumerWidget {
-  const MonthHeader({super.key});
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+
+  const MonthHeader({super.key, required this.onPrev, required this.onNext});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,12 +39,7 @@ class MonthHeader extends ConsumerWidget {
           // Previous month
           IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed: () {
-              ref.read(displayedMonthProvider.notifier).state = DateTime(
-                displayed.year,
-                displayed.month - 1,
-              );
-            },
+            onPressed: onPrev,
           ),
 
           // Month title
@@ -72,12 +70,7 @@ class MonthHeader extends ConsumerWidget {
           // Next month
           IconButton(
             icon: const Icon(Icons.chevron_right),
-            onPressed: () {
-              ref.read(displayedMonthProvider.notifier).state = DateTime(
-                displayed.year,
-                displayed.month + 1,
-              );
-            },
+            onPressed: onNext,
           ),
         ],
       ),

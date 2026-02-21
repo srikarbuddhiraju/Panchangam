@@ -56,7 +56,8 @@ class FestivalCalculator {
           found.add(festival);
         }
       } else {
-        // Tithi-based: check Tithi at sunrise
+        // Tithi-based: check Tithi at sunrise (daytime festivals)
+        // or at 11:30 PM (night-observed festivals like Shivaratri, Janmashtami)
         if (_isTithiMatch(date, festival, lat, lng)) {
           found.add(festival);
         }
@@ -75,11 +76,22 @@ class FestivalCalculator {
     if (festival.tithi == null || festival.paksha == null) return false;
 
     try {
-      final List<DateTime> sunTimes =
-          SunriseSunset.computeNOAA(date, lat, lng);
-      final double jdSunrise = JulianDay.fromIST(sunTimes[0]);
+      // For night-observed festivals (Shivaratri, Janmashtami etc.):
+      // check the tithi at 11:30 PM IST of this date, not at sunrise.
+      // This assigns the festival to the night it is actually observed.
+      final double jdCheck;
+      if (festival.observedAtNight) {
+        // 11:30 PM IST = 18:00 UTC on same calendar date
+        final DateTime nightTime =
+            DateTime(date.year, date.month, date.day, 18, 0); // UTC
+        jdCheck = JulianDay.fromIST(nightTime);
+      } else {
+        final List<DateTime> sunTimes =
+            SunriseSunset.computeNOAA(date, lat, lng);
+        jdCheck = JulianDay.fromIST(sunTimes[0]);
+      }
 
-      final int tNum = Tithi.number(jdSunrise);
+      final int tNum = Tithi.number(jdCheck);
       final int tPaksha = tNum <= 15 ? 1 : 2; // 1=Shukla, 2=Krishna
       final int tWithinPaksha = tNum <= 15 ? tNum : tNum - 15;
 
@@ -88,8 +100,7 @@ class FestivalCalculator {
       if (tPaksha == festival.paksha && tWithinPaksha == festival.tithi) {
         // Telugu month check (approximate — exact requires Amavasya anchor)
         if (festival.teluguMonth != null) {
-          final int teluguMonth =
-              TeluguCalendar.monthNumber(jdSunrise);
+          final int teluguMonth = TeluguCalendar.monthNumber(jdCheck);
           return teluguMonth == festival.teluguMonth;
         }
         return true;
