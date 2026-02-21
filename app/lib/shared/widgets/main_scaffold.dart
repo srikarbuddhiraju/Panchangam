@@ -25,14 +25,14 @@ class MainScaffold extends StatelessWidget {
             label: S.calendar,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.nightlight_outlined),
-            activeIcon: const Icon(Icons.nightlight),
-            label: S.eclipse,
+            icon: const Icon(Icons.today_outlined),
+            activeIcon: const Icon(Icons.today),
+            label: S.today,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.workspace_premium_outlined),
-            activeIcon: const Icon(Icons.workspace_premium),
-            label: S.premium,
+            icon: const Icon(Icons.people_outline),
+            activeIcon: const Icon(Icons.people),
+            label: S.family,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings_outlined),

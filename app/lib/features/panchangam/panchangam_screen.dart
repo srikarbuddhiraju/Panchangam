@@ -11,6 +11,8 @@ import 'widgets/kalam_card.dart';
 import 'widgets/muhurtha_card.dart';
 import 'widgets/context_card.dart';
 import '../../core/calculations/panchangam_engine.dart';
+import '../eclipse/eclipse_provider.dart';
+import '../eclipse/widgets/eclipse_card.dart';
 
 /// Full-screen Panchangam detail view for a single date.
 class PanchangamScreen extends ConsumerWidget {
@@ -75,20 +77,28 @@ class PanchangamScreen extends ConsumerWidget {
   }
 }
 
-class _PanchangamContent extends StatelessWidget {
+class _PanchangamContent extends ConsumerWidget {
   final PanchangamData data;
   final bool use24h;
 
   const _PanchangamContent({required this.data, required this.use24h});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eclipse = ref.watch(eclipseForDateProvider(data.date)).valueOrNull;
+
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
         // ── Date header ───────────────────────────────────────────────────
         _DateHeader(data: data, use24h: use24h),
         const SizedBox(height: 12),
+
+        // ── Eclipse alert (shown only on eclipse days) ────────────────────
+        if (eclipse != null) ...[
+          EclipseCard(eclipse: eclipse),
+          const SizedBox(height: 8),
+        ],
 
         // ── Five limbs ────────────────────────────────────────────────────
         FiveLimbsCard(data: data, use24h: use24h),

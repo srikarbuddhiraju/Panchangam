@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/app_strings.dart';
+import '../../app/theme.dart';
 import '../../shared/widgets/language_toggle.dart';
 import '../../features/settings/settings_provider.dart';
 import 'calendar_provider.dart';
@@ -45,17 +46,28 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       appBar: AppBar(
         title: Text(S.calendar),
         actions: [
-          // Today button
-          TextButton(
-            onPressed: () {
-              ref.read(displayedMonthProvider.notifier).state = DateTime.now();
-              _pageController.animateToPage(
-                _initialPage,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: Text(S.today),
+          // Today button — Outlook-style outlined
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: OutlinedButton(
+              onPressed: () {
+                ref.read(displayedMonthProvider.notifier).state = DateTime.now();
+                _pageController.animateToPage(
+                  _initialPage,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppTheme.kSaffron,
+                side: const BorderSide(color: AppTheme.kSaffron),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+              child: Text(S.today),
+            ),
           ),
           // City indicator
           Padding(

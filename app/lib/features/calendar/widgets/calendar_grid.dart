@@ -33,28 +33,37 @@ class CalendarGrid extends ConsumerWidget {
 
         // ── Day grid ──────────────────────────────────────────────────────
         Expanded(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              childAspectRatio: 0.75,
-            ),
-            itemCount: firstWeekday + days.length,
-            itemBuilder: (context, index) {
-              if (index < firstWeekday) return const EmptyDayCell();
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final int numRows = ((firstWeekday + days.length) / 7).ceil();
+              final double cellW = constraints.maxWidth / 7;
+              final double cellH = constraints.maxHeight / numRows;
+              final double ratio = cellW / cellH;
 
-              final DayData data = days[index - firstWeekday];
-              final bool isToday = data.date.year == today.year &&
-                  data.date.month == today.month &&
-                  data.date.day == today.day;
+              return GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  childAspectRatio: ratio,
+                ),
+                itemCount: firstWeekday + days.length,
+                itemBuilder: (context, index) {
+                  if (index < firstWeekday) return const EmptyDayCell();
 
-              return DayCell(
-                data: data,
-                isToday: isToday,
-                onTap: () {
-                  final String dateStr =
-                      DateFormat('yyyy-MM-dd').format(data.date);
-                  context.push('/panchangam/$dateStr');
+                  final DayData data = days[index - firstWeekday];
+                  final bool isToday = data.date.year == today.year &&
+                      data.date.month == today.month &&
+                      data.date.day == today.day;
+
+                  return DayCell(
+                    data: data,
+                    isToday: isToday,
+                    onTap: () {
+                      final String dateStr =
+                          DateFormat('yyyy-MM-dd').format(data.date);
+                      context.push('/panchangam/$dateStr');
+                    },
+                  );
                 },
               );
             },
