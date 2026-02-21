@@ -11,3 +11,19 @@ final eclipseProvider =
 List<EclipseData> _findEclipses(int year) {
   return Eclipse.findInYear(year);
 }
+
+/// Eclipse on a specific date, or null if none. Reuses the year-level cache.
+final eclipseForDateProvider =
+    FutureProvider.autoDispose.family<EclipseData?, DateTime>((ref, date) async {
+  final eclipses = await ref.watch(eclipseProvider(date.year).future);
+  try {
+    return eclipses.firstWhere(
+      (e) =>
+          e.date.year == date.year &&
+          e.date.month == date.month &&
+          e.date.day == date.day,
+    );
+  } catch (_) {
+    return null;
+  }
+});

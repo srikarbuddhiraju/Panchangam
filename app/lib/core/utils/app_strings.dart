@@ -19,6 +19,7 @@ class S {
   static String get calendar => isTelugu ? 'పంచాంగం' : 'Calendar';
   static String get eclipse => isTelugu ? 'గ్రహణం' : 'Eclipse';
   static String get premium => isTelugu ? 'ప్రీమియం' : 'Premium';
+  static String get family => isTelugu ? 'కుటుంబం' : 'Family';
   static String get settings => isTelugu ? 'సెట్టింగ్స్' : 'Settings';
 
   // ── Five limbs ────────────────────────────────────────────────────────────

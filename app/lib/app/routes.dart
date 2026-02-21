@@ -1,19 +1,21 @@
 import 'package:go_router/go_router.dart';
 import '../features/calendar/calendar_screen.dart';
+import '../features/today/today_screen.dart';
+import '../features/family/family_screen.dart';
 import '../features/panchangam/panchangam_screen.dart';
-import '../features/eclipse/eclipse_screen.dart';
 import '../features/settings/settings_screen.dart';
-import '../features/premium/premium_shell_screen.dart';
 import '../shared/widgets/main_scaffold.dart';
 
 /// App-wide navigation config using go_router.
 ///
-/// Route structure:
-///   /           → Calendar (tab 0)
-///   /eclipse    → Eclipse  (tab 1)
-///   /premium    → Premium  (tab 2)
-///   /settings   → Settings (tab 3)
-///   /panchangam/:date → Day detail (full-screen, no bottom nav)
+/// Tab structure:
+///   /         → Calendar
+///   /today    → Today (daily panchangam with day navigation)
+///   /family   → Family (placeholder for v2 features)
+///   /settings → Settings
+///
+/// Full-screen routes (no bottom nav):
+///   /panchangam/:date → Day detail pushed from calendar
 class AppRoutes {
   AppRoutes._();
 
@@ -35,16 +37,16 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/eclipse',
-                builder: (context, state) => const EclipseScreen(),
+                path: '/today',
+                builder: (context, state) => const TodayScreen(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/premium',
-                builder: (context, state) => const PremiumShellScreen(),
+                path: '/family',
+                builder: (context, state) => const FamilyScreen(),
               ),
             ],
           ),
@@ -58,7 +60,7 @@ class AppRoutes {
           ),
         ],
       ),
-      // Day detail — full screen, no bottom nav
+      // Day detail — full screen, no bottom nav, pushed from calendar grid
       GoRoute(
         path: '/panchangam/:date',
         builder: (context, state) {

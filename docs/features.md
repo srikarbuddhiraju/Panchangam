@@ -35,45 +35,57 @@ Premium unlocks:
 ## Core Panchangam Data (FREE, offline, location-aware by city)
 
 ### The 5 Limbs
-- [ ] Tithi — lunar day + end time
-- [ ] Vara — weekday in Telugu
-- [ ] Nakshatra — star + end time
-- [ ] Yoga — combination + end time
-- [ ] Karana — half-tithi + end time
+- [x] Tithi — lunar day + end time
+- [x] Vara — weekday in Telugu
+- [x] Nakshatra — star + end time
+- [x] Yoga — combination + end time
+- [x] Karana — two half-tithis per day, each with end time
 
 ### Daily Timings
-- [ ] Sunrise / Sunset
-- [ ] Moonrise / Moonset
-- [ ] Rahu Kalam
-- [ ] Gulikai Kalam
-- [ ] Yamaganda Kalam
-- [ ] Abhijit Muhurtham
-- [ ] Dur Muhurta
-- [ ] Amrit Kalam
+- [x] Sunrise / Sunset
+- [x] Moonrise / Moonset
+- [x] Rahu Kalam
+- [x] Gulikai Kalam
+- [x] Yamaganda Kalam
+- [x] Abhijit Muhurtham
+- [x] Dur Muhurta
+- [x] Amrit Kalam
 
 ### Month/Year Context
-- [ ] Telugu month (Masa)
-- [ ] Telugu year (Samvatsara)
-- [ ] Paksha (Shukla / Krishna)
-- [ ] Shaka Samvat
-- [ ] Ayanam
-- [ ] Ritu (Season)
-- [ ] Moon sign (Rashi)
+- [x] Telugu month (Masa)
+- [x] Telugu year (Samvatsara)
+- [x] Paksha (Shukla / Krishna)
+- [x] Shaka Samvat
+- [x] Ayanam
+- [x] Ritu (Season)
+- [x] Moon sign (Rashi)
 
 ### Eclipse Data (FREE)
-- [ ] Solar and lunar eclipse dates + timings
+- [x] Solar and lunar eclipse dates + timings
+- [x] Eclipse card shown inline on eclipse days (no separate tab needed)
 - [ ] Sutak timings
-- [ ] City name lookup (no GPS permission required)
+- [x] City name lookup (no GPS permission required)
 
 ---
 
 ## Calendar View (FREE)
-- [ ] Gregorian calendar grid (month view)
-- [ ] Each day cell: Tithi, Nakshatra, festival marker
-- [ ] Telugu date alongside Gregorian date on every cell
-- [ ] Day detail view: full Panchangam
+- [x] Gregorian calendar grid (month view)
+- [x] Each day cell: Tithi, Nakshatra
+- [ ] Festival marker on calendar cells
+- [x] Day detail view: full Panchangam
+- [x] Swipe left/right to navigate months
+- [x] Today button (Outlook-style outlined button) to jump to current month
+- [x] Calendar grid fills full screen height dynamically
 - [ ] Week view
 - [ ] Festival markers on grid
+
+---
+
+## Today Tab (FREE)
+- [x] Full daily Panchangam for today's date
+- [x] Navigate to previous/next days with arrow buttons
+- [x] Tap date header to jump back to today
+- [x] Eclipse card shown inline on eclipse days
 
 ---
 
@@ -124,6 +136,7 @@ Premium unlocks:
 ---
 
 ## Family / Group Sharing (PREMIUM)
+- [x] Family tab (placeholder screen, ready for future features)
 - [ ] Create or join a family group
 - [ ] Invite by phone number or email
 - [ ] Shared calendar view
@@ -134,9 +147,9 @@ Premium unlocks:
 ---
 
 ## Settings & Personalization
-- [ ] Language: Telugu / English
-- [ ] Default city (for calculations)
-- [ ] Time format: 12hr / 24hr
+- [x] Language: Telugu / English
+- [x] Default city (for calculations) — major Indian cities + diaspora cities included
+- [x] Time format: 12hr / 24hr
 - [ ] Theme: light / dark
 - [ ] Notification preferences
 

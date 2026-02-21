@@ -5,12 +5,14 @@
 | Layer | Choice | Reason |
 |-------|--------|--------|
 | Framework | Flutter (Dart) | Single codebase for Android → iOS → Web |
+| State management | Riverpod (flutter_riverpod) | Simple, testable, composable providers |
+| Navigation | go_router | Declarative routing; StatefulShellRoute for bottom nav tabs |
 | Auth | Firebase Authentication | Google login built-in, free tier generous |
 | Cloud sync | Firebase Firestore | Real-time family sharing, offline-first support |
 | Local storage | Hive (on-device DB) | Fast, lightweight, works fully offline |
 | Payments | Google Play Billing | Native Android subscription management |
 | Astronomical calc | Dart (on-device) | Offline-first; no server needed for Panchangam data |
-| City → coordinates | Geocoding API or bundled city DB | City name lookup for location-based calculations |
+| City → coordinates | Bundled JSON (cities_india.json) | ~500 cities pre-loaded; no network call needed |
 
 ## Why Firebase?
 - Firebase is Google's product — pairs naturally with Google login
@@ -38,28 +40,87 @@ Family members see shared events, reminders, occasions in real time
 ## App Folder Structure (inside `app/lib/`)
 ```
 lib/
-├── main.dart                    # App entry point
+├── main.dart                    # App entry point; locale init (Telugu + English)
 ├── app/
-│   ├── theme.dart               # Colors, fonts, dark/light
-│   └── routes.dart              # Navigation/routing
+│   ├── theme.dart               # Colors (saffron, kumkum), fonts, dark/light
+│   └── routes.dart              # go_router config; 4 tabs + /panchangam/:date
 ├── features/
-│   ├── calendar/                # Calendar grid view
-│   ├── panchangam/              # Daily Panchangam detail
-│   ├── todos/                   # To-Do management (Premium)
-│   ├── reminders/               # Reminders (Premium)
-│   ├── alarms/                  # Alarms (Premium)
-│   ├── occasions/               # Events, Tithi birthdays (Premium)
-│   ├── festivals/               # Festival calendar
-│   ├── family/                  # Family group sharing (Premium)
-│   ├── eclipse/                 # Eclipse timings (Free)
-│   ├── auth/                    # Google login, user profile
-│   └── settings/                # App preferences
+│   ├── calendar/                # Monthly calendar grid; swipe months; Today button
+│   │   ├── calendar_screen.dart
+│   │   ├── calendar_provider.dart
+│   │   └── widgets/
+│   │       ├── calendar_grid.dart   # 7-col grid; LayoutBuilder for dynamic scaling
+│   │       ├── day_cell.dart
+│   │       └── month_header.dart
+│   ├── today/                   # Today tab — daily Panchangam with day navigation
+│   │   └── today_screen.dart
+│   ├── panchangam/              # Day detail screen (pushed from calendar or today tab)
+│   │   ├── panchangam_screen.dart
+│   │   ├── panchangam_provider.dart
+│   │   └── widgets/
+│   │       ├── five_limbs_card.dart     # Tithi, Vara, Nakshatra, Yoga, Karana ×2
+│   │       ├── timings_card.dart        # Sunrise/set, Moonrise/set
+│   │       ├── kalam_card.dart          # Rahu, Gulika, Yamaganda
+│   │       ├── muhurtha_card.dart       # Abhijit, Dur Muhurta, Amrit Kalam
+│   │       └── context_card.dart        # Month, year, Paksha, Rashi, Ritu, etc.
+│   ├── eclipse/                 # Eclipse data provider + card widget
+│   │   ├── eclipse_provider.dart        # eclipseProvider (year-level) + eclipseForDateProvider
+│   │   └── widgets/
+│   │       └── eclipse_card.dart        # Inline alert card shown on eclipse days
+│   ├── family/                  # Family tab (Premium placeholder)
+│   │   └── family_screen.dart
+│   ├── settings/                # App preferences (city, language, time format)
+│   │   ├── settings_screen.dart
+│   │   └── settings_provider.dart
+│   ├── todos/                   # To-Do management (Premium, future)
+│   ├── reminders/               # Reminders (Premium, future)
+│   ├── alarms/                  # Alarms (Premium, future)
+│   ├── occasions/               # Events, Tithi birthdays (Premium, future)
+│   ├── festivals/               # Festival calendar (future)
+│   └── auth/                    # Google login, user profile (future)
 ├── core/
-│   ├── calculations/            # Astronomical engine (Panchangam math)
-│   ├── city_lookup/             # City name → lat/lng
+│   ├── calculations/            # Astronomical engine (all Panchangam math)
+│   │   ├── panchangam_engine.dart   # Top-level orchestrator; PanchangamData model
+│   │   ├── julian_day.dart          # Julian Day ↔ calendar conversions
+│   │   ├── solar.dart               # Sun longitude, sunrise/sunset
+│   │   ├── lunar.dart               # Moon longitude, moonrise/moonset
+│   │   ├── tithi.dart               # Tithi number + end time
+│   │   ├── nakshatra.dart           # Nakshatra number + end time
+│   │   ├── yoga.dart                # Yoga number + end time
+│   │   ├── karana.dart              # Karana number + end time (two per day)
+│   │   ├── kalam_timings.dart       # Rahu/Gulika/Yamaganda using Pillai table
+│   │   ├── muhurtha.dart            # Abhijit, Dur Muhurta, Amrit Kalam
+│   │   ├── telugu_calendar.dart     # Masa, Samvatsara, Paksha, Shaka Samvat
+│   │   ├── eclipse_calculator.dart  # Solar + lunar eclipse detection
+│   │   └── ayanamsha.dart           # Lahiri ayanamsha for sidereal positions
+│   ├── city_lookup/             # City name → lat/lng lookup from bundled JSON
 │   └── utils/
+│       └── app_strings.dart     # All UI strings (Telugu + English); S.isTelugu flag
 └── shared/
-    └── widgets/                 # Reusable UI components
+    └── widgets/
+        ├── main_scaffold.dart       # Bottom nav: Calendar | Today | Family | Settings
+        └── language_toggle.dart     # EN/తె toggle button
+```
+
+## Tab Structure (Bottom Navigation)
+| Tab | Icon | Route | Description |
+|-----|------|-------|-------------|
+| Calendar | calendar_month | `/` | Monthly grid; tap day → detail |
+| Today | today | `/today` | Daily Panchangam; ← → day navigation |
+| Family | people | `/family` | Premium placeholder |
+| Settings | settings | `/settings` | City, language, time format |
+
+**Eclipse/Grahanam**: Not a separate tab. The `eclipseForDateProvider` checks if the selected date has an eclipse and shows an inline `EclipseCard` at the top of the Panchangam detail in both the Today tab and the day detail screen.
+
+## Navigation Flow
+```
+Bottom nav (4 tabs, StatefulShellRoute — state preserved)
+├── / (Calendar) ──→ context.push('/panchangam/yyyy-MM-dd') → Day detail (back button)
+├── /today ──────────── day navigation via StateProvider (no route change)
+├── /family
+└── /settings
+
+/panchangam/:date  ← pushed on top of any tab; back button returns to caller
 ```
 
 ## Subscription & Paywall
@@ -113,3 +174,4 @@ Firebase Blaze (pay-as-you-go) kicks in beyond the free limits:
 | Offline | Yes — core Panchangam works without internet |
 | Calculations | On-device (Dart), not a server |
 | Backend | Firebase only (no custom server) |
+| Eclipse display | Inline card in day detail (not a separate tab) |
