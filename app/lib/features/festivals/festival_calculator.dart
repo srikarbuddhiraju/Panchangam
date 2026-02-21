@@ -105,6 +105,25 @@ class FestivalCalculator {
         }
         return true;
       }
+
+      // ── Kshaya Tithi handling ─────────────────────────────────────────────
+      // A tithi so short it doesn't touch any sunrise is called kshaya.
+      // Classic case: Ugadi (Shukla Pratipada) sometimes runs from one
+      // evening to the next morning, never appearing at any sunrise.
+      // Rule: if today's sunrise is S2 and yesterday's sunrise was Amavasya,
+      // then Pratipada occurred in between — treat today as Pratipada day.
+      if (festival.paksha == 1 && festival.tithi == 1 && tNum == 2) {
+        final DateTime prevDate = date.subtract(const Duration(days: 1));
+        final List<DateTime> prevSun =
+            SunriseSunset.computeNOAA(prevDate, lat, lng);
+        final double prevJd = JulianDay.fromIST(prevSun[0]);
+        if (Tithi.number(prevJd) == 30) {
+          if (festival.teluguMonth != null) {
+            return TeluguCalendar.monthNumber(jdCheck) == festival.teluguMonth;
+          }
+          return true;
+        }
+      }
     } catch (_) {
       // Ignore calculation errors for edge cases
     }
