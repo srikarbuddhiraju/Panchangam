@@ -54,9 +54,13 @@ class PanchangamEngine {
     final int yogaNum = Yoga.number(jdSunrise);
     final DateTime yogaEnd = Yoga.endTime(jdSunrise);
 
-    // 5. Karana
+    // 5. Karana (first and second of the day)
     final int karanaNum = Karana.number(jdSunrise);
     final DateTime karanaEnd = Karana.endTime(jdSunrise);
+    // Second karana: compute 1 minute past the end of the first
+    final double jdAfterKarana = JulianDay.fromIST(karanaEnd) + (1.0 / 1440);
+    final int karana2Num = Karana.number(jdAfterKarana);
+    final DateTime karana2End = Karana.endTime(jdAfterKarana);
 
     // ── Moonrise & Moonset ────────────────────────────────────────────────
     final List<DateTime?> moonTimes = MoonriseMoonset.compute(date, lat, lng);
@@ -119,6 +123,10 @@ class PanchangamEngine {
       karanaNameTe: Karana.nameTe(karanaNum),
       karanaNameEn: Karana.nameEn(karanaNum),
       karanaEndTime: karanaEnd,
+      karana2Number: karana2Num,
+      karana2NameTe: Karana.nameTe(karana2Num),
+      karana2NameEn: Karana.nameEn(karana2Num),
+      karana2EndTime: karana2End,
 
       // Timings
       sunrise: sunrise,
@@ -194,6 +202,10 @@ class PanchangamData {
   final String karanaNameTe;
   final String karanaNameEn;
   final DateTime karanaEndTime;
+  final int karana2Number;
+  final String karana2NameTe;
+  final String karana2NameEn;
+  final DateTime karana2EndTime;
 
   // ── Daily Timings ─────────────────────────────────────────────────────────
   final DateTime sunrise;
@@ -258,6 +270,10 @@ class PanchangamData {
     required this.karanaNameTe,
     required this.karanaNameEn,
     required this.karanaEndTime,
+    required this.karana2Number,
+    required this.karana2NameTe,
+    required this.karana2NameEn,
+    required this.karana2EndTime,
     required this.sunrise,
     required this.sunset,
     this.moonrise,

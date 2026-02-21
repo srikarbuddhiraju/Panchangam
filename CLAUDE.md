@@ -25,3 +25,4 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - Prefer Flutter built-ins over third-party packages where reasonable
 - Keep files small and focused (single responsibility)
 - Use feature-based folder structure inside `lib/`
+- **Use tokens strategically** — prefer MCP server tools (dart, android-adb) over reading large files; use targeted Grep/Glob over broad reads; avoid re-reading files already in context

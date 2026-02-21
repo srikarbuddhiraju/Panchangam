@@ -11,7 +11,7 @@ final displayedMonthProvider = StateProvider<DateTime>(
 );
 
 /// DayData list for a specific year+month, computed in a background isolate.
-final monthDataProvider = FutureProvider.autoDispose
+final monthDataProvider = FutureProvider
     .family<List<DayData>, ({int year, int month})>((ref, ym) async {
   final settings = ref.watch(settingsProvider);
 

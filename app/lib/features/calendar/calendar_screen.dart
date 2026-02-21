@@ -106,6 +106,7 @@ class _MonthPage extends ConsumerWidget {
     );
 
     return asyncData.when(
+      skipLoadingOnReload: true,
       data: (days) => CalendarGrid(days: days, month: month),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(

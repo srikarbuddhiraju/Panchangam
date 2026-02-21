@@ -54,7 +54,7 @@ class CalendarGrid extends ConsumerWidget {
                 onTap: () {
                   final String dateStr =
                       DateFormat('yyyy-MM-dd').format(data.date);
-                  context.go('/panchangam/$dateStr');
+                  context.push('/panchangam/$dateStr');
                 },
               );
             },
