@@ -19,12 +19,12 @@ class Tithi {
     'ఏకాదశి', 'ద్వాదశి', 'త్రయోదశి', 'చతుర్దశి', 'అమావాస్య',
   ];
 
-  /// Tithis 1–30 in English.
+  /// Tithis 1–30 in English (using Telugu regional names where they differ).
   static const List<String> namesEn = [
-    'Pratipada', 'Dwitiya', 'Tritiya', 'Chaturthi', 'Panchami',
+    'Paadyami', 'Vidiya', 'Tadiya', 'Chaviti', 'Panchami',
     'Shashthi', 'Saptami', 'Ashtami', 'Navami', 'Dashami',
-    'Ekadashi', 'Dwadashi', 'Trayodashi', 'Chaturdashi', 'Purnima',
-    'Pratipada', 'Dwitiya', 'Tritiya', 'Chaturthi', 'Panchami',
+    'Ekadashi', 'Dwadashi', 'Trayodashi', 'Chaturdashi', 'Pournami',
+    'Paadyami', 'Vidiya', 'Tadiya', 'Chaviti', 'Panchami',
     'Shashthi', 'Saptami', 'Ashtami', 'Navami', 'Dashami',
     'Ekadashi', 'Dwadashi', 'Trayodashi', 'Chaturdashi', 'Amavasya',
   ];
