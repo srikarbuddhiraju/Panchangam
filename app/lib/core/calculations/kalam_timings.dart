@@ -17,7 +17,9 @@ class KalamTimings {
   static const List<int> gulikaMultiplier = [6, 5, 4, 3, 2, 1, 0];
 
   /// Yamaganda: start = sunrise + yama * period
-  static const List<int> yamagandaMultiplier = [3, 6, 2, 5, 1, 4, 7];
+  /// Standard Pillai table: Sun=P5, Mon=P4, Tue=P3, Wed=P2, Thu=P1, Fri=P8, Sat=P6
+  /// Confirmed Sat=P6 (14:02–15:30) against drikpanchang.com on 2026-02-21
+  static const List<int> yamagandaMultiplier = [4, 3, 2, 1, 0, 7, 5];
 
   /// Compute Rahu Kalam for a given vara and sunrise/sunset.
   /// Returns [start, end] IST DateTimes.

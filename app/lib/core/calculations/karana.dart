@@ -41,11 +41,12 @@ class Karana {
 
     final int seq = (t - 1) * 2 + half; // 1–60
 
-    if (seq <= 56) {
-      return (seq - 1) % 7 + 1; // 1–7
-    } else {
-      return 7 + (seq - 56); // 8, 9, 10, 11
-    }
+    // Seq 1 = Kimstughna (fixed, opens every lunar month)
+    // Seq 2–57 = 8 full cycles of the 7 movable karanas
+    // Seq 58 = Shakuni, 59 = Chatushpada, 60 = Naga (fixed, close the month)
+    if (seq == 1) return 11;                    // Kimstughna
+    if (seq <= 57) return (seq - 2) % 7 + 1;   // movable 1–7
+    return 7 + (seq - 57);                      // 8=Shakuni, 9=Chatushpada, 10=Naga
   }
 
   /// Telugu name for a Karana number (1–11).

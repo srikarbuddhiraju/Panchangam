@@ -87,20 +87,17 @@ class TeluguCalendar {
 
   /// Compute Samvatsara for a given year of the Telugu calendar.
   ///
-  /// The 60-year cycle started at Kali Yuga. The cycle index:
-  /// index = (shakaYear - 1) mod 60  (approximately)
-  ///
-  /// Vijaya = index 26 (2024-25 CE)
-  /// Jaya   = index 27 (2025-26 CE)
-  /// Manmatha = index 28 (2026-27 CE)
+  /// The 60-year cycle index:
+  /// Visvavasu = index 38 (Shaka 1947 = 2025-26 CE) — confirmed via drikpanchang.com
+  /// Parabhava = index 39 (Shaka 1948 = 2026-27 CE)
   static String samvatsaraTe(int shakaYear) {
-    // Calibration: Shaka 1946 (2024-25 CE) = Vijaya = index 26
-    final int index = ((shakaYear - 1946 + 26) % 60 + 60) % 60;
+    // Calibration: Shaka 1947 (2025-26 CE) = Visvavasu = index 38
+    final int index = ((shakaYear - 1947 + 38) % 60 + 60) % 60;
     return samvatsarasTe[index];
   }
 
   static String samvatsaraEn(int shakaYear) {
-    final int index = ((shakaYear - 1946 + 26) % 60 + 60) % 60;
+    final int index = ((shakaYear - 1947 + 38) % 60 + 60) % 60;
     return samvatsarasEn[index];
   }
 

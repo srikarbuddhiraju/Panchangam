@@ -10,6 +10,7 @@ import 'widgets/timings_card.dart';
 import 'widgets/kalam_card.dart';
 import 'widgets/muhurtha_card.dart';
 import 'widgets/context_card.dart';
+import '../../core/calculations/panchangam_engine.dart';
 
 /// Full-screen Panchangam detail view for a single date.
 class PanchangamScreen extends ConsumerWidget {
@@ -75,7 +76,7 @@ class PanchangamScreen extends ConsumerWidget {
 }
 
 class _PanchangamContent extends StatelessWidget {
-  final dynamic data; // PanchangamData
+  final PanchangamData data;
   final bool use24h;
 
   const _PanchangamContent({required this.data, required this.use24h});
@@ -114,7 +115,7 @@ class _PanchangamContent extends StatelessWidget {
 }
 
 class _DateHeader extends StatelessWidget {
-  final dynamic data;
+  final PanchangamData data;
   final bool use24h;
 
   const _DateHeader({required this.data, required this.use24h});
