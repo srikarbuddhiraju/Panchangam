@@ -44,6 +44,7 @@ class DayCell extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           border: data.isFestival
               ? Border.all(color: AppTheme.kFestivalAmber, width: 1.5)
@@ -56,45 +57,53 @@ class DayCell extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 3),
 
-            // Day number with today circle
-            Container(
-              width: 28,
-              height: 28,
-              decoration: isToday
-                  ? const BoxDecoration(
-                      color: AppTheme.kSaffron,
-                      shape: BoxShape.circle,
-                    )
-                  : null,
-              alignment: Alignment.center,
-              child: Text(
-                '${data.date.day}',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                  color: isToday ? Colors.white : null,
-                ),
+            // Day number circle + moon icon inline to its right
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: isToday
+                        ? const BoxDecoration(
+                            color: AppTheme.kSaffron,
+                            shape: BoxShape.circle,
+                          )
+                        : null,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${data.date.day}',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight:
+                            isToday ? FontWeight.bold : FontWeight.normal,
+                        color: isToday ? Colors.white : null,
+                      ),
+                    ),
+                  ),
+                  if (isPurnima || isAmavasya)
+                    Text(
+                      isPurnima ? '🌕' : '🌑',
+                      style: const TextStyle(fontSize: 10, height: 1.0),
+                    ),
+                ],
               ),
             ),
 
-            // Moon phase icon (Purnima / Amavasya)
-            if (isPurnima || isAmavasya)
-              Text(
-                isPurnima ? '🌕' : '🌑',
-                style: const TextStyle(fontSize: 10, height: 1.1),
-              ),
-
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
 
             // Tithi name
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Text(
                 tithiName,
-                style: const TextStyle(fontSize: 9),
+                style: const TextStyle(fontSize: 11),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -106,7 +115,7 @@ class DayCell extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Text(
                 nakshatraName,
-                style: TextStyle(fontSize: 8, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -120,7 +129,7 @@ class DayCell extends StatelessWidget {
                 child: Text(
                   festivalName,
                   style: const TextStyle(
-                    fontSize: 8,
+                    fontSize: 10,
                     color: AppTheme.kFestivalAmber,
                     fontWeight: FontWeight.w600,
                   ),
@@ -137,7 +146,7 @@ class DayCell extends StatelessWidget {
                 child: Text(
                   eclipseLabel,
                   style: TextStyle(
-                    fontSize: 8,
+                    fontSize: 10,
                     color: AppTheme.kKumkum,
                     fontWeight: FontWeight.w600,
                   ),
