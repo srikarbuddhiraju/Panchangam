@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="panchangam-roadmap" name="Panchangam Roadmap">
+    <mxGraphModel dx="1000" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="0" arrows="0" fold="1" page="0" pageScale="1" pageWidth="1000" pageHeight="2200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══ TITLE ═══ -->
+        <mxCell id="title" value="Panchangam App — Feature Roadmap"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══ LEGEND ═══ -->
+        <mxCell id="legend" value="Legend"
+          style="swimlane;startSize=25;fillColor=#f0f0f0;strokeColor=#aaaaaa;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="762" y="90" width="188" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1_box" value="" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="33" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1_txt" value="Shipped" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="38" y="33" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2_box" value="" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="60" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2_txt" value="MVP — next release" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="38" y="60" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3_box" value="" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="87" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3_txt" value="Android roadmap" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="38" y="87" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4_box" value="" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="114" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4_txt" value="iOS / Web (future)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="38" y="114" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ═══ SECTION: SHIPPED ═══ -->
+        <mxCell id="sec_done" value="✅  SHIPPED"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=3;fontColor=#82b366;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="68" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- MILESTONE 1 — Foundation -->
+        <mxCell id="m1" value="Milestone 1 — Foundation"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="700" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="m1_1" value="• Flutter project setup (Android-first, single codebase)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_2" value="• Julian Day &amp; solar / lunar position calculation engine" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_3" value="• All 5 Panchangam limbs: Tithi, Vara, Nakshatra, Yoga, Karana (+ Karana 2)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_4" value="• Sunrise / Sunset (NOAA algorithm)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_5" value="• Moonrise / Moonset" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="115" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_6" value="• Kalam timings: Rahu Kalam, Gulika Kalam, Yamaganda" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="135" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_7" value="• Muhurthas: Abhijit, Dur Muhurta, Amrit Kalam" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="155" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_8" value="• Calendar grid (Gregorian + Telugu overlay, transposed layout)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="175" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m1_9" value="• Riverpod state management, GoRouter navigation, tab structure" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m1"><mxGeometry x="10" y="195" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- MILESTONE 2 — Core Features -->
+        <mxCell id="m2" value="Milestone 2 — Core Features"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="325" width="700" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="m2_1" value="• Festival calculator (~28 festivals with Puranic descriptions)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_2" value="• Expandable Festival card (Today screen + Panchangam detail page)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_3" value="• Eclipse detection (lunar + solar, Meeus Rahu formula)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_4" value="• Eclipse card: Sparsha, Moksha, Sutak timings (general + vulnerable)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_5" value="• Today screen with full panchangam view" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="115" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_6" value="• Panchangam detail push route (/panchangam/:date)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="135" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_7" value="• Telugu / English language toggle" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="155" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_8" value="• City picker with bundled India city database" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="175" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_9" value="• Location fully wired to all calculations (Hive persistence)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="195" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_10" value="• Samvatsara, Ayanam, Ritu, Rashi display" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="215" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m2_11" value="• Moon phase icons (🌕 Pournami, 🌑 Amavasya) in calendar cells" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m2"><mxGeometry x="10" y="235" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- MILESTONE 3 — Accuracy & Polish -->
+        <mxCell id="m3" value="Milestone 3 — Accuracy &amp; Polish"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="700" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="m3_1" value="• Samvatsara calibration fix (Vishvavasu = Shaka 1947, validated vs DrikPanchang)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_2" value="• Yamaganda Saturday multiplier fix (Pillai table)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_3" value="• Karana sequence off-by-one fix (60-karana cycle)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_4" value="• Ugadi kshaya Pratipada fix (T30 at sunrise + next-day T2 rule)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_5" value="• Telugu monthNumber: correct Amavasyant method (next Amavasya → sun rashi)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="115" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_6" value="• Adhika Maasa: detection, "అధిక X" display in header + detail, festival suppression" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="135" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_7" value="• Calendar layout redesign (transposed grid, bigger fonts, moon inline)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="155" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_8" value="• Eclipse: Rahu longitude corrected, Sparsha/Moksha by 5-min scan, Sutak from Sparsha" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="175" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="m3_9" value="• 32 unit tests, all passing (calculations validated)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="m3"><mxGeometry x="10" y="195" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ SECTION: MVP ═══ -->
+        <mxCell id="sec_mvp" value="🚧  MVP — Play Store Launch"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=3;fontColor=#b85450;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="835" width="400" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- v1.0 — MVP -->
+        <mxCell id="mvp" value="v1.0 — MVP: Play Store Launch"
+          style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="858" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="mvp_1" value="→ Family tab: fill with useful content or remove empty placeholder" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="mvp"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="mvp_2" value="→ App icon &amp; splash screen (branded, no default Flutter icon)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="mvp"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="mvp_3" value="→ Play Store listing: developer account, screenshots, description, privacy policy" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="mvp"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ SECTION: ANDROID ROADMAP ═══ -->
+        <mxCell id="sec_android" value="📋  Android Roadmap — generate revenue before expanding platforms"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=3;fontColor=#6c8ebf;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="978" width="700" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- v1.1 -->
+        <mxCell id="v11" value="v1.1 — Quick Wins"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1001" width="700" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="v11_1" value="• Push notifications: festival reminders (day-before + day-of)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v11"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v11_2" value="• Muhurtha alerts (auspicious time notifications)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v11"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v11_3" value="• Home screen widget (today's tithi, nakshatra, upcoming festival)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v11"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v11_4" value="• Share today's panchangam (image / text export)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v11"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- v1.2 -->
+        <mxCell id="v12" value="v1.2 — Content &amp; UX"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1136" width="700" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v12_1" value="• More festivals (50+ including regional Telugu, diaspora events)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v12"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v12_2" value="• Year view in calendar" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v12"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v12_3" value="• Dark mode toggle in settings" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v12"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v12_4" value="• Onboarding flow for first-time users" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v12"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v12_5" value="• In-app rating prompt" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v12"><mxGeometry x="10" y="115" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- v1.3 -->
+        <mxCell id="v13" value="v1.3 — Family Tab"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1291" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="v13_1" value="• Family birthdays &amp; anniversaries with reminders" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v13"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v13_2" value="• Personal events overlaid on calendar" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v13"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v13_3" value="• Auspicious date suggestions for family events (weddings, naming ceremonies, etc.)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v13"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- v1.4 -->
+        <mxCell id="v14" value="v1.4 — Advanced Features"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1411" width="700" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="v14_1" value="• Muhurtha picker (enter activity type → best times returned)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v14"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v14_2" value="• Multiple saved locations (home / office / hometown)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v14"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v14_3" value="• PDF / print export of monthly panchangam" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v14"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v14_4" value="• Expanded festival database (100+ festivals, regional variety)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v14"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- v1.5 -->
+        <mxCell id="v15" value="v1.5 — Monetisation"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1546" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="v15_1" value="• Premium subscription (notifications, export, advanced features)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v15"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v15_2" value="• Ad-free upgrade option" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v15"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v15_3" value="• Family plan (shared data across devices)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v15"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ SECTION: iOS ═══ -->
+        <mxCell id="sec_ios" value="🍎  iOS — after Android is proven and generating revenue"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=3;fontColor=#9673a6;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1666" width="700" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- v2.0 -->
+        <mxCell id="v20" value="v2.0 — iOS Launch"
+          style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1689" width="700" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="v20_1" value="• iOS build &amp; App Store submission" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v20"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v20_2" value="• iOS-specific UI polish (safe areas, haptics, SF Symbols)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v20"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v20_3" value="• App Store listing, TestFlight beta" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v20"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v20_4" value="• Cross-platform analytics &amp; crash reporting" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v20"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- v2.1 -->
+        <mxCell id="v21" value="v2.1 — iOS Maturity"
+          style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1824" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="v21_1" value="• iOS bug fixes based on App Store feedback" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v21"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v21_2" value="• App Store optimisation (ASO, keywords, ratings)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v21"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v21_3" value="• iCloud sync for settings &amp; family data" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v21"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ SECTION: WEB ═══ -->
+        <mxCell id="sec_web" value="🌐  Web — broadest reach, final platform"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=3;fontColor=#666666;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1944" width="700" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- v3.0 -->
+        <mxCell id="v30" value="v3.0 — Web"
+          style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#999999;fontStyle=1;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="40" y="1967" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="v30_1" value="• Flutter Web build &amp; hosting" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v30"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v30_2" value="• SEO-optimised panchangam pages for discoverability" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v30"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="v30_3" value="• Progressive Web App (installable, offline-capable)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="v30"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
