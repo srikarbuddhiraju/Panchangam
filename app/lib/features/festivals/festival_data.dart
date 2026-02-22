@@ -410,12 +410,16 @@ class FestivalData {
           'worship are central observances.',
     ),
 
-    // ── Phalguna (Month 12) ───────────────────────────────────────────────
+    // ── Magha (Month 11) continued ────────────────────────────────────────
     Festival(
       nameTe: 'మహా శివరాత్రి',
       nameEn: 'Maha Shivaratri',
       type: FestivalType.tithi,
-      teluguMonth: 12,
+      // Magha (11) in Amavasyant (Telugu) system — the month ending at the
+      // Magha Amavasya. North Indian Purnimanta calendars call this "Phalguna"
+      // because the same tithi falls before the Phalguna Purnima, but in
+      // the Amavasyant month is named by the NEXT Amavasya (Kumbha rashi → Magha).
+      teluguMonth: 11,
       paksha: 2,
       tithi: 14,
       observedAtNight: true,
@@ -427,6 +431,7 @@ class FestivalData {
           'this unintentional act of devotion. Four praharas (night-watches) of '
           'puja are performed, with complete fasting and night vigil.',
     ),
+    // ── Phalguna (Month 12) ───────────────────────────────────────────────
     Festival(
       nameTe: 'హోలీ',
       nameEn: 'Holi',
