@@ -110,15 +110,35 @@ class TeluguCalendar {
 
   /// Compute the Telugu month number (1–12) for a given JD.
   ///
-  /// Correct Amavasyant method: find the NEXT Amavasya and read the Sun's
-  /// sidereal rashi at that point.  Accurate for any date in the month,
-  /// including dates near Sankranti crossings where a solar approximation
-  /// would be off by one month.
+  /// Amavasyant method: find the bounding Amavasyas and determine the name.
+  ///
+  /// • Nija (regular) month: nextAm and prevAm are in different rashis.
+  ///   Month name = sun's rashi at nextAm (the ending Amavasya).
+  ///
+  /// • Adhika (leap) month: prevAm and nextAm are in the SAME rashi.
+  ///   Traditional rule: the Adhika month takes the same name as the Nija
+  ///   month that immediately follows it.  So we advance to nextNextAm
+  ///   (the Amavasya after nextAm) and read its rashi.
+  ///
+  /// Example 2026: Jun 15 Amavasya (59.72° Vrishabha) and May 16 Amavasya
+  /// both in Vrishabha → Adhika period.  nextNextAm = Jul 14 (87.4° Mithuna)
+  /// → month 3 = Jyeshtha → "Adhika Jyeshtha" (matches DrikPanchang).
   static int monthNumber(double jd) {
     final double nextAm = _findAmavasyaJd(jd, forward: true);
-    final int rashi =
+    final double prevAm = _findAmavasyaJd(jd, forward: false);
+    final int rashiPrev =
+        (SolarPosition.siderealLongitude(prevAm) / 30.0).floor();
+    final int rashiNext =
         (SolarPosition.siderealLongitude(nextAm) / 30.0).floor();
-    return rashi + 1; // 1-indexed: Mesha(0)→1, ..., Meena(11)→12
+
+    if (rashiPrev == rashiNext) {
+      // Adhika month: name it after the following Nija month.
+      final double nextNextAm = _findAmavasyaJd(nextAm + 1, forward: true);
+      final int rashi =
+          (SolarPosition.siderealLongitude(nextNextAm) / 30.0).floor();
+      return rashi + 1;
+    }
+    return rashiNext + 1; // 1-indexed: Mesha(0)→1, ..., Meena(11)→12
   }
 
   /// Returns true if the date falls in an Adhika (leap) lunar month.

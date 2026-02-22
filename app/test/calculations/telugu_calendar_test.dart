@@ -55,11 +55,15 @@ void main() {
 
   // ── isAdhikaMaasa() ───────────────────────────────────────────────────────
   group('isAdhikaMaasa', () {
-    test('2026 has exactly one adhika period (Adhika Vaisakha ≈ May–Jun)', () {
-      // Two consecutive new moons fall in Vrishabha in 2026 → Adhika Vaisakha.
+    test('2026 has exactly one adhika period (Adhika Jyeshtha ≈ May–Jun)', () {
+      // Two consecutive new moons fall in Vrishabha in 2026 → Adhika period.
       // Adhika period: May 17 – Jun 15 (the month with no Sankranti inside it).
-      // Nija Vaisakha is the preceding month (Apr 17 – May 16) which contains
-      // the Vrishabha Sankranti around May 14–15.
+      // Nija Vaisakha is the preceding month (Apr 17 – May 16).
+      // Traditional naming rule: the Adhika month takes the same name as the
+      // Nija month that immediately follows it.  The following Nija month
+      // (Jun 16 – Jul 14) ends with the sun in Mithuna → Jyeshtha (month 3).
+      // Therefore: Adhika Jyeshtha — matching DrikPanchang and standard Telugu
+      // panchangas.
       final adhikaDays = <DateTime>[];
       for (int doy = 0; doy < 365; doy += 1) {
         final date = DateTime(2026, 1, 1).add(Duration(days: doy));
@@ -70,26 +74,24 @@ void main() {
           reason:
               'Expected ~29 adhika days in 2026, got ${adhikaDays.length}. '
               'First: ${adhikaDays.firstOrNull}, last: ${adhikaDays.lastOrNull}');
-      // All adhika days should be Vaisakha (month 2)
+      // All adhika days should be Jyeshtha (month 3)
       for (final date in adhikaDays) {
         final jd = _jdAtSunrise(date);
-        expect(TeluguCalendar.monthNumber(jd), equals(2),
+        expect(TeluguCalendar.monthNumber(jd), equals(3),
             reason:
-                'Adhika 2026 should be Vaisakha(2), got '
+                'Adhika 2026 should be Jyeshtha(3), got '
                 '${TeluguCalendar.monthNumber(jd)} on $date');
       }
     });
 
-    test('2023 has exactly one adhika period (Adhika Ashadha ≈ Jul–Aug)', () {
-      // Jul 17 Amavasya: sun at 90.7° sidereal (Karka/Cancer).
-      // Aug 16 Amavasya: sun at 119.1° sidereal (still Karka).
-      // Both Amavasyas fall in Karka → Adhika Ashadha (month 4).
-      // Adhika period: Jul 17 – Aug 16 (the month with no Sankranti inside it).
-      // The preceding month Jun 19 – Jul 17 contains the Karka Sankranti (~Jul 16)
-      // so it is the Nija Ashadha (regular month).
-      // Note: some external calendars label this "Adhika Shravana" using a
-      // slightly different ayanamsha that places Jul 17 at <90° (Mithuna).
-      // Our Lahiri-based calculation consistently returns month 4 (Ashadha).
+    test('2023 has exactly one adhika period (Adhika Shravana ≈ Jul–Aug)', () {
+      // Jul 17 Amavasya: sun at ~90.7° sidereal (Karkata/Cancer).
+      // Aug 16 Amavasya: sun at ~119.1° sidereal (still Karkata).
+      // Both Amavasyas fall in Karkata → Adhika period Jul 17 – Aug 16.
+      // Traditional naming rule: name after the following Nija month.
+      // The following Nija month (Aug 16 – Sep 14) ends with sun in Simha
+      // → month 5 = Shravana.  Therefore: Adhika Shravana — matching
+      // DrikPanchang and standard Telugu panchangas.
       final adhikaDays = <DateTime>[];
       for (int doy = 0; doy < 365; doy += 1) {
         final date = DateTime(2023, 1, 1).add(Duration(days: doy));
@@ -99,12 +101,12 @@ void main() {
       expect(adhikaDays.length, inInclusiveRange(25, 35),
           reason:
               'Expected ~29 adhika days in 2023, got ${adhikaDays.length}');
-      // All adhika days should be Ashadha (month 4)
+      // All adhika days should be Shravana (month 5)
       for (final date in adhikaDays) {
         final jd = _jdAtSunrise(date);
-        expect(TeluguCalendar.monthNumber(jd), equals(4),
+        expect(TeluguCalendar.monthNumber(jd), equals(5),
             reason:
-                'Adhika 2023 should be Ashadha(4), got '
+                'Adhika 2023 should be Shravana(5), got '
                 '${TeluguCalendar.monthNumber(jd)} on $date');
       }
     });
@@ -150,11 +152,11 @@ void main() {
           reason: 'March 20 is Vidiya day — Ugadi must not appear here');
     });
 
-    test('Festivals in Adhika Vaisakha 2026 are suppressed', () {
+    test('Festivals in Adhika Jyeshtha 2026 are suppressed', () {
       // Akshaya Tritiya (Vaisakha Shukla 3) must NOT appear in the adhika period
       // (May 17 – Jun 15); it should appear only in Nija Vaisakha (Apr 17 – May 16).
-      // With the correct isAdhikaMaasa() logic, Nija Vaisakha comes BEFORE the
-      // adhika month, so Akshaya Tritiya falls in April (~Apr 20).
+      // Nija Vaisakha comes BEFORE the adhika month, so Akshaya Tritiya
+      // falls in April (~Apr 20).
       final festivals =
           FestivalCalculator.computeYear(2026, lat: _lat, lng: _lng);
       final aksharyas = festivals.entries
