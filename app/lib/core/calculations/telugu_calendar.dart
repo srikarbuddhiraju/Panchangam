@@ -1,4 +1,6 @@
+import 'julian_day.dart';
 import 'solar_position.dart';
+import 'tithi.dart';
 
 /// Telugu calendar context calculations.
 ///
@@ -60,29 +62,80 @@ class TeluguCalendar {
     'Sharad (Autumn)', 'Hemanta (Pre-Winter)', 'Shishira (Winter)',
   ];
 
+  // ── Amavasyant month calculation ─────────────────────────────────────────
+  //
+  // The Telugu (Amavasyant) month is named after the solar rashi in which the
+  // month-ending Amavasya falls.  The table is:
+  //   Amavasya in Mesha(0)     → Chaitra(1)
+  //   Amavasya in Vrishabha(1) → Vaisakha(2)
+  //   ... (rashi index + 1)
+  //   Amavasya in Meena(11)    → Phalguna(12)
+  //
+  // Adhika (leap) month: when two consecutive Amavasyas fall in the same rashi,
+  // the first ending month is Adhika (extra) and the second is Nija (regular).
+
+  /// Find the Julian Day of the new moon (exact conjunction, end of tithi 30).
+  ///
+  /// Scans in 0.4-day steps to locate any Amavasya period, then refines
+  /// to the precise new moon moment using the existing Tithi.endTime binary
+  /// search.  This gives a consistent reference independent of scan offset,
+  /// which matters when the new moon falls near a rashi boundary.
+  ///
+  /// [forward] = true  → next new moon at or after jd.
+  /// [forward] = false → previous new moon before jd.
+  static double _findAmavasyaJd(double jd, {required bool forward}) {
+    final int dir = forward ? 1 : -1;
+    double d = jd;
+
+    // If already in Amavasya (tithi 30):
+    //   forward  → refine to the new moon moment of this Amavasya
+    //   backward → skip past it so we find the previous one
+    if (Tithi.number(d) == 30) {
+      if (forward) {
+        return JulianDay.fromIST(Tithi.endTime(d));
+      }
+      d -= 2.5;
+    }
+
+    for (int i = 0; i < 80; i++) {
+      d += dir * 0.4;
+      if (Tithi.number(d) == 30) {
+        // Refine to the exact new moon moment (end of Amavasya)
+        return JulianDay.fromIST(Tithi.endTime(d));
+      }
+    }
+
+    return jd; // fallback — should never happen for valid input
+  }
+
   /// Compute the Telugu month number (1–12) for a given JD.
   ///
-  /// Telugu month follows the Amavasyant system (month = from the Amavasya
-  /// to the next Amavasya). The month is determined by Sun's sidereal longitude
-  /// at the time of Amavasya.
-  ///
-  /// Simplified approach: Use Sun's sidereal longitude to determine the
-  /// approximate solar month, then adjust by about 1 month.
+  /// Correct Amavasyant method: find the NEXT Amavasya and read the Sun's
+  /// sidereal rashi at that point.  Accurate for any date in the month,
+  /// including dates near Sankranti crossings where a solar approximation
+  /// would be off by one month.
   static int monthNumber(double jd) {
-    // Sun's sidereal longitude determines the solar month (0-11)
-    final double sunLon = SolarPosition.siderealLongitude(jd);
-    // Solar month: 0=Mesha (Aries), ..., 11=Meena (Pisces)
-    final int solarMonth = (sunLon / 30.0).floor();
+    final double nextAm = _findAmavasyaJd(jd, forward: true);
+    final int rashi =
+        (SolarPosition.siderealLongitude(nextAm) / 30.0).floor();
+    return rashi + 1; // 1-indexed: Mesha(0)→1, ..., Meena(11)→12
+  }
 
-    // Telugu lunar month lags by ~1 month behind the solar month
-    // Chaitra (1) corresponds to Sun in Mesha (Aries)
-    // Approximate: lunar month ≈ solarMonth (adjusted)
-    // The exact calculation requires knowing the current Amavasya position
-
-    // This simplified mapping gives a good-enough approximation for display.
-    // Exact calculation would require finding the current Amavasya anchor point.
-    final int lunarMonth = ((solarMonth + 1) % 12) + 1; // 1-indexed
-    return lunarMonth;
+  /// Returns true if the date falls in an Adhika (leap) lunar month.
+  ///
+  /// An Adhika Maasa occurs when the next TWO Amavasyas after a given date
+  /// both fall in the same solar rashi.  The current month (which ends at
+  /// the FIRST of those two Amavasyas) is the Adhika month; the following
+  /// month ending at the SECOND Amavasya is Nija (regular).
+  static bool isAdhikaMaasa(double jd) {
+    final double nextAm = _findAmavasyaJd(jd, forward: true);
+    // +2.0 days clears any overlap and lands firmly in Pratipada
+    final double nextNextAm = _findAmavasyaJd(nextAm + 2.0, forward: true);
+    final int rashi1 =
+        (SolarPosition.siderealLongitude(nextAm) / 30.0).floor();
+    final int rashi2 =
+        (SolarPosition.siderealLongitude(nextNextAm) / 30.0).floor();
+    return rashi1 == rashi2;
   }
 
   /// Compute Samvatsara for a given year of the Telugu calendar.
