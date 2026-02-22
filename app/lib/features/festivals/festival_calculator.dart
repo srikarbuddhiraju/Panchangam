@@ -98,28 +98,33 @@ class FestivalCalculator {
       // Amavasya in Krishna Paksha is tithi 15 (the 30th overall)
       // In festival_data.dart, Krishna Amavasya is stored as paksha=2, tithi=15
       if (tPaksha == festival.paksha && tWithinPaksha == festival.tithi) {
-        // Telugu month check (approximate — exact requires Amavasya anchor)
         if (festival.teluguMonth != null) {
+          // Festivals never fall in Adhika months
+          if (TeluguCalendar.isAdhikaMaasa(jdCheck)) return false;
           final int teluguMonth = TeluguCalendar.monthNumber(jdCheck);
           return teluguMonth == festival.teluguMonth;
         }
         return true;
       }
 
-      // ── Kshaya Tithi handling ─────────────────────────────────────────────
-      // A tithi so short it doesn't touch any sunrise is called kshaya.
-      // Classic case: Ugadi (Shukla Pratipada) sometimes runs from one
-      // evening to the next morning, never appearing at any sunrise.
-      // Rule: if today's sunrise is S2 and yesterday's sunrise was Amavasya,
-      // then Pratipada occurred in between — treat today as Pratipada day.
-      if (festival.paksha == 1 && festival.tithi == 1 && tNum == 2) {
-        final DateTime prevDate = date.subtract(const Duration(days: 1));
-        final List<DateTime> prevSun =
-            SunriseSunset.computeNOAA(prevDate, lat, lng);
-        final double prevJd = JulianDay.fromIST(prevSun[0]);
-        if (Tithi.number(prevJd) == 30) {
+      // ── Kshaya Pratipada handling ──────────────────────────────────────────
+      // When Pratipada is a kshaya tithi it doesn't appear at any sunrise.
+      // Traditional rule: Ugadi falls on the Amavasya day itself, because
+      // Pratipada BEGINS that same day (after sunrise) before the next day's
+      // sunrise arrives.
+      //
+      // Detection: today's sunrise = Amavasya(30) AND tomorrow's sunrise = Vidiya(2).
+      // We use tomorrow's JD for the month check — on the Amavasya day the
+      // month is still the old Phalguna (12), but tomorrow is firmly Chaitra (1).
+      if (festival.paksha == 1 && festival.tithi == 1 && tNum == 30) {
+        final DateTime nextDate = date.add(const Duration(days: 1));
+        final List<DateTime> nextSun =
+            SunriseSunset.computeNOAA(nextDate, lat, lng);
+        final double nextJd = JulianDay.fromIST(nextSun[0]);
+        if (Tithi.number(nextJd) == 2) {
           if (festival.teluguMonth != null) {
-            return TeluguCalendar.monthNumber(jdCheck) == festival.teluguMonth;
+            if (TeluguCalendar.isAdhikaMaasa(nextJd)) return false;
+            return TeluguCalendar.monthNumber(nextJd) == festival.teluguMonth;
           }
           return true;
         }

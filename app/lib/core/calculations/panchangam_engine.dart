@@ -85,6 +85,7 @@ class PanchangamEngine {
     final int rashiNum = Rashi.number(jdSunrise);
     final int shakaYr = TeluguCalendar.shakaYear(date);
     final int teluguMonthNum = TeluguCalendar.monthNumber(jdSunrise);
+    final bool isAdhika = TeluguCalendar.isAdhikaMaasa(jdSunrise);
     final int rituNum = TeluguCalendar.rituNumber(teluguMonthNum);
 
     // ── Assemble & return ─────────────────────────────────────────────────
@@ -152,8 +153,13 @@ class PanchangamEngine {
       amritKalamEnd: amritTimes[1],
 
       // Calendar context
-      teluguMonthTe: TeluguCalendar.monthNamesTe[teluguMonthNum - 1],
-      teluguMonthEn: TeluguCalendar.monthNamesEn[teluguMonthNum - 1],
+      isAdhikaMaasa: isAdhika,
+      teluguMonthTe: isAdhika
+          ? 'అధిక ${TeluguCalendar.monthNamesTe[teluguMonthNum - 1]}'
+          : TeluguCalendar.monthNamesTe[teluguMonthNum - 1],
+      teluguMonthEn: isAdhika
+          ? 'Adhika ${TeluguCalendar.monthNamesEn[teluguMonthNum - 1]}'
+          : TeluguCalendar.monthNamesEn[teluguMonthNum - 1],
       teluguMonthNumber: teluguMonthNum,
       samvatsaraTe: TeluguCalendar.samvatsaraTe(shakaYr),
       samvatsaraEn: TeluguCalendar.samvatsaraEn(shakaYr),
@@ -231,6 +237,7 @@ class PanchangamData {
   final DateTime amritKalamEnd;
 
   // ── Calendar Context ──────────────────────────────────────────────────────
+  final bool isAdhikaMaasa;
   final String teluguMonthTe;
   final String teluguMonthEn;
   final int teluguMonthNumber;
@@ -291,6 +298,7 @@ class PanchangamData {
     required this.durMuhurtaEnd,
     required this.amritKalamStart,
     required this.amritKalamEnd,
+    required this.isAdhikaMaasa,
     required this.teluguMonthTe,
     required this.teluguMonthEn,
     required this.teluguMonthNumber,

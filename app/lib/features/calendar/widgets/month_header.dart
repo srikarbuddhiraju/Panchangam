@@ -24,8 +24,10 @@ class MonthHeader extends ConsumerWidget {
       displayed.year, displayed.month, 15, 6, 0, 0,
     );
     final int monthNum = TeluguCalendar.monthNumber(jdMid);
+    final bool isAdhika = TeluguCalendar.isAdhikaMaasa(jdMid);
+    final String baseMonthTe = TeluguCalendar.monthNamesTe[monthNum - 1];
     final String teluguMonthTe =
-        TeluguCalendar.monthNamesTe[monthNum - 1];
+        isAdhika ? 'అధిక $baseMonthTe' : baseMonthTe;
     final String samvatsara = TeluguCalendar.samvatsaraTe(shakaYr);
 
     final String gregorianLabel =
