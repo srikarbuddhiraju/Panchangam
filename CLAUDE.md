@@ -14,6 +14,7 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 3. **Robust** — handle errors gracefully, strong typing, no silent failures
 4. **Secure** — no hardcoded secrets, validate inputs, follow platform security guidelines
 5. **Light** — minimize dependencies, avoid bloat, optimize for performance
+6. **Accurate** — calculations MUST NOT compromise on precision. Use the highest-precision astronomical formulae available. Never accept known inaccuracies in core Panchangam calculations (tithi, nakshatra, solar position, etc.). Accuracy beats simplicity when it comes to the math.
 
 ## Tech Decisions (settled, do not re-question)
 - Flutter + Dart for all platforms
