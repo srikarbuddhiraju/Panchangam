@@ -82,7 +82,18 @@ class _FestivalEntryState extends State<_FestivalEntry> {
                 : null,
             child: Row(
               children: [
-                const Text('✦ ', style: TextStyle(color: AppTheme.kFestivalAmber, fontSize: 12)),
+                f.icon != null
+                    ? Text(
+                        '${f.icon} ',
+                        style: const TextStyle(fontSize: 16),
+                      )
+                    : const Text(
+                        '✦ ',
+                        style: TextStyle(
+                          color: AppTheme.kFestivalAmber,
+                          fontSize: 12,
+                        ),
+                      ),
                 Expanded(
                   child: Text(
                     name,

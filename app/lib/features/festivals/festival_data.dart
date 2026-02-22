@@ -20,6 +20,10 @@ class Festival {
   /// Short description explaining significance (Purana / Itihasa / astronomical).
   final String descriptionEn;
 
+  /// Optional Unicode symbol shown as the festival's icon in the UI.
+  /// When null the default ✦ bullet is shown.
+  final String? icon;
+
   const Festival({
     required this.nameTe,
     required this.nameEn,
@@ -31,6 +35,7 @@ class Festival {
     this.gregorianDay,
     this.observedAtNight = false,
     this.descriptionEn = '',
+    this.icon,
   });
 }
 
@@ -431,6 +436,38 @@ class FestivalData {
           'this unintentional act of devotion. Four praharas (night-watches) of '
           'puja are performed, with complete fasting and night vigil.',
     ),
+    // ── Monthly recurring observances (no teluguMonth restriction) ───────────
+    Festival(
+      nameTe: 'సంకటహర చతుర్థి',
+      nameEn: 'Sankatahara Chaturthi',
+      type: FestivalType.tithi,
+      paksha: 2,
+      tithi: 4,
+      icon: '🐘',
+      descriptionEn:
+          'Monthly fast observed on Krishna Paksha Chaturthi in honour of Lord '
+          'Ganesha, remover of obstacles (Sankata = trouble, Hara = remover). '
+          'Per the Ganesha Purana, devotees who fast through the day and break '
+          'fast after moonrise obtain relief from all difficulties. The annual '
+          'Vinayaka Chaturthi in Bhadrapada is the most celebrated among these.',
+    ),
+    Festival(
+      nameTe: 'మాస శివరాత్రి',
+      nameEn: 'Masa Shivaratri',
+      type: FestivalType.tithi,
+      paksha: 2,
+      tithi: 14,
+      observedAtNight: true,
+      icon: '🔱',
+      descriptionEn:
+          'Monthly night vigil on Krishna Paksha Chaturdashi dedicated to Lord '
+          'Shiva. Per the Shiva Purana, the Chaturdashi Tithi at Pradosha (dusk) '
+          'and through the night is Shiva\'s most beloved time — the Lord is said '
+          'to be in a state of divine bliss (Ananda Tandava). Observed with '
+          'fasting, Abhisheka, and Jagaranam (all-night vigil). The annual Maha '
+          'Shivaratri in Magha is the paramount observance among these twelve.',
+    ),
+
     // ── Phalguna (Month 12) ───────────────────────────────────────────────
     Festival(
       nameTe: 'హోలీ',

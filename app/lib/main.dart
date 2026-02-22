@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/theme.dart';
 import 'app/routes.dart';
+import 'app/splash_overlay.dart';
 import 'core/city_lookup/city_lookup.dart';
 import 'core/utils/hive_keys.dart';
 import 'features/settings/settings_provider.dart';
@@ -31,7 +32,9 @@ Future<void> main() async {
 
   runApp(
     const ProviderScope(
-      child: PanchangamApp(),
+      child: SplashOverlay(
+        child: PanchangamApp(),
+      ),
     ),
   );
 }
