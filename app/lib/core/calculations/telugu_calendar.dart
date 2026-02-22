@@ -123,18 +123,25 @@ class TeluguCalendar {
 
   /// Returns true if the date falls in an Adhika (leap) lunar month.
   ///
-  /// An Adhika Maasa occurs when the next TWO Amavasyas after a given date
-  /// both fall in the same solar rashi.  The current month (which ends at
-  /// the FIRST of those two Amavasyas) is the Adhika month; the following
-  /// month ending at the SECOND Amavasya is Nija (regular).
+  /// Traditional rule: a lunar month is Adhika when the sun does NOT change
+  /// rashi during that month — i.e., the month begins and ends in the same
+  /// solar rashi (no Sankranti inside).  Equivalently, the Amavasya that
+  /// STARTED this month and the Amavasya that ENDS it both have the sun in
+  /// the same rashi.
+  ///
+  /// Implementation: check the PREVIOUS Amavasya (prevAm) and the NEXT
+  /// Amavasya (nextAm) around the given date.  If they are in the same
+  /// rashi, the current month (prevAm → nextAm) is Adhika.
+  ///
+  /// Note: some sources use "next two Amavasyas same rashi → first period is
+  /// Adhika" — that rule marks the WRONG month (one lunation too early).
   static bool isAdhikaMaasa(double jd) {
     final double nextAm = _findAmavasyaJd(jd, forward: true);
-    // +2.0 days clears any overlap and lands firmly in Pratipada
-    final double nextNextAm = _findAmavasyaJd(nextAm + 2.0, forward: true);
+    final double prevAm = _findAmavasyaJd(jd, forward: false);
     final int rashi1 =
-        (SolarPosition.siderealLongitude(nextAm) / 30.0).floor();
+        (SolarPosition.siderealLongitude(prevAm) / 30.0).floor();
     final int rashi2 =
-        (SolarPosition.siderealLongitude(nextNextAm) / 30.0).floor();
+        (SolarPosition.siderealLongitude(nextAm) / 30.0).floor();
     return rashi1 == rashi2;
   }
 

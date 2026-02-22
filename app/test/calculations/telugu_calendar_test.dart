@@ -55,8 +55,11 @@ void main() {
 
   // ── isAdhikaMaasa() ───────────────────────────────────────────────────────
   group('isAdhikaMaasa', () {
-    test('2026 has exactly one adhika period (Adhika Vaisakha ≈ Apr–May)', () {
+    test('2026 has exactly one adhika period (Adhika Vaisakha ≈ May–Jun)', () {
       // Two consecutive new moons fall in Vrishabha in 2026 → Adhika Vaisakha.
+      // Adhika period: May 17 – Jun 15 (the month with no Sankranti inside it).
+      // Nija Vaisakha is the preceding month (Apr 17 – May 16) which contains
+      // the Vrishabha Sankranti around May 14–15.
       final adhikaDays = <DateTime>[];
       for (int doy = 0; doy < 365; doy += 1) {
         final date = DateTime(2026, 1, 1).add(Duration(days: doy));
@@ -77,11 +80,13 @@ void main() {
       }
     });
 
-    test('2023 has exactly one adhika period (Adhika Ashadha ≈ Jun–Jul)', () {
-      // Jul 17 Amavasya: sun at 90.7° sidereal (just into Karka/Cancer).
+    test('2023 has exactly one adhika period (Adhika Ashadha ≈ Jul–Aug)', () {
+      // Jul 17 Amavasya: sun at 90.7° sidereal (Karka/Cancer).
       // Aug 16 Amavasya: sun at 119.1° sidereal (still Karka).
-      // Both consecutive new moons fall in Karka → Adhika Ashadha (month 4).
-      // Period: ~Jun 19 – Jul 17 2023.
+      // Both Amavasyas fall in Karka → Adhika Ashadha (month 4).
+      // Adhika period: Jul 17 – Aug 16 (the month with no Sankranti inside it).
+      // The preceding month Jun 19 – Jul 17 contains the Karka Sankranti (~Jul 16)
+      // so it is the Nija Ashadha (regular month).
       // Note: some external calendars label this "Adhika Shravana" using a
       // slightly different ayanamsha that places Jul 17 at <90° (Mithuna).
       // Our Lahiri-based calculation consistently returns month 4 (Ashadha).
@@ -146,8 +151,10 @@ void main() {
     });
 
     test('Festivals in Adhika Vaisakha 2026 are suppressed', () {
-      // Akshaya Tritiya (Vaisakha Shukla 3) must NOT appear in the adhika period;
-      // it should appear only in Nija Vaisakha.
+      // Akshaya Tritiya (Vaisakha Shukla 3) must NOT appear in the adhika period
+      // (May 17 – Jun 15); it should appear only in Nija Vaisakha (Apr 17 – May 16).
+      // With the correct isAdhikaMaasa() logic, Nija Vaisakha comes BEFORE the
+      // adhika month, so Akshaya Tritiya falls in April (~Apr 20).
       final festivals =
           FestivalCalculator.computeYear(2026, lat: _lat, lng: _lng);
       final aksharyas = festivals.entries
@@ -157,12 +164,12 @@ void main() {
       expect(aksharyas.length, equals(1),
           reason: 'Akshaya Tritiya should appear exactly once (in Nija Vaisakha)');
 
-      // The Nija Vaisakha Akshaya Tritiya should be in June (after the adhika month)
-      // approximately.  At minimum, it must not fall in April (the adhika period).
+      // Nija Vaisakha is Apr 17 – May 16, so Akshaya Tritiya must be in April.
+      // It must NOT fall in May 17 – Jun 15 (the Adhika Vaisakha period).
       final akshDate = aksharyas.first.key;
-      expect(akshDate.month, isNot(equals(4)),
+      expect(akshDate.month, equals(4),
           reason:
-              'Akshaya Tritiya must be in Nija Vaisakha (not Adhika Vaisakha in April). '
+              'Akshaya Tritiya must be in Nija Vaisakha (April). '
               'Got $akshDate');
     });
   });
