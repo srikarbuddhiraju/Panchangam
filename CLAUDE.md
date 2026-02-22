@@ -38,7 +38,7 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - Use subagents liberally to keep main context window clean
 - Offload research, exploration, and parallel analysis to subagents
 - For complex problems, throw more compute at it via subagents
-- One tack per subagent for focused execution
+- One task per subagent for focused execution
 ### 3. Self-Improvement Loop
 - After ANY correction from the user: update "docs/lessons.md" with the pattern
 - Write rules for yourself that prevent the same mistake
