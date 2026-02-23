@@ -99,6 +99,11 @@ const List<int?> ghatiTable = [
 - Root cause: likely a provider initialization timing issue (data not ready when grid first renders).
 - Fix needed before release.
 
+### Improper festivals - Rectify calculations immediately
+- The last Vaikunta Ekadashi fell on 30th December 2025, in our app it shows 1st December, rectify it.
+- Same as above point, Diwali fell in December, which is wrong.
+- Re-validate all Grahanam timings, check sub timings, AM PM inconsistencies. 
+
 ### MVP Checklist Session
 - After Amrit Kalam verified: sit down with Srikar and review full MVP checklist together.
 - Includes: dark mode validation, Family tab decision, Play Store account, UX refinement session.
