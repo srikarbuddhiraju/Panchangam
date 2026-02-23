@@ -78,8 +78,8 @@ class PanchangamEngine {
         Muhurtha.abhijit(varaNum, sunrise, sunset);
     final List<List<DateTime>> durTimes =
         Muhurtha.durMuhurta(varaNum, sunrise, sunset);
-    final List<DateTime> amritTimes =
-        Muhurtha.amritKalam(nakshatraNum, sunrise, sunset);
+    final List<DateTime>? amritTimes =
+        Muhurtha.amritKalam(nakshatraNum, sunrise);
 
     // ── Calendar Context ──────────────────────────────────────────────────
     final int rashiNum = Rashi.number(jdSunrise);
@@ -149,8 +149,8 @@ class PanchangamEngine {
       abhijitValid: abhijitTimes != null,
       durMuhurtaStart: durTimes[0][0],
       durMuhurtaEnd: durTimes[0][1],
-      amritKalamStart: amritTimes[0],
-      amritKalamEnd: amritTimes[1],
+      amritKalamStart: amritTimes?[0],
+      amritKalamEnd: amritTimes?[1],
 
       // Calendar context
       isAdhikaMaasa: isAdhika,
@@ -233,8 +233,8 @@ class PanchangamData {
   final bool abhijitValid;
   final DateTime durMuhurtaStart;
   final DateTime durMuhurtaEnd;
-  final DateTime amritKalamStart;
-  final DateTime amritKalamEnd;
+  final DateTime? amritKalamStart;
+  final DateTime? amritKalamEnd;
 
   // ── Calendar Context ──────────────────────────────────────────────────────
   final bool isAdhikaMaasa;
@@ -296,8 +296,8 @@ class PanchangamData {
     required this.abhijitValid,
     required this.durMuhurtaStart,
     required this.durMuhurtaEnd,
-    required this.amritKalamStart,
-    required this.amritKalamEnd,
+    this.amritKalamStart,
+    this.amritKalamEnd,
     required this.isAdhikaMaasa,
     required this.teluguMonthTe,
     required this.teluguMonthEn,

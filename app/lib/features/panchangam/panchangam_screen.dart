@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../core/utils/app_strings.dart';
-import '../../app/theme.dart';
 import '../settings/settings_provider.dart';
 import 'panchangam_provider.dart';
 import 'widgets/five_limbs_card.dart';
@@ -15,6 +14,7 @@ import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
 import '../festivals/festival_provider.dart';
 import 'widgets/festival_card.dart';
+import 'widgets/date_header_card.dart';
 
 /// Full-screen Panchangam detail view for a single date.
 class PanchangamScreen extends ConsumerWidget {
@@ -94,7 +94,7 @@ class _PanchangamContent extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       children: [
         // ── Date header ───────────────────────────────────────────────────
-        _DateHeader(data: data, use24h: use24h),
+        DateHeaderCard(data: data),
         const SizedBox(height: 12),
 
         // ── Eclipse alert (shown only on eclipse days) ────────────────────
@@ -133,60 +133,3 @@ class _PanchangamContent extends ConsumerWidget {
   }
 }
 
-class _DateHeader extends StatelessWidget {
-  final PanchangamData data;
-  final bool use24h;
-
-  const _DateHeader({required this.data, required this.use24h});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.kSaffron.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.kSaffron.withValues(alpha: 0.3),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  S.isTelugu ? data.varaNameTe : data.varaNameEn,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.kSaffron,
-                      ),
-                ),
-                Text(
-                  S.isTelugu
-                      ? '${data.pakshaTe} · ${data.tithiNameTe}'
-                      : '${data.paksha} Paksha · ${data.tithiNameEn}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                S.isTelugu ? data.teluguMonthTe : data.teluguMonthEn,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              Text(
-                S.isTelugu ? data.samvatsaraTe : data.samvatsaraEn,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}

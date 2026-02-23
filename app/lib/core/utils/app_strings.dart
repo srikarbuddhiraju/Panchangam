@@ -77,4 +77,5 @@ class S {
   // ── Today label ───────────────────────────────────────────────────────────
   static String get today => isTelugu ? 'నేడు' : 'Today';
   static String get notAvailable => isTelugu ? 'లేదు' : 'N/A';
+  static String get notApplicable => isTelugu ? 'వర్తించదు' : 'Not applicable';
 }
