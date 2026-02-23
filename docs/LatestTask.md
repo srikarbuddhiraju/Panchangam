@@ -81,13 +81,27 @@ const List<int?> ghatiTable = [
 
 ---
 
-## To Do For Next Session
+## To Do For Next Session (MVP Checklist)
 
-1. **Verify full ghati table** — read more daily entries from Sringeri Panchangam PDF (`docs/Ref Panchangam/`) for each nakshatra. Cross-check all 27 values, not just Ardra/Mula.
-2. **Bharani re-check** — our code gives 12:14 PM for Feb 23, Sringeri shows ~12:47 PM. Bharani ghati is likely 15–16, not 14. Find a Bharani day in the PDF and read the exact amrit time.
-3. **Mula re-check** — ghati=4 estimated from one data point (Jan 13). Find another Mula day in the PDF to confirm.
-4. **After table correction** — rebuild APK + push to phone, Srikar spot-checks on device.
-5. **Tests** — run `dart test` after any table change to ensure no regressions.
+### Amrit Kalam (current task)
+1. **Verify full ghati table** — ask Srikar for specific page numbers in Sringeri/TTD PDFs for each nakshatra. Do NOT read full PDF. Source priority: Sringeri (1st) → TTD (2nd) → DrikPanchang (3rd).
+2. **Bharani re-check** — our code: 12:14 PM, expected ~12:47 PM. Bharani ghati likely 15–16, not 14. Ask for page with a Bharani day entry.
+3. **Mula re-check** — ghati=4 estimated from one data point (Jan 13). Ask for another Mula day entry to confirm.
+4. **After table correction** — run `dart test`, rebuild APK, push to phone, Srikar spot-checks.
+
+### Sringeri Disclaimer (new task)
+- Add a note/disclaimer in the app: "Calculations based on Sringeri Panchangam, the authoritative traditional source supervised by the Sringeri Matha."
+- Discuss with Srikar where to place it (Settings screen? About section? Footer on Panchangam screen?).
+
+### Known Bug — Festival/Eclipse Not Loading on Launch
+- Festivals and eclipse highlights do not appear on the calendar landing page at app launch.
+- User must navigate to next/previous month first, then they appear.
+- Root cause: likely a provider initialization timing issue (data not ready when grid first renders).
+- Fix needed before release.
+
+### MVP Checklist Session
+- After Amrit Kalam verified: sit down with Srikar and review full MVP checklist together.
+- Includes: dark mode validation, Family tab decision, Play Store account, UX refinement session.
 
 ---
 
