@@ -27,6 +27,12 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - Keep files small and focused (single responsibility)
 - Use feature-based folder structure inside `lib/`
 - **Use tokens strategically** — prefer MCP server tools (dart, android-adb) over reading large files; use targeted Grep/Glob over broad reads; avoid re-reading files already in context
+- **No web searches for reference data** — if you need external info (tables, specs, API docs), ask Srikar to fetch and paste it. Do not use WebSearch for this — it burns tokens and often fails.
+
+## Session Start Checklist
+At the start of EVERY new session, read these files before doing anything else:
+1. `docs/ConvoQAClaude.md` — past decisions and open questions from Srikar
+2. `docs/lessons.md` — mistakes made and rules to avoid repeating them
 
 ## Workflow Orchestration
 ### 1. Plan Node Default
@@ -66,7 +72,8 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 3. **Track Progress**: Mark items complete as you go
 4. **Explain Changes**: High-level summary at each step
 5. **Document Results**: Add review section to "docs/todo.md"
-6. **Capture Lessons**: Update "tasks/lessons.md" after corrections
+6. **Capture Lessons**: Update "docs/lessons.md" after corrections
+7. **LatestTask.md**: During any active work session, update `docs/LatestTask.md` every ~5 minutes with current status, what was done, what is pending, and any key findings. This is the handoff doc for the next session.
 
 ## Core Principles
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.

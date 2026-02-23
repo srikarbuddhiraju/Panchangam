@@ -57,7 +57,8 @@ class MuhurthaCard extends StatelessWidget {
               label: S.amritKalam,
               start: data.amritKalamStart,
               end: data.amritKalamEnd,
-              valid: true,
+              valid: data.amritKalamStart != null,
+              invalidMessage: S.notApplicable,
               color: AppTheme.kAuspiciousGreen,
               icon: Icons.water_drop,
               use24h: use24h,
@@ -74,6 +75,7 @@ class _MuhurthaRow extends StatelessWidget {
   final DateTime? start;
   final DateTime? end;
   final bool valid;
+  final String? invalidMessage;
   final Color color;
   final IconData icon;
   final bool use24h;
@@ -83,6 +85,7 @@ class _MuhurthaRow extends StatelessWidget {
     required this.start,
     required this.end,
     required this.valid,
+    this.invalidMessage,
     required this.color,
     required this.icon,
     required this.use24h,
@@ -94,7 +97,7 @@ class _MuhurthaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String timeStr = !valid
-        ? (S.isTelugu ? 'బుధవారం వర్తించదు' : 'Not valid on Wednesday')
+        ? (invalidMessage ?? (S.isTelugu ? 'బుధవారం వర్తించదు' : 'Not valid on Wednesday'))
         : (start != null && end != null)
             ? '${_fmt(start!)} – ${_fmt(end!)}'
             : S.notAvailable;

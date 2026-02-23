@@ -227,4 +227,85 @@
       </root>
     </mxGraphModel>
   </diagram>
+
+  <diagram id="release-plan-conventions" name="Release Plan &amp; Working Conventions">
+    <mxGraphModel dx="1000" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="0" arrows="0" fold="1" page="0" pageScale="1" pageWidth="1000" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="rp0" />
+        <mxCell id="rp1" parent="rp0" />
+
+        <!-- ═══ TITLE ═══ -->
+        <mxCell id="rp_title" value="Release Plan &amp; Working Conventions"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══ RELEASE TARGET ═══ -->
+        <mxCell id="rp_target" value="🎯  TARGET: First week of March 2026 — full release if all blockers resolved, MVP release otherwise"
+          style="text;html=1;strokeColor=#b85450;fillColor=#f8cecc;rounded=1;align=center;fontSize=12;fontStyle=1;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="70" width="700" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ═══ MVP BLOCKERS ═══ -->
+        <mxCell id="rp_mvp" value="🚨  MVP Blockers — must resolve before any release"
+          style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="120" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_mvp1" value="→ App icon (custom 1024×1024 PNG — no default Flutter icon)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_mvp"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_mvp2" value="→ Splash screen (branded — matches icon)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_mvp"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_mvp3" value="→ Family tab decision: hide entirely OR show 'Coming Soon' placeholder" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_mvp"><mxGeometry x="10" y="75" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_mvp4" value="→ Play Store listing: developer account, title, description (EN + TE), screenshots, privacy policy" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_mvp"><mxGeometry x="10" y="95" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_mvp5" value="→ Internal testing pass: 5+ users, varied devices, verified against DrikPanchang" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_mvp"><mxGeometry x="10" y="115" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ KNOWN ACCURACY GAPS ═══ -->
+        <mxCell id="rp_acc" value="⚠️  Known Accuracy Gaps — fix before full release"
+          style="swimlane;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="285" width="700" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_acc1" value="• Amruthakalam is approximate (muhurtha.dart:67 — horaOffsets table, comment says 'For exact values a full hora table is needed')" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_acc"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_acc2" value="• Durmuhurtha/Amruthakalam overlap on Wed Mar 4 — mathematically valid (independent systems) but validate vs DrikPanchang" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_acc"><mxGeometry x="10" y="55" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ DO WITHOUT CLAUDE ═══ -->
+        <mxCell id="rp_solo" value="🙌  Srikar Can Do Without Claude"
+          style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="375" width="700" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_solo1" value="App Store Prep" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo2" value="  • Design app icon (Canva / Figma / Adobe Express — 1024×1024 PNG, no alpha, no transparency at edges)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="53" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo3" value="  • Set up Google Play Developer account ($25 one-time) at play.google.com/console" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="71" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo4" value="  • Write store listing: title (≤30 chars), short desc (≤80 chars), full desc (≤4000 chars) in English + Telugu" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="89" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo5" value="  • Write privacy policy (privacypolicygenerator.info — free, takes 5 min)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="107" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo6" value="  • Take 5–8 Play Store screenshots manually from device (Settings → Developer options → screenshot)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="125" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo7" value="Testing" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="148" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo8" value="  • Verify 10+ dates against DrikPanchang (tithi, nakshatra, kalams, muhurthas — including Amavasya, Purnima, festivals)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="166" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_solo9" value="  • Test on 2+ Android devices; test language toggle, location change, time format" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_solo"><mxGeometry x="10" y="184" width="680" height="20" as="geometry" /></mxCell>
+
+        <!-- ═══ CLAUDE WORKING CONVENTIONS ═══ -->
+        <mxCell id="rp_claude" value="🤖  Claude Working Conventions (as of Feb 2026)"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;"
+          vertex="1" parent="rp1">
+          <mxGeometry x="40" y="605" width="700" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_c1" value="Workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="35" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c2" value="  1. Plan First — enter plan mode for any non-trivial task (3+ steps); write plan to docs/todo.md" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="53" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c3" value="  2. Verify Plan — check in with user before implementation starts" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="71" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c4" value="  3. Track Progress — mark items complete as work progresses" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="89" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c5" value="  4. Verify Before Done — never mark complete without proving it works; run tests, check logs" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="107" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c6" value="  5. Demand Elegance — for non-trivial changes, ask 'is there a more elegant way?' before presenting" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="125" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c7" value="  6. Autonomous Bug Fixing — given a bug, just fix it; no hand-holding needed" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="143" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c8" value="  7. Capture Lessons — after any correction from user, update docs/lessons.md" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="161" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c9" value="Subagent Strategy" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="190" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c10" value="  • Use subagents liberally — keep main context window clean; offload research, exploration, parallel analysis" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="208" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c11" value="  • One focused task per subagent; for complex problems throw more compute via subagents" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="226" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c12" value="Self-Improvement" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="250" width="680" height="20" as="geometry" /></mxCell>
+        <mxCell id="rp_c13" value="  • docs/lessons.md — running log of mistakes, corrections, patterns; review at start of each session" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" vertex="1" parent="rp_claude"><mxGeometry x="10" y="250" width="680" height="20" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>

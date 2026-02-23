@@ -15,6 +15,7 @@ import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
 import '../festivals/festival_provider.dart';
 import '../panchangam/widgets/festival_card.dart';
+import '../panchangam/widgets/date_header_card.dart';
 
 /// The day currently shown in the Today tab (starts at today, navigable).
 final todayTabDateProvider = StateProvider<DateTime>((ref) {
@@ -148,6 +149,8 @@ class _TodayContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
+        DateHeaderCard(data: data),
+        const SizedBox(height: 12),
         if (eclipse != null) ...[
           EclipseCard(eclipse: eclipse),
           const SizedBox(height: 8),
