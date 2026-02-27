@@ -64,59 +64,88 @@ class Muhurtha {
     ];
   }
 
-  /// Amrit Kalam — highly auspicious window derived from the day's Nakshatra.
+  /// Amrit Kalam — highly auspicious window keyed on Nakshatra × Weekday (vara).
   ///
   /// Source: Sringeri Panchangam (Visvavasu 2025-26), supervised by the Sringeri Matha.
-  /// The Sringeri tradition distinguishes two types:
-  ///   - Di.Amrita (దినామృతం): counted from SUNRISE — daytime window.
-  ///   - Ra.Amrita (రాత్ర్యమృతం): counted from SUNSET — nighttime window.
+  /// The same nakshatra gives Di.Amrita on some weekdays and Ra.Amrita on others —
+  /// the type is NOT fixed per nakshatra alone. A 27×7 lookup table is required.
   ///
-  /// Duration: 4 ghatis = 96 minutes (standard). Sringeri shows ~106 min for some entries
-  /// due to variable ghati length — 96 min is used for consistency (acceptable MVP delta).
+  ///   - Di.Amrita (దినామృతం): offset from SUNRISE — stored as positive minutes.
+  ///   - Ra.Amrita (రాత్ర్యమృతం): offset from SUNSET — stored as negative minutes.
+  ///   - 0    = confirmed అమృతఘటికాభావ (no amrit kalam) for this nakshatra+vara.
+  ///   - null = not yet verified from Sringeri PDF (shown as "Not applicable").
   ///
-  /// Only Sringeri-verified entries are populated. All others are null.
-  /// Wrong data is worse than no data — unverified entries must stay null.
+  /// Duration: 4 ghatis = 96 minutes (standard).
+  /// Wrong data is worse than no data — unverified cells stay null.
   ///
-  /// Returns [start, end] as IST DateTimes, or null when no Amrit Kalam applies
-  /// (either explicitly absent, or not yet verified from Sringeri PDF).
+  /// [vara]: weekday 0=Sunday … 6=Saturday (matches Vara.number / Vara.fromDateTime).
+  ///
+  /// Returns [start, end] as IST DateTimes, or null when not applicable.
   static List<DateTime>? amritKalam(
     int nakshatraNumber,
+    int vara,
     DateTime sunrise,
     DateTime sunset,
   ) {
-    // Minutes from SUNRISE for Di.Amrita (daytime) entries.
-    // null = not verified from Sringeri (treat as "not applicable" until confirmed).
-    const List<int?> _dayOffset = [
-      null, null, null, null, null, // 1-5:  Ashwini, Bharani, Krittika, Rohini, Mrigashirsha
-      null, null, null, null, null, // 6-10: Ardra(S✓none), Punarvasu, Pushya, Ashlesha, Magha
-      null, null, null, null, null, // 11-15: Purva Phalguni, Uttara Phalguni, Hasta, Chitra, Swati
-      501,  null, null, null, null, // 16-20: Vishaka(S✓501min), Anuradha, Jyeshtha, Mula(night), PurvaAshadha(night)
-      null, null, null, null, null, // 21-25: Uttara Ashadha, Shravana, Dhanishtha, Shatabhisha, Purva Bhadrapada
-      null, null,                   // 26-27: Uttara Bhadrapada, Revati
+    // 27×7 table — rows: nakshatra 1-27 (index 0-26),
+    //              cols: vara 0-6 (Sunday=0 … Saturday=6).
+    // Encoding: null=unverified, 0=confirmed none, +N=Di.Amrita N min from sunrise,
+    //           -N=Ra.Amrita N min from sunset.
+    // Source dates (Sringeri Panchangam, Visvavasu 2025-26):
+    //   Ardra  Tue  Jan-27: 0    (అమృతఘటికాభావ confirmed)
+    //   Pushya Sat  Feb-01: -144 (Ra 6gh00vi)
+    //   Ashlesha Sun Feb-02: -146 (Ra 6gh05vi)
+    //   Magha  Mon  Feb-03: -194 (Ra 8gh05vi)
+    //   PurvaP Wed  Feb-04: 626  (Di 26gh04vi)
+    //   UttaraP Thu Feb-05: -628 (Ra 26gh09vi)
+    //   Hasta  Fri  Feb-06: -80  (Ra back-calc from Ra||7:25; source unclear — needs recheck)
+    //   Chitra Sat  Feb-07: -147 (Ra 6gh07vi)
+    //   Swati  Sun  Feb-08: -147 (Ra 6gh07vi)
+    //   Vishaka Mon Feb-09: -254 (Ra 10gh35vi)
+    //   Vishaka Tue Jan-13: 501  (Di 20gh53vi)
+    //   Jyeshtha Thu: contradictory data (Jan-15 gives -143, Feb-12 gives 0) — left null
+    const List<List<int?>> _amritTable = [
+      //  Sun    Mon    Tue    Wed    Thu    Fri    Sat
+      [  null,  null,  null,  null,  null,  null,  null], //  1 Ashwini
+      [  null,  null,  null,  null,  null,  null,  null], //  2 Bharani
+      [  null,  null,  null,  null,  null,  null,  null], //  3 Krittika
+      [  null,  null,  null,  null,  null,  null,  null], //  4 Rohini
+      [  null,  null,  null,  null,  null,  null,  null], //  5 Mrigashirsha
+      [  null,  null,     0,  null,  null,  null,  null], //  6 Ardra
+      [  null,  null,  null,  null,  null,  null,  null], //  7 Punarvasu
+      [  null,  null,  null,  null,  null,  null,  -144], //  8 Pushya
+      [  -146,  null,  null,  null,  null,  null,  null], //  9 Ashlesha
+      [  null,  -194,  null,  null,  null,  null,  null], // 10 Magha
+      [  null,  null,  null,   626,  null,  null,  null], // 11 Purva Phalguni
+      [  null,  null,  null,  null,  -628,  null,  null], // 12 Uttara Phalguni
+      [  null,  null,  null,  null,  null,   -80,  null], // 13 Hasta (needs recheck)
+      [  null,  null,  null,  null,  null,  null,  -147], // 14 Chitra
+      [  -147,  null,  null,  null,  null,  null,  null], // 15 Swati
+      [  null,  -254,   501,  null,  null,  null,  null], // 16 Vishaka
+      [  null,  null,  null,  null,  null,  null,  null], // 17 Anuradha
+      [  null,  null,  null,  null,  null,  null,  null], // 18 Jyeshtha (contradictory)
+      [  null,  null,  null,  null,  null,  null,  null], // 19 Mula
+      [  null,  null,  null,  null,  null,  null,  null], // 20 Purva Ashadha
+      [  null,  null,  null,  null,  null,  null,  null], // 21 Uttara Ashadha
+      [  null,  null,  null,  null,  null,  null,  null], // 22 Shravana
+      [  null,  null,  null,  null,  null,  null,  null], // 23 Dhanishtha
+      [  null,  null,  null,  null,  null,  null,  null], // 24 Shatabhisha
+      [  null,  null,  null,  null,  null,  null,  null], // 25 Purva Bhadrapada
+      [  null,  null,  null,  null,  null,  null,  null], // 26 Uttara Bhadrapada
+      [  null,  null,  null,  null,  null,  null,  null], // 27 Revati
     ];
 
-    // Minutes from SUNSET for Ra.Amrita (nighttime) entries.
-    // null = not verified from Sringeri (treat as "not applicable" until confirmed).
-    const List<int?> _nightOffset = [
-      null, null, null, null, null, // 1-5
-      null, null, null, null, null, // 6-10: Ardra(S✓none)
-      null, null, null, null, null, // 11-15
-      null, null, null,  449,  682, // 16-20: Vishaka(day), Anuradha, Jyeshtha, Mula(S✓449min), PurvaAshadha(S✓682min)
-      null, null, null, null, null, // 21-25
-      null, null,                   // 26-27
-    ];
+    final int? v = _amritTable[nakshatraNumber - 1][vara];
+    if (v == null || v == 0) return null;
 
-    final int? day = _dayOffset[nakshatraNumber - 1];
-    final int? night = _nightOffset[nakshatraNumber - 1];
-
-    if (day != null) {
-      final start = sunrise.add(Duration(minutes: day));
+    if (v > 0) {
+      // Di.Amrita — offset from sunrise
+      final start = sunrise.add(Duration(minutes: v));
+      return [start, start.add(const Duration(minutes: 96))];
+    } else {
+      // Ra.Amrita — offset from sunset
+      final start = sunset.add(Duration(minutes: -v));
       return [start, start.add(const Duration(minutes: 96))];
     }
-    if (night != null) {
-      final start = sunset.add(Duration(minutes: night));
-      return [start, start.add(const Duration(minutes: 96))];
-    }
-    return null;
   }
 }

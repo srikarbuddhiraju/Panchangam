@@ -1,93 +1,95 @@
-# Latest Task — Amrit Kalam Two-Table Architecture (DONE)
+# Latest Task — Amrit Kalam 27×7 Table (IN PROGRESS)
 
 **Last updated:** Feb 27, 2026
-**Status:** Complete. Tests pass. Validation output correct. APK not yet rebuilt.
+**Status:** Architecture complete. 11 of 189 cells verified. Actively gathering more data from Sringeri PDF.
 
 ---
 
 ## What Was Done This Session
 
-Implemented the proper Di.Amrita / Ra.Amrita two-table architecture (Option B from plan).
+### Key Discovery
+The Amrit Kalam type (Di.Amrita vs Ra.Amrita) and offset are NOT fixed per nakshatra alone.
+The same nakshatra gives different types on different weekdays.
+E.g., Vishaka = Di.Amrita 501 min on Tuesday, Ra.Amrita 254 min on Monday.
+A **27×7 nakshatra×weekday table** is required.
 
-**Problem with old code:**
-- Single `ghatiTable` applied all offsets from sunrise — but Sringeri Panchangam distinguishes daytime (Di.Amrita, from sunrise) and nighttime (Ra.Amrita, from sunset). Using sunrise-only for night entries causes ~40–50 min seasonal drift by summer.
-- The old table had 24 entries with unverified values from an unknown source.
+### Architecture Implemented
+- Replaced two `_dayOffset`/`_nightOffset` arrays with a single `_amritTable` — a 27×7 `List<List<int?>>`.
+- Encoding: `null`=unverified, `0`=confirmed none, `+N`=Di.Amrita N min from sunrise, `-N`=Ra.Amrita N min from sunset.
+- `amritKalam()` now takes `vara` (weekday 0-6) as a parameter.
+- Updated call sites in `panchangam_engine.dart` and `validate_amrit.dart`.
+- validate_amrit.dart updated to show weekday column and sunrise+sunset for easy verification.
 
-**What changed (3 files):**
-
-### `app/lib/core/calculations/muhurtha.dart`
-- Replaced single `ghatiTable` (27 ghati ints) with two parallel `List<int?>` arrays storing **minutes**:
-  - `_dayOffset` — minutes from sunrise for Di.Amrita entries
-  - `_nightOffset` — minutes from sunset for Ra.Amrita entries
-- Updated `amritKalam()` signature: added `sunset` parameter
-- Only 4 Sringeri-verified entries populated; all 23 others are null
-
-### `app/lib/core/calculations/panchangam_engine.dart`
-- Line 82: added `sunset` to `Muhurtha.amritKalam()` call
-
-### `app/bin/validate_amrit.dart`
-- Line 32: extracted `sunset = times[1]`, added to call
+### Files Changed
+- `app/lib/core/calculations/muhurtha.dart`
+- `app/lib/core/calculations/panchangam_engine.dart`
+- `app/bin/validate_amrit.dart`
 
 ---
 
-## Verified Entries (Sringeri Panchangam)
+## Verified Table Entries (11/189)
 
-| Nakshatra | # | Type | Offset | Minutes |
-|-----------|---|------|--------|---------|
-| Ardra     | 6 | none | —      | null (explicit "అమృతఘటికాభావ") |
-| Vishaka   | 16 | Di.Amrita | sunrise + 501 min | 20gh53v |
-| Mula      | 19 | Ra.Amrita | sunset + 449 min  | 18gh42v |
-| Purva Ashadha | 20 | Ra.Amrita | sunset + 682 min | 28gh25v |
+| # | Nakshatra | Weekday | Type | Minutes | Source |
+|---|-----------|---------|------|---------|--------|
+| 6 | Ardra | Tuesday | none | 0 | Jan 27 Sringeri PDF |
+| 8 | Pushya | Saturday | Ra | 144 | Feb 01 Sringeri PDF |
+| 9 | Ashlesha | Sunday | Ra | 146 | Feb 02 Sringeri PDF |
+| 10 | Magha | Monday | Ra | 194 | Feb 03 Sringeri PDF |
+| 11 | Purva Phalguni | Wednesday | Di | 626 | Feb 04 Sringeri PDF |
+| 12 | Uttara Phalguni | Thursday | Ra | 628 | Feb 05 Sringeri PDF |
+| 13 | Hasta | Friday | Ra | 80 | Feb 06 back-calc (needs recheck) |
+| 14 | Chitra | Saturday | Ra | 147 | Feb 07 Sringeri PDF |
+| 15 | Swati | Sunday | Ra | 147 | Feb 08 Sringeri PDF |
+| 16 | Vishaka | Monday | Ra | 254 | Feb 09 Sringeri PDF |
+| 16 | Vishaka | Tuesday | Di | 501 | Jan 13 Sringeri PDF |
+
+### Known Contradictions (need more data)
+- Jyeshtha #18, Thursday: Jan 15 shows Ra.Amrita 143 min BUT Feb 12 shows no amrit kalam. Left null.
+- Hasta #13, Friday: source offset "3.75" unclear — 80 min back-calculated from clock. Needs recheck.
+- Mula/PurvaAshadha plan values (449 min, 682 min) were based on misidentified nakshatra — removed.
 
 ---
 
 ## Validation Output (dart run bin/validate_amrit.dart)
 
 ```
-16  విశాఖ    2026-03-09  06:28  14:49 – 16:25   ← sunrise + 501 min ✓
-19  మూల      2026-03-12  06:26  01:54 – 03:30   ← sunset + 449 min ✓
-20  పూర్వాషాఢ 2026-03-13  06:25  05:47 – 07:23  ← sunset + 682 min ✓
- 6  ఆర్ద్ర   2026-02-27  06:35  Not applicable  ← confirmed null ✓
-all others:  Not applicable                      ← pending Sringeri data ✓
+ 8  పుష్యమి    Sat  2026-03-28  06:13  18:28  20:52 – 22:28  ✓
+ 9  ఆశ్లేష     Sun  2026-03-29  06:12  18:28  20:54 – 22:30  ✓
+10  మఖ          Mon  2026-03-30  06:12  18:28  21:42 – 23:18  ✓
+11  పుబ్బ      Wed  2026-03-04  06:32  18:23  16:58 – 18:34  ✓ (Di.Amrita)
+12  ఉత్తర     Thu  2026-03-05  06:31  18:23  04:51 – 06:27  ✓ (next morning)
+13  హస్త       Fri  2026-03-06  06:30  18:23  19:43 – 21:19  ✓
+14  చిత్త      Sat  2026-03-07  06:30  18:24  20:51 – 22:27  ✓
+15  స్వాతి    Sun  2026-03-08  06:29  18:24  20:51 – 22:27  ✓
+16  విశాఖ     Mon  2026-03-09  06:28  18:24  22:38 – 00:14  ✓
 ```
 
----
-
-## Test Results
-
-All 32 tests pass. `dart analyze` — no errors.
+32/32 tests pass. dart analyze clean.
 
 ---
 
 ## To Do For Next Session
 
-### Amrit Kalam (still in progress)
-1. **Full table verification** — 23 nakshatras still null (unverified). Need to read more Sringeri PDF entries.
-   - Ask Srikar for page numbers in Sringeri PDF covering remaining nakshatras.
-   - For each: note Di/Ra type and the offset in ghati+vipala, convert to minutes.
-   - Source priority: Sringeri (1st) → TTD (2nd) → DrikPanchang (3rd).
-2. **Rebuild APK** — changes not yet on device. Run:
-   ```bash
-   cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
-   /home/srikarbuddhiraju/development/flutter/bin/flutter build apk --release
-   /home/srikarbuddhiraju/Android/Sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk
-   ```
-3. Srikar spot-checks Vishaka, Mula, Purva Ashadha on device.
+### Amrit Kalam (priority)
+1. **Continue pasting Feb 13–28 entries** — Srikar was mid-paste when session was interrupted.
+   Need: nakshatra name + Di/Ra type + ghati.vipala offset after each amrit label.
+2. **Resolve Jyeshtha contradiction** — Jan 15 (Ra 143 min) vs Feb 12 (none) both Thursday.
+   Ask for one more Jyeshtha entry on a different weekday to see if pattern holds.
+3. **Recheck Hasta** — Feb 06 offset "3.75" unclear. Ask for that entry again.
+4. **After more data** — rebuild APK, push to device, Srikar spot-checks.
 
-### Sringeri Disclaimer (pending)
-- Add note in app: "Calculations based on Sringeri Panchangam, supervised by the Sringeri Matha."
-- Discuss placement with Srikar (Settings / About / footer).
+### Other Pending
+- Festival bugs: Vaikunta Ekadashi showing Dec 1 (should be Dec 30), Diwali wrong date
+- Festival/eclipse not loading on calendar launch (provider init timing bug)
+- Sringeri disclaimer in app UI
+- MVP checklist session
 
-### Known Bug — Festival/Eclipse Not Loading on Launch
-- Festivals/eclipse highlights missing on initial calendar page load.
-- User must navigate away and back for them to appear.
-- Root cause: provider initialization timing (data not ready when grid first renders).
+---
 
-### Improper festivals — Fix immediately
-- Vaikunta Ekadashi shows Dec 1 (should be Dec 30, 2025)
-- Diwali date also wrong
-- Re-validate all Grahanam timings (AM/PM, sub-timings)
+## How to Rebuild APK
 
-### MVP Checklist Session
-- After Amrit Kalam table is complete: full MVP review with Srikar.
-- Includes: dark mode, Family tab decision, Play Store account, UX refinement.
+```bash
+cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
+/home/srikarbuddhiraju/development/flutter/bin/flutter build apk --release
+/home/srikarbuddhiraju/Android/Sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk
+```

@@ -79,7 +79,7 @@ class PanchangamEngine {
     final List<List<DateTime>> durTimes =
         Muhurtha.durMuhurta(varaNum, sunrise, sunset);
     final List<DateTime>? amritTimes =
-        Muhurtha.amritKalam(nakshatraNum, sunrise, sunset);
+        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset);
 
     // ── Calendar Context ──────────────────────────────────────────────────
     final int rashiNum = Rashi.number(jdSunrise);

@@ -64,6 +64,10 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ## Token Efficiency
 
+### Do not read blindly into docs
+- **Rule**: Skim and scan first to find what you need. Only read deeply if absolutely required.
+- Don't open a full file/image to extract one value — target what you need first.
+
 ### Subagent for simple targeted searches = wasteful
 - **Mistake**: Launched an Explore subagent to find Amruthakalam code — used 45k tokens
 - **Fix**: Use direct Grep/Glob for known targets (file names, class names, function names)

@@ -28,6 +28,7 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - Use feature-based folder structure inside `lib/`
 - **Use tokens strategically** — prefer MCP server tools (dart, android-adb) over reading large files; use targeted Grep/Glob over broad reads; avoid re-reading files already in context
 - **No web searches for reference data** — if you need external info (tables, specs, API docs), ask Srikar to fetch and paste it. Do not use WebSearch for this — it burns tokens and often fails.
+- **Skim and scan, never read blindly** — when given a file, image, or pasted text, scan for the specific keyword/value you need first. Only read broadly if the targeted scan fails. For Panchangam PDF text, scan for ది.అమృత / రా.అమృత / అమృతఘటికాభావ directly.
 - Always store what was the latest task/objective that was being worked, in `docs/LatestTask.md`. This has to be for every commit and session wise. Follow clear convention while updating this document.
 - No need to keep history of all tasks/objective and sessions (since we already have commit messages for each commit) in `docs/LatestTask.md`, but rather the latest couple (at max).
 - You are free to check https://github.com/srikarbuddhiraju/Panchangam if needed. Do not read into files, as this is the same as project directory. Use it for reference purposes.
