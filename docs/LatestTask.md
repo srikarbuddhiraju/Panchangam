@@ -1,119 +1,93 @@
-# Latest Task — Amrit Kalam Fix (IN PROGRESS)
+# Latest Task — Amrit Kalam Two-Table Architecture (DONE)
 
-**Last updated:** Feb 23, 2026
-**Status:** Mostly done — Ardra null confirmed correct, Mula fixed. Ghati table still needs full verification. APK not yet rebuilt after last fix.
-
----
-
-## What Was Done
-
-Replaced the old fake amritKalam() in `muhurtha.dart` with a ghati-based calculation.
-Formula: `start = sunrise + ghati * 24 minutes`, duration = 96 minutes (4 ghatis).
-Made `amritKalamStart` / `amritKalamEnd` nullable (`DateTime?`) throughout the stack.
-Added "Not applicable" display string in `app_strings.dart`.
-Updated `muhurtha_card.dart` to show "Not applicable" when null.
+**Last updated:** Feb 27, 2026
+**Status:** Complete. Tests pass. Validation output correct. APK not yet rebuilt.
 
 ---
 
-## Findings From Sringeri Panchangam PDF
+## What Was Done This Session
 
-Srikar shared two PDFs in `docs/Ref Panchangam/`:
-- **Sringeri Panchangam** (5.9MB) — Visvavasu 2025-26, Telugu full text with daily entries
-- **TTD Panchangam** (14.9MB) — also Visvavasu 2025-26
+Implemented the proper Di.Amrita / Ra.Amrita two-table architecture (Option B from plan).
 
-From reading daily entries around page 109 of Sringeri PDF:
+**Problem with old code:**
+- Single `ghatiTable` applied all offsets from sunrise — but Sringeri Panchangam distinguishes daytime (Di.Amrita, from sunrise) and nighttime (Ra.Amrita, from sunset). Using sunrise-only for night entries causes ~40–50 min seasonal drift by summer.
+- The old table had 24 entries with unverified values from an unknown source.
 
-- **Ardra (Jan 27)**: Entry says "అమృతఘటికాభావ" = explicitly "no amrit ghati". Ardra null IS CORRECT.
-- **Mula (Jan 13)**: Entry says "రా.అమ్రుత" and shows time ~8:30–10:16 AM. Mula DOES have amrit kalam.
-  - Sunrise on Jan 13 ≈ 6:56 AM. Amrit start ≈ 8:30 AM → offset ≈ 94 min ÷ 24 = ~4 ghatis.
-  - **Fixed**: Mula changed from null → 4.
+**What changed (3 files):**
+
+### `app/lib/core/calculations/muhurtha.dart`
+- Replaced single `ghatiTable` (27 ghati ints) with two parallel `List<int?>` arrays storing **minutes**:
+  - `_dayOffset` — minutes from sunrise for Di.Amrita entries
+  - `_nightOffset` — minutes from sunset for Ra.Amrita entries
+- Updated `amritKalam()` signature: added `sunset` parameter
+- Only 4 Sringeri-verified entries populated; all 23 others are null
+
+### `app/lib/core/calculations/panchangam_engine.dart`
+- Line 82: added `sunset` to `Muhurtha.amritKalam()` call
+
+### `app/bin/validate_amrit.dart`
+- Line 32: extracted `sunset = times[1]`, added to call
 
 ---
 
-## Current Ghati Table (in muhurtha.dart — PARTIALLY VERIFIED)
+## Verified Entries (Sringeri Panchangam)
 
-```dart
-const List<int?> ghatiTable = [
-  16, 14, 23, 50, 54,   // 1-5:  Ashwini, Bharani, Krittika, Rohini, Mrigashirsha
-  null, 17, 30, 52, 47, // 6-10: Ardra(none ✓ confirmed), Punarvasu, Pushya, Ashlesha, Magha
-  20, 18, 45, 33, 60,   // 11-15: Purva Phalguni, Uttara Phalguni, Hasta, Chitra, Swati
-  10, 27, 43, 4, 24,    // 16-20: Vishakha, Anuradha, Jyeshtha, Mula(4 estimated), Purva Ashadha
-  53, 40, 37, 55, 8,    // 21-25: Uttara Ashadha, Shravana, Dhanishtha, Shatabhisha, Purva Bhadrapada
-  28, 48,               // 26-27: Uttara Bhadrapada, Revati
-];
+| Nakshatra | # | Type | Offset | Minutes |
+|-----------|---|------|--------|---------|
+| Ardra     | 6 | none | —      | null (explicit "అమృతఘటికాభావ") |
+| Vishaka   | 16 | Di.Amrita | sunrise + 501 min | 20gh53v |
+| Mula      | 19 | Ra.Amrita | sunset + 449 min  | 18gh42v |
+| Purva Ashadha | 20 | Ra.Amrita | sunset + 682 min | 28gh25v |
+
+---
+
+## Validation Output (dart run bin/validate_amrit.dart)
+
+```
+16  విశాఖ    2026-03-09  06:28  14:49 – 16:25   ← sunrise + 501 min ✓
+19  మూల      2026-03-12  06:26  01:54 – 03:30   ← sunset + 449 min ✓
+20  పూర్వాషాఢ 2026-03-13  06:25  05:47 – 07:23  ← sunset + 682 min ✓
+ 6  ఆర్ద్ర   2026-02-27  06:35  Not applicable  ← confirmed null ✓
+all others:  Not applicable                      ← pending Sringeri data ✓
 ```
 
-**Known issues:**
-- Mula ghati=4 is estimated from ONE data point — verify from more Sringeri entries
-- Bharani discrepancy: our code gives 12:14 PM, Sringeri shows 12:47 PM for Feb 23 → Bharani ghati may be 15-16 not 14
-- Full table not yet verified against PDF (only Ardra and Mula confirmed)
+---
+
+## Test Results
+
+All 32 tests pass. `dart analyze` — no errors.
 
 ---
 
-## Files Changed (already saved, tests pass)
+## To Do For Next Session
 
-- `app/lib/core/calculations/muhurtha.dart` — amritKalam() method (ghati table here)
-- `app/lib/core/calculations/panchangam_engine.dart` — nullable amritKalamStart/End fields + call site
-- `app/lib/core/utils/app_strings.dart` — added `notApplicable` string
-- `app/lib/features/panchangam/widgets/muhurtha_card.dart` — null check + invalidMessage param
+### Amrit Kalam (still in progress)
+1. **Full table verification** — 23 nakshatras still null (unverified). Need to read more Sringeri PDF entries.
+   - Ask Srikar for page numbers in Sringeri PDF covering remaining nakshatras.
+   - For each: note Di/Ra type and the offset in ghati+vipala, convert to minutes.
+   - Source priority: Sringeri (1st) → TTD (2nd) → DrikPanchang (3rd).
+2. **Rebuild APK** — changes not yet on device. Run:
+   ```bash
+   cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
+   /home/srikarbuddhiraju/development/flutter/bin/flutter build apk --release
+   /home/srikarbuddhiraju/Android/Sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk
+   ```
+3. Srikar spot-checks Vishaka, Mula, Purva Ashadha on device.
 
----
-
-## Validated Data Points (from Sringeri Panchangam + DrikPanchang)
-
-| Date | Nakshatra | Source | Status |
-|------|-----------|--------|--------|
-| Jan 13 | Mula (19) | Sringeri PDF | 8:30-10:16 AM (ghati≈4) |
-| Jan 27 | Ardra (6) | Sringeri PDF | "అమృతఘటికాభావ" = null ✓ |
-| Feb 23 | Bharani (2) | DrikPanchang | ~12:01 PM (our code: 12:14 PM) |
-| Mar 3 | Magha (10) | DrikPanchang | ~1:13 AM next day |
-| Mar 8 | Swati (15) | DrikPanchang | ~6:25 AM next day |
-
----
-
-## Next Session Steps
-
-1. **Rebuild APK** — last fix (Mula null→4) not yet deployed to phone
-2. **Full ghati table verification** — read more Sringeri daily entries, cross-check all 27 nakshatras
-3. Bharani in particular needs re-check (15-16 instead of 14?)
-4. Run `dart analyze` + `dart test` before APK build
-5. Srikar spot-checks on device
-
----
-
-## To Do For Next Session (MVP Checklist)
-
-### Amrit Kalam (current task)
-1. **Verify full ghati table** — ask Srikar for specific page numbers in Sringeri/TTD PDFs for each nakshatra. Do NOT read full PDF. Source priority: Sringeri (1st) → TTD (2nd) → DrikPanchang (3rd).
-2. **Bharani re-check** — our code: 12:14 PM, expected ~12:47 PM. Bharani ghati likely 15–16, not 14. Ask for page with a Bharani day entry.
-3. **Mula re-check** — ghati=4 estimated from one data point (Jan 13). Ask for another Mula day entry to confirm.
-4. **After table correction** — run `dart test`, rebuild APK, push to phone, Srikar spot-checks.
-
-### Sringeri Disclaimer (new task)
-- Add a note/disclaimer in the app: "Calculations based on Sringeri Panchangam, the authoritative traditional source supervised by the Sringeri Matha."
-- Discuss with Srikar where to place it (Settings screen? About section? Footer on Panchangam screen?).
+### Sringeri Disclaimer (pending)
+- Add note in app: "Calculations based on Sringeri Panchangam, supervised by the Sringeri Matha."
+- Discuss placement with Srikar (Settings / About / footer).
 
 ### Known Bug — Festival/Eclipse Not Loading on Launch
-- Festivals and eclipse highlights do not appear on the calendar landing page at app launch.
-- User must navigate to next/previous month first, then they appear.
-- Root cause: likely a provider initialization timing issue (data not ready when grid first renders).
-- Fix needed before release.
+- Festivals/eclipse highlights missing on initial calendar page load.
+- User must navigate away and back for them to appear.
+- Root cause: provider initialization timing (data not ready when grid first renders).
 
-### Improper festivals - Rectify calculations immediately
-- The last Vaikunta Ekadashi fell on 30th December 2025, in our app it shows 1st December, rectify it.
-- Same as above point, Diwali fell in December, which is wrong.
-- Re-validate all Grahanam timings, check sub timings, AM PM inconsistencies. 
+### Improper festivals — Fix immediately
+- Vaikunta Ekadashi shows Dec 1 (should be Dec 30, 2025)
+- Diwali date also wrong
+- Re-validate all Grahanam timings (AM/PM, sub-timings)
 
 ### MVP Checklist Session
-- After Amrit Kalam verified: sit down with Srikar and review full MVP checklist together.
-- Includes: dark mode validation, Family tab decision, Play Store account, UX refinement session.
-
----
-
-## How to Rebuild APK
-
-```bash
-cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
-/home/srikarbuddhiraju/development/flutter/bin/flutter build apk --release
-/home/srikarbuddhiraju/Android/Sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk
-```
+- After Amrit Kalam table is complete: full MVP review with Srikar.
+- Includes: dark mode, Family tab decision, Play Store account, UX refinement.

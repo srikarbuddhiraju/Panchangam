@@ -66,33 +66,57 @@ class Muhurtha {
 
   /// Amrit Kalam — highly auspicious window derived from the day's Nakshatra.
   ///
-  /// Based on the classical ghati table (60 ghatis = 1 full day, 1 ghati ≈ 24 min).
-  /// Formula: start = sunrise + (ghati * 24 minutes), duration = 4 ghatis = 96 min.
+  /// Source: Sringeri Panchangam (Visvavasu 2025-26), supervised by the Sringeri Matha.
+  /// The Sringeri tradition distinguishes two types:
+  ///   - Di.Amrita (దినామృతం): counted from SUNRISE — daytime window.
+  ///   - Ra.Amrita (రాత్ర్యమృతం): counted from SUNSET — nighttime window.
   ///
-  /// Validated against DrikPanchang (Hyderabad) — accuracy within 5–14 minutes.
+  /// Duration: 4 ghatis = 96 minutes (standard). Sringeri shows ~106 min for some entries
+  /// due to variable ghati length — 96 min is used for consistency (acceptable MVP delta).
   ///
-  /// Returns [start, end] as IST DateTimes, or null for Ardra (6) and Mula (19)
-  /// which have no Amrit Kalam.
+  /// Only Sringeri-verified entries are populated. All others are null.
+  /// Wrong data is worse than no data — unverified entries must stay null.
+  ///
+  /// Returns [start, end] as IST DateTimes, or null when no Amrit Kalam applies
+  /// (either explicitly absent, or not yet verified from Sringeri PDF).
   static List<DateTime>? amritKalam(
     int nakshatraNumber,
     DateTime sunrise,
+    DateTime sunset,
   ) {
-    // Traditional ghati table — index 0 = Ashwini (nakshatra 1), null = no Amrit Kalam.
-    // Source: classical Panchangam; validated against DrikPanchang.
-    const List<int?> ghatiTable = [
-      16, 14, 23, 50, 54,   // 1-5:  Ashwini, Bharani, Krittika, Rohini, Mrigashirsha
-      null, 17, 30, 52, 47, // 6-10: Ardra(none), Punarvasu, Pushya, Ashlesha, Magha
-      20, 18, 45, 33, 60,   // 11-15: Purva Phalguni, Uttara Phalguni, Hasta, Chitra, Swati
-      10, 27, 43, 4, 24,   // 16-20: Vishakha, Anuradha, Jyeshtha, Mula, Purva Ashadha
-      53, 40, 37, 55, 8,    // 21-25: Uttara Ashadha, Shravana, Dhanishtha, Shatabhisha, Purva Bhadrapada
-      28, 48,               // 26-27: Uttara Bhadrapada, Revati
+    // Minutes from SUNRISE for Di.Amrita (daytime) entries.
+    // null = not verified from Sringeri (treat as "not applicable" until confirmed).
+    const List<int?> _dayOffset = [
+      null, null, null, null, null, // 1-5:  Ashwini, Bharani, Krittika, Rohini, Mrigashirsha
+      null, null, null, null, null, // 6-10: Ardra(S✓none), Punarvasu, Pushya, Ashlesha, Magha
+      null, null, null, null, null, // 11-15: Purva Phalguni, Uttara Phalguni, Hasta, Chitra, Swati
+      501,  null, null, null, null, // 16-20: Vishaka(S✓501min), Anuradha, Jyeshtha, Mula(night), PurvaAshadha(night)
+      null, null, null, null, null, // 21-25: Uttara Ashadha, Shravana, Dhanishtha, Shatabhisha, Purva Bhadrapada
+      null, null,                   // 26-27: Uttara Bhadrapada, Revati
     ];
 
-    final int? ghati = ghatiTable[nakshatraNumber - 1];
-    if (ghati == null) return null; // No Amrit Kalam for this nakshatra
+    // Minutes from SUNSET for Ra.Amrita (nighttime) entries.
+    // null = not verified from Sringeri (treat as "not applicable" until confirmed).
+    const List<int?> _nightOffset = [
+      null, null, null, null, null, // 1-5
+      null, null, null, null, null, // 6-10: Ardra(S✓none)
+      null, null, null, null, null, // 11-15
+      null, null, null,  449,  682, // 16-20: Vishaka(day), Anuradha, Jyeshtha, Mula(S✓449min), PurvaAshadha(S✓682min)
+      null, null, null, null, null, // 21-25
+      null, null,                   // 26-27
+    ];
 
-    final DateTime start = sunrise.add(Duration(minutes: ghati * 24));
-    final DateTime end = start.add(const Duration(minutes: 96));
-    return [start, end];
+    final int? day = _dayOffset[nakshatraNumber - 1];
+    final int? night = _nightOffset[nakshatraNumber - 1];
+
+    if (day != null) {
+      final start = sunrise.add(Duration(minutes: day));
+      return [start, start.add(const Duration(minutes: 96))];
+    }
+    if (night != null) {
+      final start = sunset.add(Duration(minutes: night));
+      return [start, start.add(const Duration(minutes: 96))];
+    }
+    return null;
   }
 }
