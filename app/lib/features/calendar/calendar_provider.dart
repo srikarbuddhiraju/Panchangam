@@ -26,13 +26,13 @@ final monthDataProvider = FutureProvider
     ),
   );
 
-  // Overlay festival markers
+  // Overlay festival markers — await so they are always present on first load
   final Map<DateTime, List<Festival>> festivals =
-      ref.watch(festivalProvider(ym.year)).valueOrNull ?? {};
+      await ref.watch(festivalProvider(ym.year).future);
 
-  // Overlay eclipse markers
+  // Overlay eclipse markers — await so they are always present on first load
   final List<EclipseData> eclipses =
-      ref.watch(eclipseProvider(ym.year)).valueOrNull ?? [];
+      await ref.watch(eclipseProvider(ym.year).future);
 
   return days.map((d) {
     final List<Festival> onDay = festivals[d.date] ?? [];

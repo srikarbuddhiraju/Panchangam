@@ -129,6 +129,37 @@ class FestivalCalculator {
           return true;
         }
       }
+
+      // ── Kshaya tithi handling (general) ────────────────────────────────────
+      // When a non-Pratipada tithi is kshaya (skipped), it never appears at any
+      // sunrise. The festival is observed on the day before (when the preceding
+      // tithi is at sunrise and the following tithi is at the NEXT sunrise).
+      //
+      // Example: Vaikunta Ekadashi 2025 — Ekadashi is kshaya (Dec 30 sunrise=10,
+      // Dec 31 sunrise=12). Sringeri observes it on Dec 30 (day Ekadashi begins).
+      //
+      // Detection: today = festival.tithi - 1, tomorrow = festival.tithi + 1
+      // (tithi N was skipped). Only applies within the same paksha (tithi 2-14).
+      if (festival.tithi != null &&
+          festival.tithi! > 1 &&
+          festival.tithi! < 15 &&
+          tPaksha == festival.paksha &&
+          tWithinPaksha == festival.tithi! - 1) {
+        final DateTime nextDate = date.add(const Duration(days: 1));
+        final List<DateTime> nextSun =
+            SunriseSunset.computeNOAA(nextDate, lat, lng);
+        final double nextJd = JulianDay.fromIST(nextSun[0]);
+        final int nextTNum = Tithi.number(nextJd);
+        final int nextPaksha = nextTNum <= 15 ? 1 : 2;
+        final int nextWithin = nextTNum <= 15 ? nextTNum : nextTNum - 15;
+        if (nextPaksha == festival.paksha && nextWithin == festival.tithi! + 1) {
+          if (festival.teluguMonth != null) {
+            if (TeluguCalendar.isAdhikaMaasa(jdCheck)) return false;
+            return TeluguCalendar.monthNumber(jdCheck) == festival.teluguMonth;
+          }
+          return true;
+        }
+      }
     } catch (_) {
       // Ignore calculation errors for edge cases
     }
