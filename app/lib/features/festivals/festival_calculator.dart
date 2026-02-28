@@ -3,6 +3,7 @@ import '../../core/calculations/telugu_calendar.dart';
 import '../../core/calculations/julian_day.dart';
 import '../../core/calculations/sunrise_sunset.dart';
 import 'festival_data.dart';
+import 'festival_loader.dart';
 
 /// Computes Gregorian dates of festivals for a given year.
 ///
@@ -49,7 +50,11 @@ class FestivalCalculator {
   ) {
     final List<Festival> found = [];
 
-    for (final festival in FestivalData.all) {
+    // Use JSON-loaded festivals (FestivalLoader.all) when available,
+    // fall back to FestivalData.all if not yet initialized (e.g. in tests).
+    final List<Festival> source =
+        FestivalLoader.all.isNotEmpty ? FestivalLoader.all : FestivalData.all;
+    for (final festival in source) {
       if (festival.type == FestivalType.solar) {
         if (festival.gregorianMonth == date.month &&
             festival.gregorianDay == date.day) {

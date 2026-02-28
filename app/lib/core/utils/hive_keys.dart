@@ -3,14 +3,20 @@
 class HiveKeys {
   HiveKeys._();
 
-  // Box names
+  // ── Box names ─────────────────────────────────────────────────────────────
   static const String settingsBox = 'settings';
+  static const String userEventsBox = 'userEvents';
 
-  // Setting keys
+  // ── Settings keys (in settingsBox) ────────────────────────────────────────
   static const String city = 'city';
   static const String latitude = 'lat';
   static const String longitude = 'lng';
   static const String language = 'language';
   static const String themeMode = 'themeMode';
   static const String timeFormat = 'timeFormat';
+
+  // ── Premium key (in settingsBox) ──────────────────────────────────────────
+  /// Stored as bool. Default: false.
+  /// Set to true on purchase confirmation (billing deferred — debug toggle only for now).
+  static const String isPremium = 'isPremium';
 }
