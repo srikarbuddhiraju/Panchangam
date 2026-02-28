@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/calculations/panchangam_engine.dart';
 import '../../core/calculations/eclipse.dart';
+import '../../features/events/user_tithi_event.dart';
 import '../../features/events/user_event_calculator.dart';
 import '../../features/events/user_event_provider.dart';
 import '../../features/festivals/festival_provider.dart';

@@ -13,6 +13,7 @@ import '../panchangam/widgets/muhurtha_card.dart';
 import '../panchangam/widgets/context_card.dart';
 import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
+import '../events/user_tithi_event.dart';
 import '../events/user_event_calculator.dart';
 import '../events/user_event_provider.dart';
 import '../events/widgets/personal_events_card.dart';

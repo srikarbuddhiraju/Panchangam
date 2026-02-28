@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
+import '../events/user_tithi_event.dart';
 import '../events/user_event_calculator.dart';
 import '../events/user_event_provider.dart';
 import '../events/widgets/personal_events_card.dart';
