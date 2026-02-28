@@ -1,7 +1,7 @@
 # Latest Task — Panchangam Pro: Session 3 Complete
 
 **Last updated:** Feb 28, 2026
-**Status:** Session 3 (Event UI) complete on branch `feature/pro-session3-event-ui`. All 32 tests pass. Ready to commit and move to Session 4 (Notifications).
+**Status:** Session 3 (Event UI) complete. Committed `28e62aa` on `feature/pro-session3-event-ui`. All 32 tests pass. Ready for Session 4 (Notifications).
 
 ---
 
@@ -10,6 +10,7 @@
 ### Session 3 — Event UI (All Done ✅)
 
 **Branch:** `feature/pro-session3-event-ui`
+**Commit:** `28e62aa`
 
 | File | What Changed |
 |------|-------------|
@@ -18,22 +19,18 @@
 | `features/events/event_form_screen.dart` | NEW — add/edit form: name EN/TE, tithi picker, month picker, reminder placeholder |
 | `features/events/widgets/personal_events_card.dart` | NEW — gold-bordered card for day detail screens |
 | `features/events/user_event_calculator.dart` | Added `matchingEvents()` for PanchangamData context |
-| `features/family/family_screen.dart` | Replaced Coming Soon teaser → PremiumGuard(MyEventsScreen) |
+| `features/family/family_screen.dart` | Two-branch: Pro → `MyEventsScreen()` directly, Free → thin Scaffold + PremiumGuard |
 | `features/today/today_screen.dart` | Added PersonalEventsCard when isPremium + events match |
 | `features/panchangam/panchangam_screen.dart` | Added PersonalEventsCard + "Mark this tithi" FAB |
 | `app/routes.dart` | Added `/events/new?tithi=N` + `/events/:id` push routes |
+| `app/.gitignore` | Refined `premium/` rule — ignores specific paywall files, allows `premium_guard.dart` |
 
 ### Design decisions
-- `FamilyScreen` now just wraps `PremiumGuard(child: MyEventsScreen())` — clean separation
+- `FamilyScreen` two-branch approach avoids double-Scaffold: Pro → `MyEventsScreen` (owns Scaffold+AppBar+FAB), Free → thin Scaffold + PremiumGuard teaser
 - `PremiumGuard` teaser shows "Subscribe — Coming Soon" button (disabled, wired in Session 5)
 - "Mark this tithi" FAB only visible when `isPremium=true` AND Panchangam data loaded
 - Reminder toggle stored but TODO'd for Session 4 — no crash if enabled
-- `MyEventsScreen` has its own `AppBar` — `FamilyScreen` provides the outer `Scaffold+AppBar`; but since `MyEventsScreen` is also nested inside a `Scaffold`, there's a double-scaffold situation. See note below.
-
-### Note: Double Scaffold
-`FamilyScreen` → `Scaffold` + `AppBar` → `PremiumGuard` → `MyEventsScreen` → `Scaffold` + `AppBar`
-
-This will cause a double app bar. Need to remove the `Scaffold`+`AppBar` from `MyEventsScreen` (it should just be a bare widget with body content) so `FamilyScreen`'s scaffold wraps it. The `EventFormScreen` still needs its own scaffold since it's a push route. **This is a bug to fix before release.**
+- `premium_guard.dart` is safe to track in git (no pricing info) — gitignore updated to allow it
 
 ---
 
@@ -42,16 +39,13 @@ This will cause a double app bar. Need to remove the `Scaffold`+`AppBar` from `M
 ### Session 4 — Notifications
 **New branch:** `feature/pro-session4-notifications`
 
-- [ ] Create `app/lib/services/notification_service.dart` — flutter_local_notifications wrapper
-- [ ] Update `AndroidManifest.xml` — add POST_NOTIFICATIONS + SCHEDULE_EXACT_ALARM permissions
-- [ ] On event save: schedule next 3 occurrences via NotificationService
-- [ ] On event delete/disable: cancel all notifications for that event
-- [ ] On app start (`main.dart`): re-schedule all active events with reminders
-- [ ] Wire reminder picker in `EventFormScreen` (minutes before tithi)
-- [ ] Verify: add event with near-future reminder → notification fires on device
-
-### Known issue to fix (identified in Session 3)
-- **Double scaffold bug**: `FamilyScreen` wraps `MyEventsScreen`, both have `Scaffold+AppBar`. Fix: `MyEventsScreen` should render only its body content (list + FAB), not its own Scaffold. The FAB needs to be placed in `FamilyScreen`'s Scaffold.
+- [ ] Add `flutter_local_notifications` to `pubspec.yaml`
+- [ ] Create `app/lib/services/notification_service.dart` — singleton wrapper: init, permission request, schedule, cancel
+- [ ] Update `AndroidManifest.xml` — add `POST_NOTIFICATIONS` + `SCHEDULE_EXACT_ALARM` permissions
+- [ ] Update `user_event_provider.dart` — call `NotificationService.schedule()` on add/update, `cancelAll()` on delete/disable
+- [ ] Update `main.dart` — call `NotificationService.init()` + re-schedule all active events on app start
+- [ ] Wire reminder picker in `EventFormScreen` (minutes before tithi — currently placeholder)
+- [ ] **Verify:** Add event with near-future reminder → notification fires on device
 
 ---
 
