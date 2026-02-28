@@ -87,6 +87,15 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Dart / Build
+
+### dart analyze can miss missing imports that the compiler catches
+- **Mistake**: Three files used `UserTithiEvent` without importing `user_tithi_event.dart`. MCP `analyze_files` reported "No errors" but `flutter build apk --release` failed with `'UserTithiEvent' isn't a type.`
+- **Fix**: Add the missing import to each affected file.
+- **Rule**: Always do a full release build before declaring a session complete — the compiler catches things the analysis server can miss due to caching.
+
+---
+
 ## Dart Syntax
 
 ### Local functions cannot have `final` modifier
