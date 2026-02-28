@@ -8,8 +8,9 @@ import '../../../app/theme.dart';
 /// and sutak timings for general public and for vulnerable groups.
 class EclipseCard extends StatelessWidget {
   final EclipseData eclipse;
+  final bool use24h;
 
-  const EclipseCard({super.key, required this.eclipse});
+  const EclipseCard({super.key, required this.eclipse, required this.use24h});
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +52,10 @@ class EclipseCard extends StatelessWidget {
                   Chip(
                     label: Text(
                       isTelugu ? 'భారత్‌లో కనిపిస్తుంది' : 'Visible in India',
-                      style: const TextStyle(fontSize: 10),
+                      style: const TextStyle(fontSize: 10, color: AppTheme.kAuspiciousGreen, fontWeight: FontWeight.w600),
                     ),
-                    backgroundColor: AppTheme.kAuspiciousGreen.withValues(alpha: 0.1),
-                    side: const BorderSide(color: AppTheme.kAuspiciousGreen),
+                    backgroundColor: AppTheme.kAuspiciousGreen.withValues(alpha: 0.15),
+                    side: const BorderSide(color: AppTheme.kAuspiciousGreen, width: 1.5),
                     padding: EdgeInsets.zero,
                   ),
               ],
@@ -68,12 +69,14 @@ class EclipseCard extends StatelessWidget {
               label: isTelugu ? 'స్పర్శ (ప్రారంభం)' : 'Sparsha (First contact)',
               time: eclipse.sparsha,
               color: color,
+              use24h: use24h,
             ),
             const SizedBox(height: 4),
             _TimingRow(
               label: isTelugu ? 'మోక్షం (విముక్తి)' : 'Moksha (Last contact)',
               time: eclipse.moksha,
               color: color,
+              use24h: use24h,
             ),
             const SizedBox(height: 10),
             const Divider(height: 1),
@@ -84,7 +87,7 @@ class EclipseCard extends StatelessWidget {
               isTelugu ? 'సూతక కాలం' : 'Sutak Period',
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
             const SizedBox(height: 6),
@@ -94,6 +97,7 @@ class EclipseCard extends StatelessWidget {
               label: isTelugu ? 'సామాన్య సూతకం' : 'General',
               start: eclipse.sutakStart,
               end: eclipse.moksha,
+              use24h: use24h,
             ),
             const SizedBox(height: 4),
 
@@ -104,6 +108,7 @@ class EclipseCard extends StatelessWidget {
                   : 'Children / Elderly / Sick',
               start: eclipse.sutakStartVulnerable,
               end: eclipse.moksha,
+              use24h: use24h,
             ),
             const SizedBox(height: 8),
 
@@ -117,7 +122,7 @@ class EclipseCard extends StatelessWidget {
                       ? 'Sutak: 12 hours before sparsha until moksha'
                       : 'Sutak: 9 hours before sparsha until moksha'),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontStyle: FontStyle.italic,
                   ),
             ),
@@ -132,19 +137,34 @@ class _TimingRow extends StatelessWidget {
   final String label;
   final DateTime time;
   final Color color;
+  final bool use24h;
 
-  const _TimingRow({required this.label, required this.time, required this.color});
+  const _TimingRow({
+    required this.label,
+    required this.time,
+    required this.color,
+    required this.use24h,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final String formatted = use24h
+        ? DateFormat('HH:mm').format(time)
+        : DateFormat('h:mm a').format(time);
+
     return Row(
       children: [
         Expanded(
-          child: Text(label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
+          child: Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
         ),
         Text(
-          DateFormat('h:mm a').format(time),
+          formatted,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: color,
@@ -159,19 +179,34 @@ class _SutakRow extends StatelessWidget {
   final String label;
   final DateTime start;
   final DateTime end;
+  final bool use24h;
 
-  const _SutakRow({required this.label, required this.start, required this.end});
+  const _SutakRow({
+    required this.label,
+    required this.start,
+    required this.end,
+    required this.use24h,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final String timeRange =
-        '${DateFormat('h:mm a').format(start)} – ${DateFormat('h:mm a').format(end)}';
+    String fmt(DateTime dt) => use24h
+        ? DateFormat('HH:mm').format(dt)
+        : DateFormat('h:mm a').format(dt);
+
+    final String timeRange = '${fmt(start)} – ${fmt(end)}';
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey)),
+          child: Text(
+            label,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
         ),
         Text(
           timeRange,

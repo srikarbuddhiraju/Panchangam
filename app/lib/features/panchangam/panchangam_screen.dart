@@ -99,7 +99,7 @@ class _PanchangamContent extends ConsumerWidget {
 
         // ── Eclipse alert (shown only on eclipse days) ────────────────────
         if (eclipse != null) ...[
-          EclipseCard(eclipse: eclipse),
+          EclipseCard(eclipse: eclipse, use24h: use24h),
           const SizedBox(height: 8),
         ],
 

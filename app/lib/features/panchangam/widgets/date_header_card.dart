@@ -52,7 +52,7 @@ class DateHeaderCard extends StatelessWidget {
               ),
               Text(
                 S.isTelugu ? data.samvatsaraTe : data.samvatsaraEn,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ],
           ),

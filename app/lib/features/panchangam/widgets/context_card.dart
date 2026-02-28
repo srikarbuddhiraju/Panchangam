@@ -98,7 +98,7 @@ class _ContextChip extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 10,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           Text(

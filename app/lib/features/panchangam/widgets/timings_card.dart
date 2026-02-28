@@ -101,7 +101,7 @@ class _TimingTile extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
-                ?.copyWith(color: Colors.grey, fontSize: 10),
+                ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10),
             textAlign: TextAlign.center,
           ),
         ],

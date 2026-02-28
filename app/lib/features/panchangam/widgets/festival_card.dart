@@ -106,7 +106,7 @@ class _FestivalEntryState extends State<_FestivalEntry> {
                   Icon(
                     _expanded ? Icons.expand_less : Icons.expand_more,
                     size: 18,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
               ],
             ),
@@ -121,7 +121,7 @@ class _FestivalEntryState extends State<_FestivalEntry> {
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(color: Colors.grey.shade600),
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
 

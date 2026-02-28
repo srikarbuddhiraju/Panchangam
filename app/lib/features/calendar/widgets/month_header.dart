@@ -61,7 +61,7 @@ class MonthHeader extends ConsumerWidget {
                 Text(
                   S.isTelugu ? gregorianLabel : '$teluguMonthTe · $samvatsara',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                   textAlign: TextAlign.center,
                 ),
