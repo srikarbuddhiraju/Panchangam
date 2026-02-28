@@ -86,3 +86,13 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 - **Rule**: Always verify screenshot content before naming. Filename must accurately describe what's on screen.
 
 ---
+
+## Data Persistence (CRITICAL)
+
+### Never lose user-pasted data between sessions
+- **Mistake**: User pasted Sringeri PDF entries (nakshatra data, amrit kalam offsets, etc.) during a session. I processed it in context but did NOT save it to a file. When the session ended, the data was lost. I then asked the user to paste it again — completely unacceptable.
+- **Fix**: The moment a user pastes any reference data (PDF content, table entries, corrections, lookup values), IMMEDIATELY write it to a file in `docs/data/` or update the relevant source file. Do not wait until "later in the session."
+- **Rule**: If the user pastes it, it gets saved to disk. No exceptions. Context is ephemeral. Files are permanent.
+- **Rule**: After saving, confirm to the user: "Saved to docs/data/amrit_kalam_entries.md" so they know it's persisted.
+
+---

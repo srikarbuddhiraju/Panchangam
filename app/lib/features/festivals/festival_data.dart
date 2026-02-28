@@ -255,12 +255,15 @@ class FestivalData {
           'this vrata for 14 years to recover the Pandavas\' lost kingdom.',
     ),
 
-    // ── Ashvayuja (Month 7) ───────────────────────────────────────────────
+    // ── Bhadrapada Amavasya (Month 6) — Mahalaya ─────────────────────────
+    // NOTE: monthNumber() gives 6 (Bhadrapada) for the Sep Amavasya (sun in Kanya,
+    // rashi 5 → month 6). This is the traditional "Mahalaya Amavasya" ending Pitru
+    // Paksha. Sringeri: Sep 28, 2025.
     Festival(
       nameTe: 'మహాలయ అమావాస్య',
       nameEn: 'Mahalaya Amavasya',
       type: FestivalType.tithi,
-      teluguMonth: 7,
+      teluguMonth: 6,
       paksha: 2,
       tithi: 15,
       descriptionEn:
@@ -298,12 +301,15 @@ class FestivalData {
           'from the Bhagavata Purana. Celebrated on Krishna Ashtami of Ashvayuja.',
     ),
 
-    // ── Kartika (Month 8) ─────────────────────────────────────────────────
+    // ── Ashvayuja Krishna Paksha (Month 7) — Diwali cluster ───────────────
+    // NOTE: monthNumber() gives 7 (Ashvayuja) for Oct 18-21 in any year because
+    // the next Amavasya at that time has sun in Tula (rashi 6 → month 7).
+    // Sringeri Panchangam confirmed: Diwali 2025 = Oct 20 (our code: month 7).
     Festival(
       nameTe: 'ధన్ తేరస్',
       nameEn: 'Dhanteras',
       type: FestivalType.tithi,
-      teluguMonth: 8,
+      teluguMonth: 7,
       paksha: 2,
       tithi: 13,
       descriptionEn:
@@ -316,7 +322,7 @@ class FestivalData {
       nameTe: 'నరక చతుర్దశి',
       nameEn: 'Naraka Chaturdashi',
       type: FestivalType.tithi,
-      teluguMonth: 8,
+      teluguMonth: 7,
       paksha: 2,
       tithi: 14,
       descriptionEn:
@@ -330,7 +336,7 @@ class FestivalData {
       nameTe: 'దీపావళి',
       nameEn: 'Deepavali',
       type: FestivalType.tithi,
-      teluguMonth: 8,
+      teluguMonth: 7,
       paksha: 2,
       tithi: 15,
       descriptionEn:
@@ -367,12 +373,16 @@ class FestivalData {
           'Karthika deepams in temples is the central observance.',
     ),
 
-    // ── Margashira (Month 9) ──────────────────────────────────────────────
+    // ── Pushya (Month 10) — Vaikunta Ekadashi ─────────────────────────────
+    // NOTE: monthNumber() gives 10 (Pushya) for Dec 30, 2025 because the next
+    // Amavasya (Jan 18-19, 2026) has sun in Makara (rashi 9 → month 10).
+    // Sringeri confirmed: Vaikunta Ekadashi 2025 = Dec 30 (our old teluguMonth:9
+    // fired on Dec 1 which is month 9 = Margashira per our formula).
     Festival(
       nameTe: 'వైకుంఠ ఏకాదశి',
       nameEn: 'Vaikunta Ekadashi',
       type: FestivalType.tithi,
-      teluguMonth: 9,
+      teluguMonth: 10,
       paksha: 1,
       tithi: 11,
       descriptionEn:
