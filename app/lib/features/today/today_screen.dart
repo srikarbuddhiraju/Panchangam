@@ -152,7 +152,7 @@ class _TodayContent extends ConsumerWidget {
         DateHeaderCard(data: data),
         const SizedBox(height: 12),
         if (eclipse != null) ...[
-          EclipseCard(eclipse: eclipse),
+          EclipseCard(eclipse: eclipse, use24h: use24h),
           const SizedBox(height: 8),
         ],
         if (festivals.isNotEmpty) ...[

@@ -1,84 +1,70 @@
-# Latest Task — Amrit Kalam + Festival Date Bugs
+# Latest Task — Dark Mode Validation + Bug Fixes
 
 **Last updated:** Feb 28, 2026
-**Status:** ALL DONE this session. APK built and installed on device.
+**Status:** DONE. APK built and installed. Ready to commit + push.
 
 ---
 
 ## What Was Done This Session
 
-### 1. Amrit Kalam Table — Full Feb 2026 Update (muhurtha.dart)
-- Replaced sparse/wrong old entries with all 28 days from Feb 2026 Sringeri PDF.
-- All 27 nakshatras now have at least one verified weekday entry (Vishaka had two days).
-- **Key corrections vs old table:**
+### 1. App Icon (previous commits 212398d → 3103e8b)
+- Logo PNG applied as launcher icon — deep navy background (#0B1437), sun+moon centered at 85% zoom
+- White background removed via ImageMagick `-fuzz 5% -transparent white -trim +repage`
+- Both legacy icon (icon.png) and adaptive foreground (icon_fg.png) generated
 
-| Entry | Old value | Error | New value |
-|-------|-----------|-------|-----------|
-| Ashlesha [Sun] | -146 | Feb 2 is Monday, not Sunday | cleared → null |
-| Ashlesha [Mon] | null | missed | -258 |
-| Magha [Mon] | -194 | Feb 3 is Tuesday, not Monday | cleared → null |
-| Magha [Tue] | null | missed | -194 |
-| Uttara Phalguni [Thu] | -628 (Ra) | Type wrong; Feb 5 is Di | +648 (Di) |
-| Hasta [Fri] | -80 (back-calc) | Unverified | -90 (3.75 ghati×24) |
-| Chitra [Sat] | -147 | 6.23=153, not 147 | -153 |
-| Swati [Sun] | -147 | 4.50=116, not 147 | -116 |
-| Vishaka [Tue] | +501 (Di) | Feb 10 is Ra | -289 (Ra) |
+### 2. Dark Mode Validation — Hardcoded Colors Fixed
 
-- Days 25 (Rohini Wed) and 28 (Punarvasu Sat) have BOTH Di and Ra windows.
-  Only Di stored for now. Ra values: Rohini Wed=-604, Punarvasu Sat=-490.
-  Future: upgrade amritKalam() to return multiple windows.
-- Ardra [Fri]=0 confirmed (Feb 27). Jyeshtha [Thu]=0 confirmed (Feb 12).
-- Hasta Fri "3.75" and Krittika Tue "17.66" have ambiguous notation — need recheck.
+**Root cause:** Multiple widgets used `Colors.grey` / `Colors.grey.shadeXXX` hardcoded, which becomes invisible in dark mode.
 
-### 2. Festival Date Bugs — FIXED (festival_data.dart + festival_calculator.dart)
+**Fix pattern:** `Colors.grey*` → `Theme.of(context).colorScheme.onSurfaceVariant`
 
-**Root cause:** The `monthNumber()` formula (sun's rashi at nextAm → rashi+1) gives:
-- Oct Amavasya: sun in Tula → month 7 (Ashvayuja). Traditional calls it Kartika = month 8.
-- The Diwali cluster (Oct 18-21) is in month 7 per our formula — teluguMonth was set to 8 → fired 1 month late.
-- Vaikunta Ekadashi: Ekadashi is a kshaya tithi (Dec 30-31, 2025 tithi jumps 10→12). Never appeared at sunrise → never fired.
+| File | Issue | Fix |
+|------|-------|-----|
+| day_cell.dart | `Colors.white` (today circle text) | `colorScheme.onPrimary` |
+| day_cell.dart | `Colors.grey.shade600` (nakshatra text) | `onSurfaceVariant` |
+| month_header.dart | `Colors.grey` (subtitle text) | `onSurfaceVariant` |
+| date_header_card.dart | `Colors.grey` (samvatsara text) | `onSurfaceVariant` |
+| five_limbs_card.dart | `Colors.grey` × 3 (label/subtitle/endtime) | `onSurfaceVariant` |
+| kalam_card.dart | `Colors.grey.shade200` (time bar track) | `colorScheme.outlineVariant` |
+| timings_card.dart | `Colors.grey` (icon label text) | `onSurfaceVariant` |
+| muhurtha_card.dart | `Colors.grey` (invalid state text) | `onSurfaceVariant` |
+| festival_card.dart | `Colors.grey` + `.shade600` × 2 | `onSurfaceVariant` |
+| context_card.dart | `Colors.grey.shade600` (chip label) | `onSurfaceVariant` |
 
-**Fixes:**
+### 3. Eclipse Card — 24hr Format Bug Fixed
 
-| Festival | Old teluguMonth | New | Why |
-|----------|----------------|-----|-----|
-| Dhanteras | 8 | 7 | Oct 18-21 dates give monthNumber=7 |
-| Naraka Chaturdashi | 8 | 7 | same |
-| Deepavali | 8 | 7 | same |
-| Vaikunta Ekadashi | 9 | 10 | Dec 30 gives monthNumber=10; + kshaya handling added |
-| Mahalaya Amavasya | 7 | 6 | Sep Amavasya (sun Kanya) gives monthNumber=6 |
+**Root cause:** `EclipseCard` had no `use24h` parameter. `_TimingRow` and `_SutakRow` both hardcoded `DateFormat('h:mm a')`.
 
-**Kshaya tithi handling added to `festival_calculator.dart`:**
-When festival tithi N is skipped (today sunrise = N-1, tomorrow = N+1), fire on today.
-This fixed Vaikunta Ekadashi Dec 30, 2025.
+**Fix:**
+- Added `use24h` parameter to `EclipseCard`, `_TimingRow`, `_SutakRow`
+- Updated all three callers: `today_screen.dart`, `panchangam_screen.dart`, `eclipse_screen.dart`
+- `eclipse_screen.dart` reads `use24h` from `settingsProvider`
 
-**Validated output (key dates):**
+### 4. Eclipse Card — "Visible in India" Chip Contrast
 
-| Festival | 2024 | 2025 | 2026 |
-|----------|------|------|------|
-| Mahalaya Amavasya | Oct 2 ✓ | Sep 21 (traditional Sep 22, ~1 day off) | Oct 10 |
-| Dasara | Oct 13 ✓ | Oct 2 ✓ | Oct 21 |
-| Dhanteras | Oct 30 ✓ | Oct 19 ✓ | Nov 7 |
-| Naraka Chaturdashi | Oct 31 ✓ | Oct 20 ✓ (Sringeri: Oct 20 "Diwali" ✓) | Nov 8 |
-| Deepavali | Nov 1 ✓ | Oct 21 ✓ (Sringeri confirmed) | Nov 9 |
-| Karthika Purnima | Nov 15 ✓ | Nov 5 ✓ | Nov 24 |
-| Vaikunta Ekadashi | Jan 21 | Jan 10 + **Dec 30 ✓** (Sringeri confirmed) | (Jan 2027) |
+**Fix:** Chip text color → `kAuspiciousGreen` with `fontWeight.w600`, background alpha 0.1→0.15, border width 1→1.5
 
-### 3. Calendar Launch Bug (FIXED prev session, included in this commit)
-`calendar_provider.dart` — `.valueOrNull` → `await .future` for festival and eclipse overlays.
+### 5. Eclipse Screen — Dark Mode Greys Fixed
+
+Two `Colors.grey` occurrences in `eclipse_screen.dart` → `onSurfaceVariant`
+
+### 6. App Name Capitalization
+
+`android:label="panchangam"` → `"Panchangam"` in AndroidManifest.xml
 
 ---
 
-## Open Items
+## Open Items (Low Priority / Next Session)
 
-### Low priority / next session
-- Mahalaya Sep 21 vs traditional Sep 22 — 1 day tithi boundary difference, minor
-- Dhanteras duplicate (vriddhi Trayodashi): hold until Srikar confirms no other festival issues
-- Rohini Wed + Punarvasu Sat: add dual-window support to amritKalam() architecture
-- Hasta Fri (-90) and Krittika Tue (+434): verify against original PDF
+- Mahalaya Sep 21 vs traditional Sep 22 — minor 1-day diff
+- Dhanteras duplicate (vriddhi Trayodashi) — hold
+- Rohini Wed + Punarvasu Sat dual Amrit Kalam windows — architecture upgrade
+- Hasta Fri (-90) and Krittika Tue (+434) — verify against Sringeri PDF
 - Remove autoDispose from festivalProvider + eclipseProvider
 - Sringeri disclaimer in app UI
-- Dark mode validation
+- Family tab decision (branch: `Family-Sharing-v1`)
 - MVP checklist session
+- Play Store account setup (Srikar)
 
 ---
 
@@ -88,4 +74,13 @@ This fixed Vaikunta Ekadashi Dec 30, 2025.
 cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
 /home/srikarbuddhiraju/development/flutter/bin/flutter build apk --release
 /home/srikarbuddhiraju/Android/Sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+
+## Icon Regeneration (if logo changes)
+
+```bash
+SRC="Logos & Assets/Logo/drawing.png"
+magick "$SRC" -fuzz 5% -transparent white -trim +repage -resize 85%x85% -gravity center -background none -extent 1024x1024 app/assets/icon_fg.png
+magick app/assets/icon_fg.png -background "#0B1437" -flatten app/assets/icon.png
+cd app && dart run flutter_launcher_icons
 ```

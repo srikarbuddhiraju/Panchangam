@@ -83,7 +83,7 @@ class DayCell extends StatelessWidget {
                         fontSize: 17,
                         fontWeight:
                             isToday ? FontWeight.bold : FontWeight.normal,
-                        color: isToday ? Colors.white : null,
+                        color: isToday ? Theme.of(context).colorScheme.onPrimary : null,
                       ),
                     ),
                   ),
@@ -115,7 +115,7 @@ class DayCell extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Text(
                 nakshatraName,
-                style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

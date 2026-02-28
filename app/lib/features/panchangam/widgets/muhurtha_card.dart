@@ -113,7 +113,7 @@ class _MuhurthaRow extends StatelessWidget {
         Text(
           timeStr,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: valid ? null : Colors.grey,
+                color: valid ? null : Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
         ),

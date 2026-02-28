@@ -127,7 +127,7 @@ class _KalamRow extends StatelessWidget {
                   height: 8,
                   width: totalWidth,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

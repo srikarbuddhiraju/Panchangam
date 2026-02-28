@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/app_strings.dart';
+import '../settings/settings_provider.dart';
 import 'eclipse_provider.dart';
 import 'widgets/eclipse_card.dart';
 
@@ -11,6 +12,7 @@ class EclipseScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int currentYear = DateTime.now().year;
     final asyncEclipses = ref.watch(eclipseProvider(currentYear));
+    final bool use24h = ref.watch(settingsProvider).use24h;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,13 +55,13 @@ class EclipseScreen extends ConsumerWidget {
                     ? '$currentYear — ${eclipses.length} గ్రహణాలు'
                     : '$currentYear — ${eclipses.length} eclipse(s)',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
               const SizedBox(height: 8),
               ...eclipses.map((e) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: EclipseCard(eclipse: e),
+                    child: EclipseCard(eclipse: e, use24h: use24h),
                   )),
               const SizedBox(height: 12),
               Text(
@@ -69,7 +71,7 @@ class EclipseScreen extends ConsumerWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(color: Colors.grey),
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ],
           );
