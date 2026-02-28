@@ -12,7 +12,7 @@ Let users create named tithi-based personal events (Guru birthdays, death annive
 
 ## Session 1 — Data Foundation ✅ COMPLETE (Feb 28, 2026)
 
-Branch: `feature/pro-session1-data-foundation`
+Branch: `feature/pro-session1-data-foundation` | Commit: `77f1603`
 
 - [x] Create `app/assets/data/festivals.json` — all 31 festivals migrated
 - [x] Create `app/lib/features/festivals/festival_loader.dart` — parse JSON → `List<Festival>`
@@ -30,7 +30,7 @@ Branch: `feature/pro-session1-data-foundation`
 
 ## Session 2 — Calendar Integration ✅ COMPLETE (Feb 28, 2026)
 
-Branch: `feature/pro-session2-calendar-integration`
+Branch: `feature/pro-session2-calendar-integration` | Commit: `7e52895`
 
 - [x] Create `user_event_calculator.dart` — tithi match (tithi + teluguMonth + isAdhika guard)
 - [x] Extend `DayData` — `teluguMonthNumber`, `isAdhikaMaasa`, `hasPersonalEvent`, `personalEventNames`
@@ -44,29 +44,36 @@ Branch: `feature/pro-session2-calendar-integration`
 
 ## Session 3 — Event UI ✅ COMPLETE (Feb 28, 2026)
 
-Branch: `feature/pro-session3-event-ui`
+Branch: `feature/pro-session3-event-ui` | Commits: `28e62aa`, `6cead70`, `29cc78c`
 
 - [x] `premium_guard.dart` — shows child if isPremium, else upgrade teaser (Subscribe button disabled)
 - [x] `my_events_screen.dart` — list (active first), swipe-to-delete, toggle, edit icon, FAB, empty state
-- [x] `event_form_screen.dart` — name EN/TE, tithi picker (30 items), month picker (null=every paksha), reminder placeholder (TODO Session4)
+- [x] `event_form_screen.dart` — name EN/TE, tithi picker (30 items), month picker (null=every paksha), reminder placeholder (TODO Session 4)
 - [x] `personal_events_card.dart` — gold-bordered card for Today + Panchangam detail
 - [x] `user_event_calculator.matchingEvents()` — added for PanchangamData context
-- [x] `family_screen.dart` — replaced teaser with PremiumGuard(child: MyEventsScreen())
+- [x] `family_screen.dart` — two-branch: Pro→MyEventsScreen (owns Scaffold), Free→thin Scaffold+PremiumGuard
 - [x] `today_screen.dart` — PersonalEventsCard shown when isPremium + matching events
 - [x] `panchangam_screen.dart` — PersonalEventsCard + "Mark this tithi" gold FAB (isPremium-gated)
 - [x] `routes.dart` — `/events/new?tithi=N` + `/events/:id` push routes added
+- [x] `app/.gitignore` — refined: specific paywall files, allows `premium_guard.dart`
 - [x] 32 unit tests pass ✅, no analyzer errors ✅
 
 ---
 
-## Session 4 — Notifications
+## Session 4 — Notifications (NEXT)
 
-- [ ] Create `app/lib/services/notification_service.dart` — flutter_local_notifications wrapper
-- [ ] Update `AndroidManifest.xml` — add POST_NOTIFICATIONS + SCHEDULE_EXACT_ALARM permissions
-- [ ] On event save: schedule next 3 occurrences via NotificationService
-- [ ] On event delete/disable: cancel notifications
-- [ ] On app start: re-schedule all active events
-- [ ] **Verify:** Add event with near-future reminder → notification fires correctly
+Branch to create: `feature/pro-session4-notifications`
+
+**Do merges first** (Sessions 1→2→3→main), then create this branch.
+
+- [ ] `flutter pub add flutter_local_notifications` in `app/`
+- [ ] Update `AndroidManifest.xml` — add `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED` permissions + receivers
+- [ ] Create `app/lib/services/notification_service.dart` — singleton: `init()`, `scheduleForEvent()`, `cancelForEvent()`
+- [ ] Add `nextOccurrences()` to `user_event_calculator.dart` — returns next N dates when event's tithi falls
+- [ ] Update `user_event_provider.dart` — schedule on add/update, cancel on delete/disable
+- [ ] Update `main.dart` — `NotificationService.init()` + re-schedule all active events on start
+- [ ] Wire real reminder dropdown in `event_form_screen.dart` (30min, 1hr, 2hr, 6hr, 12hr, 1day, or none)
+- [ ] **Verify on device**: add event with near-future reminder → notification fires ✅
 
 ---
 
@@ -97,38 +104,14 @@ class UserTithiEvent {
 
 ---
 
-## Festival JSON Schema
-
-```json
-{
-  "version": 1,
-  "festivals": [
-    {
-      "nameTe": "ఉగాది", "nameEn": "Ugadi",
-      "type": "tithi",
-      "teluguMonth": 1, "paksha": 1, "tithi": 1,
-      "observedAtNight": false,
-      "descriptionEn": "Telugu New Year..."
-    },
-    {
-      "nameTe": "భోగి", "nameEn": "Bhogi",
-      "type": "solar",
-      "gregorianMonth": 1, "gregorianDay": 13,
-      "descriptionEn": "The day before Sankranti..."
-    }
-  ]
-}
-```
-
----
-
 ## Architecture Notes
 
 - `isPremium` stored in `settings` Hive box (not a separate box)
 - User events stored as JSON strings in `userEventsBox` Hive box (UUID key, no TypeAdapters)
 - `UserEventCalculator` reuses same tithi-check logic as `FestivalCalculator`
-- `PremiumGuard` wraps gated UI — shows child if premium, else PaywallScreen
+- `PremiumGuard` wraps gated UI — shows child if premium, else upgrade teaser
 - `NotificationService` singleton: init at app start, schedule on event add/edit, cancel on delete/disable
+- Notification ID = `eventId.hashCode ^ (occurrenceIndex * 31)` to avoid collisions
 
 ---
 
