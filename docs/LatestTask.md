@@ -1,23 +1,58 @@
-# Latest Task — Panchangam Pro: Ready for Session 4
+# Latest Task — Panchangam Pro: Sessions 1–3 Merged, APK Installed
 
 **Last updated:** Feb 28, 2026
-**Status:** Sessions 1–3 complete. All committed on respective branches. Session 4 (Notifications) is next.
+**Status:** Sessions 1–3 merged to main. Bug fixed. APK built (52.9MB) and installed on device. Ready for Session 4.
 
 ---
 
-## FIRST THING NEXT SESSION — Merge branches to main
+## FIRST THING NEXT SESSION — Start Session 4 (Notifications)
 
-Sessions 1–3 are all verified (32 tests pass, no analyzer errors) but NOT yet merged to main.
-**Do this before creating the Session 4 branch:**
+Sessions 1–3 are merged to main. APK is on the device. Begin Session 4:
 
 ```bash
 cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam
-git checkout main
-git merge feature/pro-session1-data-foundation
-git merge feature/pro-session2-calendar-integration
-git merge feature/pro-session3-event-ui
-git push origin main
+git checkout main && git pull   # if needed after Srikar pushes manually
 git checkout -b feature/pro-session4-notifications
+cd app && flutter pub add flutter_local_notifications
+```
+
+Also: Srikar needs to manually push to GitHub (SSH auth needed):
+```bash
+git push origin main
+```
+
+---
+
+## What Was Done This Session
+
+### Branches merged to main (fast-forward, no conflicts)
+- `feature/pro-session1-data-foundation` → main ✅
+- `feature/pro-session2-calendar-integration` → main ✅
+- `feature/pro-session3-event-ui` → main ✅
+
+### Bug fixed during build
+**Missing `import 'user_tithi_event.dart'`** in three files:
+- `features/calendar/calendar_provider.dart`
+- `features/today/today_screen.dart`
+- `features/panchangam/panchangam_screen.dart`
+
+`dart analyze` (MCP tool) reported no errors — the compiler caught it during `flutter build apk --release`. Fixed and committed (`faa31a0`). Lesson added to `docs/lessons.md`.
+
+### APK built and installed
+- Build: `✓ Built app-release.apk (52.9MB)`
+- Installed: `adb install -r` → Success on device `10BDAH07CM000MQ`
+- GitHub push: **PENDING** — auth token expired. Srikar needs to push manually.
+
+### Main branch log (top commits)
+```
+efe15d5  docs: add build lesson
+faa31a0  fix: add missing UserTithiEvent import (3 files)
+c3fbf92  docs: full Session 4 handoff
+29cc78c  docs: add lessons + Q&A from Pro Sessions 1–3
+6cead70  docs: update LatestTask — Session 3 complete, Session 4 ready
+28e62aa  feat(pro-session3): Event UI — MyEventsScreen, EventFormScreen, PremiumGuard, routes
+7e52895  feat(pro-s2): Session 2 — calendar integration for personal events
+77f1603  feat(pro-s1): Session 1 — data foundation for Panchangam Pro
 ```
 
 ---
@@ -25,16 +60,13 @@ git checkout -b feature/pro-session4-notifications
 ## Session 4 — Notifications (TODO)
 
 **Branch to create:** `feature/pro-session4-notifications`
-**Goal:** When a user saves a personal tithi event with a reminder, a notification fires N minutes before that tithi date. Works even after app restarts.
 
 ### Step-by-step plan
 
 **Step 1 — Add package**
 ```bash
-cd app
-flutter pub add flutter_local_notifications
+cd app && flutter pub add flutter_local_notifications
 ```
-Verify: no conflicts with existing packages.
 
 **Step 2 — AndroidManifest.xml**
 File: `app/android/app/src/main/AndroidManifest.xml`
@@ -62,86 +94,32 @@ File: `app/lib/services/notification_service.dart`
 - Singleton class
 - `init()` — initialize plugin, request permission (Android 13+)
 - `scheduleForEvent(UserTithiEvent event, List<DateTime> occurrences)` — schedules one notification per occurrence (up to 3), N minutes before the datetime
-- `cancelForEvent(String eventId)` — cancels all notifications for that event (by eventId-based ID)
-- Notification ID formula: `eventId.hashCode ^ (occurrenceIndex * 31)` (avoids collisions)
+- `cancelForEvent(String eventId)` — cancels all notifications for that event
+- Notification ID formula: `eventId.hashCode ^ (occurrenceIndex * 31)`
 
-**Step 4 — Wire UserEventCalculator: next occurrences**
+**Step 4 — Add nextOccurrences to UserEventCalculator**
 File: `app/lib/features/events/user_event_calculator.dart`
 Add: `static List<DateTime> nextOccurrences(UserTithiEvent event, DateTime from, {int count = 3})`
-- Uses existing tithi-match logic
-- Returns next N dates (as DateTime at midnight) when this event's tithi falls
-- Needs PanchangamEngine to compute tithi for candidate dates
-- Note: this is the complex part — may need to iterate day-by-day or use an estimate approach
 
 **Step 5 — Wire UserEventProvider**
 File: `app/lib/features/events/user_event_provider.dart`
-- In `add()` and `update()`: after saving to Hive, call `NotificationService.scheduleForEvent(event, nextOccurrences(event, DateTime.now()))`
-- In `toggleActive()`: if disabling → `cancelForEvent(event.id)`. If enabling → reschedule.
-- In `delete()`: call `cancelForEvent(event.id)` before removing from Hive
-- All calls wrapped in `if (event.reminderMinutes != null)`
+- `add()` / `update()`: schedule after saving
+- `toggleActive()`: cancel if disabling, reschedule if enabling
+- `delete()`: cancel before removing
 
 **Step 6 — Wire main.dart**
-File: `app/lib/main.dart`
-- After Hive opens: call `await NotificationService.instance.init()`
-- Then: for each active event with reminder, call scheduleForEvent with next occurrences
-- This handles restarts and notification expiry
+- `await NotificationService.instance.init()`
+- Re-schedule all active events with reminders on app start
 
 **Step 7 — Wire EventFormScreen reminder picker**
 File: `app/lib/features/events/event_form_screen.dart`
-- Replace the reminder placeholder with a real `DropdownButtonFormField<int?>`
-- Options: null (No reminder), 30, 60, 120, 360, 720, 1440 minutes (labels: "30 min before", "1 hr", "2 hr", "6 hr", "12 hr", "1 day")
-- Value stored in `_reminderMinutes` state variable, passed to event on save
+- Replace placeholder with real `DropdownButtonFormField<int?>`
+- Options: null (No reminder), 30, 60, 120, 360, 720, 1440 minutes
 
 **Step 8 — Verify on device**
-- Enable isPremium via debug toggle in Settings
-- Add event with tithi = today's tithi + reminder = 30 min
-- Wait / set device clock forward → notification should fire
-- Delete event → confirm notification is cancelled
-
----
-
-## Sessions Completed
-
-### Session 1 — Data Foundation ✅
-**Branch:** `feature/pro-session1-data-foundation` | **Commit:** `77f1603`
-- `app/assets/data/festivals.json` — 31 festivals migrated from Dart to JSON
-- `app/lib/features/festivals/festival_loader.dart` — parse JSON at startup
-- `app/lib/features/festivals/_archive/festival_data.dart.bak` — safety archive
-- `app/lib/features/events/user_tithi_event.dart` — model (UUID, toMap/fromMap, copyWith)
-- `app/lib/features/events/user_event_provider.dart` — Riverpod CRUD + Hive JSON persistence
-- `app/lib/core/utils/hive_keys.dart` — added `userEventsBox`, `isPremium`
-- `app/lib/main.dart` — opens `userEventsBox`, calls `FestivalLoader.initialize`
-- `app/pubspec.yaml` — added `festivals.json` asset + `uuid: ^4.5.1`
-
-### Session 2 — Calendar Integration ✅
-**Branch:** `feature/pro-session2-calendar-integration` | **Commit:** `7e52895`
-- `app/lib/features/events/user_event_calculator.dart` — `namesForDay()` tithi match
-- `app/lib/core/calculations/panchangam_engine.dart` — DayData +4 fields: `teluguMonthNumber`, `isAdhikaMaasa`, `hasPersonalEvent`, `personalEventNames`
-- `app/lib/features/calendar/calendar_provider.dart` — overlays user events (gated by isPremium)
-- `app/lib/features/calendar/widgets/day_cell.dart` — gold italic personal event label
-- `app/lib/features/settings/settings_provider.dart` — `isPremium` + `setIsPremium()`
-- `app/lib/features/settings/settings_screen.dart` — kDebugMode toggle for isPremium
-
-### Session 3 — Event UI ✅
-**Branch:** `feature/pro-session3-event-ui` | **Commits:** `28e62aa`, `6cead70`, `29cc78c`
-- `app/lib/features/premium/premium_guard.dart` — NEW: shows child or upgrade teaser
-- `app/lib/features/events/my_events_screen.dart` — NEW: full list + swipe-delete + toggle + edit
-- `app/lib/features/events/event_form_screen.dart` — NEW: add/edit form (reminder is placeholder)
-- `app/lib/features/events/widgets/personal_events_card.dart` — NEW: gold card for detail screens
-- `app/lib/features/family/family_screen.dart` — two-branch (Pro→MyEventsScreen, Free→PremiumGuard)
-- `app/lib/features/today/today_screen.dart` — PersonalEventsCard shown when premium + matching
-- `app/lib/features/panchangam/panchangam_screen.dart` — PersonalEventsCard + "Mark this tithi" FAB
-- `app/lib/features/events/user_event_calculator.dart` — added `matchingEvents()`
-- `app/lib/app/routes.dart` — `/events/new?tithi=N` + `/events/:id`
-- `app/.gitignore` — refined: ignores specific paywall files, allows `premium_guard.dart`
-
----
-
-## Merge Plan (confirmed with Srikar Feb 28 2026)
-
-Merge each session branch to main after it is verified. Do NOT batch all at the end.
-Sequence: Session 1 → Session 2 → Session 3 → main (fast-forward merges).
-Then create next session branch off the updated main.
+- Enable isPremium via debug toggle
+- Add event with reminder = 30 min, tithi = near future
+- Confirm notification fires
 
 ---
 
