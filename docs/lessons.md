@@ -107,6 +107,15 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Flutter Widget Architecture
+
+### Double-Scaffold — two Scaffolds stacked = two AppBars
+- **Mistake**: `FamilyScreen` had its own `Scaffold+AppBar`, and it was rendering `MyEventsScreen` (which also had a `Scaffold+AppBar`) inside its body. This stacks two AppBars on screen.
+- **Fix**: Two-branch approach — if Pro, return `MyEventsScreen()` directly (it owns the Scaffold). If free, return a thin `Scaffold + PremiumGuard` (no child Scaffold inside).
+- **Rule**: A widget that contains its own `Scaffold` must NOT be embedded inside another `Scaffold`'s body. If a screen owns its own layout (AppBar + FAB + body), the parent should return it directly, not wrap it.
+
+---
+
 ## Data Persistence (CRITICAL)
 
 ### Never lose user-pasted data between sessions
