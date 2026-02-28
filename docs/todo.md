@@ -28,14 +28,17 @@ Branch: `feature/pro-session1-data-foundation`
 
 ---
 
-## Session 2 — Calendar Integration
+## Session 2 — Calendar Integration ✅ COMPLETE (Feb 28, 2026)
 
-- [ ] Create `app/lib/features/events/user_event_calculator.dart` — tithi match + next occurrence
-- [ ] Extend `DayData` in `panchangam_engine.dart` — add `hasPersonalEvent`, `personalEventNames`
-- [ ] Update `calendar_provider.dart` — overlay user events onto DayData
-- [ ] Update `day_cell.dart` — render personal event gold dot below nakshatra
-- [ ] Add `isPremium` debug toggle to `settings_screen.dart` (debug builds only)
-- [ ] **Verify:** Set isPremium=true via debug → add event → gold dot on calendar
+Branch: `feature/pro-session2-calendar-integration`
+
+- [x] Create `user_event_calculator.dart` — tithi match (tithi + teluguMonth + isAdhika guard)
+- [x] Extend `DayData` — `teluguMonthNumber`, `isAdhikaMaasa`, `hasPersonalEvent`, `personalEventNames`
+- [x] Update `calendar_provider.dart` — overlays user events (gated by `isPremium`)
+- [x] Update `day_cell.dart` — gold italic `· EventName` below nakshatra
+- [x] Add `isPremium` to `AppSettings` + `setIsPremium()` to `SettingsNotifier`
+- [x] Add debug toggle to `settings_screen.dart` (only visible in `kDebugMode`)
+- [x] 32 unit tests pass ✅, no analyzer errors ✅
 
 ---
 

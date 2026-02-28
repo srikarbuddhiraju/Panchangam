@@ -155,6 +155,24 @@ class DayCell extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+
+            // Personal event (gold italic, dot prefix — distinct from festival amber)
+            if (data.hasPersonalEvent)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Text(
+                  '· ${data.personalEventNames.first}',
+                  style: const TextStyle(
+                    fontSize: 9,
+                    color: AppTheme.kGold,
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
           ],
         ),
       ),
