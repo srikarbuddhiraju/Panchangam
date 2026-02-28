@@ -31,6 +31,7 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - **Skim and scan, never read blindly** — when given a file, image, or pasted text, scan for the specific keyword/value you need first. Only read broadly if the targeted scan fails. For Panchangam PDF text, scan for ది.అమృత / రా.అమృత / అమృతఘటికాభావ directly.
 - Always store what was the latest task/objective that was being worked, in `docs/LatestTask.md`. This has to be for every commit and session wise. Follow clear convention while updating this document.
 - No need to keep history of all tasks/objective and sessions (since we already have commit messages for each commit) in `docs/LatestTask.md`, but rather the latest couple (at max).
+- Always save the context in relevant .md files at regular intervals.
 - You are free to check https://github.com/srikarbuddhiraju/Panchangam if needed. Do not read into files, as this is the same as project directory. Use it for reference purposes.
 
 ## Session Start Checklist
