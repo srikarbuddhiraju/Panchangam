@@ -9,6 +9,7 @@ import 'app/routes.dart';
 import 'app/splash_overlay.dart';
 import 'core/city_lookup/city_lookup.dart';
 import 'core/utils/hive_keys.dart';
+import 'features/festivals/festival_loader.dart';
 import 'features/settings/settings_provider.dart';
 
 Future<void> main() async {
@@ -23,12 +24,16 @@ Future<void> main() async {
   // Initialize local storage
   await Hive.initFlutter();
   await Hive.openBox(HiveKeys.settingsBox);
+  await Hive.openBox(HiveKeys.userEventsBox);
 
   // Initialize locale data for Telugu date formatting
   await initializeDateFormatting('te', null);
 
   // Load city database from bundled asset
   await CityLookup.initialize(rootBundle);
+
+  // Load festival definitions from JSON asset
+  await FestivalLoader.initialize(rootBundle);
 
   runApp(
     const ProviderScope(

@@ -96,6 +96,17 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Git Branching (MANDATORY)
+
+### Always use feature branches
+- **Rule**: NEVER implement features or sessions directly on main. Create a branch first.
+- **Rule**: Naming convention: `feature/<short-description>` (e.g., `feature/pro-session1-data-foundation`)
+- **Rule**: Merge to main only when session is complete and verified with tests + build
+- **Rule**: For Pro feature sessions, one branch per session. Smaller branches for bug fixes.
+- This is a standing instruction from Srikar — applies to ALL future sessions.
+
+---
+
 ## Data Persistence (CRITICAL)
 
 ### Never lose user-pasted data between sessions
