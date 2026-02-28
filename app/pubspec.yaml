@@ -29,8 +29,6 @@ dependencies:
   # Reminders/alarms (scaffold — full implementation in v2)
   flutter_local_notifications: ^18.0.1
 
-  # Subscriptions (scaffold — full implementation in v2)
-  in_app_purchase: ^3.2.0
 
 dev_dependencies:
   flutter_test:

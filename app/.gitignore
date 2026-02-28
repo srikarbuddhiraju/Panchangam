@@ -52,3 +52,7 @@ app.*.map.json
 lib/firebase_options.dart
 *.jks
 *.keystore
+
+# Pricing / paywall — not for public repo
+lib/shared/widgets/paywall_screen.dart
+lib/features/premium/

@@ -87,6 +87,15 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Dart Syntax
+
+### Local functions cannot have `final` modifier
+- **Mistake**: Wrote `final String fmt(DateTime dt) => ...` inside a build() method
+- **Fix**: Local functions are just `String fmt(DateTime dt) => ...` — no modifier
+- **Rule**: In Dart, `final` applies to variables, not local function declarations
+
+---
+
 ## Data Persistence (CRITICAL)
 
 ### Never lose user-pasted data between sessions
