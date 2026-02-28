@@ -40,6 +40,38 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 > Review MVP checklist together before deciding. Goal is to reach MVP stage.
 > Likely candidates: dark mode validation, festival loading bug, Family tab decision.
 
+---
+
+## Session: Feb 28 2026 — Panchangam Pro Planning (Sessions 1–3)
+
+**Q1. Festival data migration — delete `festival_data.dart` or keep it?**
+> Do not delete. Archive it to a `_archive/` subfolder as `.bak`. Build the new thing first, test it, then move the old one — never delete outright.
+> **Decision**: `festival_data.dart` → `_archive/festival_data.dart.bak`. `FestivalCalculator` falls back to `FestivalData.all` in CLI/test contexts.
+
+**Q2. Where to store `isPremium`?**
+> Go with Claude's recommendation.
+> **Decision**: `isPremium` stored in the existing `settings` Hive box (not a new box). Simpler, consistent with existing patterns.
+
+**Q3. UUID vs manual ID for user events?**
+> UUID chosen (after comparing options).
+> **Decision**: `uuid: ^4.5.1` added to pubspec. UUID v4 (RFC 4122), collision-proof, cloud-sync-ready for future ₹119 Family tier.
+
+**Q4. Push paywall files to git?**
+> Do not push if it could be a vulnerability.
+> **Decision**: `paywall_screen.dart` and `premium_shell_screen.dart` are gitignored (pricing is sensitive). `premium_guard.dart` is safe (no pricing) — gitignore updated to allow it specifically.
+
+**Q5. Notifications — build now or later?**
+> Build in Session 4 as planned. Needed at launch.
+> **Decision**: Session 4 = Notifications. Reminder toggle in EventFormScreen is a placeholder until then.
+
+**Q6. Git branching — mandatory?**
+> YES, mandatory. One branch per session. Merge to main only when session is complete and verified.
+> **Standing rule**: NEVER implement features directly on main. This applies to all future sessions.
+
+**Q7. .md file updates — how often?**
+> Update all relevant .md files every ~10 minutes during a session, or when a task completes.
+> **Standing rule**: LatestTask.md, todo.md, lessons.md, ConvoQAClaude.md — all must be kept current.
+
 **Q4. Any UX feedback from daily use?**
 > UX is good for MVP but needs refinement before a great app.
 > **Known bug**: Festivals, Grahana (eclipse) highlights do not appear on the landing page at app launch — user has to navigate to next/previous month first, then they appear.
