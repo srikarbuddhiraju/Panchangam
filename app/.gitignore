@@ -55,4 +55,5 @@ lib/firebase_options.dart
 
 # Pricing / paywall — not for public repo
 lib/shared/widgets/paywall_screen.dart
-lib/features/premium/
+lib/features/premium/paywall_screen.dart
+lib/features/premium/premium_shell_screen.dart

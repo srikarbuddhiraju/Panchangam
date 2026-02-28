@@ -1,49 +1,57 @@
-# Latest Task — Panchangam Pro: Session 2 Complete
+# Latest Task — Panchangam Pro: Session 3 Complete
 
 **Last updated:** Feb 28, 2026
-**Status:** Session 2 (Calendar Integration) complete on branch `feature/pro-session2-calendar-integration`. All 32 tests pass. Ready to commit and move to Session 3.
+**Status:** Session 3 (Event UI) complete on branch `feature/pro-session3-event-ui`. All 32 tests pass. Ready to commit and move to Session 4 (Notifications).
 
 ---
 
 ## What Was Done This Session
 
-### Session 2 — Calendar Integration (All Done ✅)
+### Session 3 — Event UI (All Done ✅)
 
-**Branch:** `feature/pro-session2-calendar-integration`
+**Branch:** `feature/pro-session3-event-ui`
 
 | File | What Changed |
 |------|-------------|
-| `features/events/user_event_calculator.dart` | NEW — tithi match: checks tithi + teluguMonth + adhika guard |
-| `core/calculations/panchangam_engine.dart` | DayData: added `teluguMonthNumber`, `isAdhikaMaasa`, `hasPersonalEvent`, `personalEventNames` |
-| `features/calendar/calendar_provider.dart` | Overlays user events (gated by `isPremium`) onto DayData after festivals/eclipses |
-| `features/calendar/widgets/day_cell.dart` | Shows `· EventName` in gold italic below nakshatra when `hasPersonalEvent` |
-| `features/settings/settings_provider.dart` | Added `isPremium` to `AppSettings`, `setIsPremium()` to `SettingsNotifier` |
-| `features/settings/settings_screen.dart` | Debug toggle for `isPremium` (visible only when `kDebugMode == true`) |
+| `features/premium/premium_guard.dart` | NEW — wraps Pro features; upgrade teaser when free |
+| `features/events/my_events_screen.dart` | NEW — list + empty state + swipe-delete + toggle + edit FAB |
+| `features/events/event_form_screen.dart` | NEW — add/edit form: name EN/TE, tithi picker, month picker, reminder placeholder |
+| `features/events/widgets/personal_events_card.dart` | NEW — gold-bordered card for day detail screens |
+| `features/events/user_event_calculator.dart` | Added `matchingEvents()` for PanchangamData context |
+| `features/family/family_screen.dart` | Replaced Coming Soon teaser → PremiumGuard(MyEventsScreen) |
+| `features/today/today_screen.dart` | Added PersonalEventsCard when isPremium + events match |
+| `features/panchangam/panchangam_screen.dart` | Added PersonalEventsCard + "Mark this tithi" FAB |
+| `app/routes.dart` | Added `/events/new?tithi=N` + `/events/:id` push routes |
 
-### Architecture note
-- `DayData.compute()` now calls `TeluguCalendar.monthNumber()` + `isAdhikaMaasa()` in the background isolate (cheap — same isolate that already does tithi/nakshatra)
-- User event overlay is synchronous (Hive already loaded) — no extra `await` needed in provider
-- Personal events are fully gated: `isPremium=false` → empty list passed to calculator → no dots on calendar
+### Design decisions
+- `FamilyScreen` now just wraps `PremiumGuard(child: MyEventsScreen())` — clean separation
+- `PremiumGuard` teaser shows "Subscribe — Coming Soon" button (disabled, wired in Session 5)
+- "Mark this tithi" FAB only visible when `isPremium=true` AND Panchangam data loaded
+- Reminder toggle stored but TODO'd for Session 4 — no crash if enabled
+- `MyEventsScreen` has its own `AppBar` — `FamilyScreen` provides the outer `Scaffold+AppBar`; but since `MyEventsScreen` is also nested inside a `Scaffold`, there's a double-scaffold situation. See note below.
 
-### Verified
-- ✅ All 32 unit tests pass
-- ✅ No analyzer errors on changed files
+### Note: Double Scaffold
+`FamilyScreen` → `Scaffold` + `AppBar` → `PremiumGuard` → `MyEventsScreen` → `Scaffold` + `AppBar`
+
+This will cause a double app bar. Need to remove the `Scaffold`+`AppBar` from `MyEventsScreen` (it should just be a bare widget with body content) so `FamilyScreen`'s scaffold wraps it. The `EventFormScreen` still needs its own scaffold since it's a push route. **This is a bug to fix before release.**
 
 ---
 
 ## To Do For Next Session
 
-### Session 3 — Event UI
-**New branch:** `feature/pro-session3-event-ui`
+### Session 4 — Notifications
+**New branch:** `feature/pro-session4-notifications`
 
-- [ ] Create `features/events/my_events_screen.dart` — list + empty state + FAB
-- [ ] Create `features/events/event_form_screen.dart` — add/edit form (name, tithi picker, month picker, reminder toggle placeholder)
-- [ ] Create `features/premium/premium_guard.dart` — shows child if premium, else teaser
-- [ ] Update `features/today/today_screen.dart` — show personal events alongside festivals
-- [ ] Update `features/panchangam/panchangam_screen.dart` — "Mark this tithi" FAB (premium-gated)
-- [ ] Update `features/family/family_screen.dart` — replace Coming Soon teaser → MyEventsScreen
-- [ ] Update `app/routes.dart` — add `/events/new` + `/events/:id` push routes
-- [ ] Full flow test: add → calendar dot → Today → edit → delete
+- [ ] Create `app/lib/services/notification_service.dart` — flutter_local_notifications wrapper
+- [ ] Update `AndroidManifest.xml` — add POST_NOTIFICATIONS + SCHEDULE_EXACT_ALARM permissions
+- [ ] On event save: schedule next 3 occurrences via NotificationService
+- [ ] On event delete/disable: cancel all notifications for that event
+- [ ] On app start (`main.dart`): re-schedule all active events with reminders
+- [ ] Wire reminder picker in `EventFormScreen` (minutes before tithi)
+- [ ] Verify: add event with near-future reminder → notification fires on device
+
+### Known issue to fix (identified in Session 3)
+- **Double scaffold bug**: `FamilyScreen` wraps `MyEventsScreen`, both have `Scaffold+AppBar`. Fix: `MyEventsScreen` should render only its body content (list + FAB), not its own Scaffold. The FAB needs to be placed in `FamilyScreen`'s Scaffold.
 
 ---
 

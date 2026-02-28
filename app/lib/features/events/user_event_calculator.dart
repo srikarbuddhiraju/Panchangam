@@ -38,4 +38,21 @@ class UserEventCalculator {
         event.teluguMonth != day.teluguMonthNumber) return false;
     return true;
   }
+
+  /// Return matching events given raw values (used in Today + Panchangam screens
+  /// which have [PanchangamData] rather than [DayData]).
+  static List<UserTithiEvent> matchingEvents({
+    required List<UserTithiEvent> events,
+    required int tithi,
+    required int teluguMonth,
+    required bool isAdhikaMaasa,
+  }) {
+    if (events.isEmpty || isAdhikaMaasa) return const [];
+    return events.where((e) {
+      if (!e.isActive) return false;
+      if (e.tithi != tithi) return false;
+      if (e.teluguMonth != null && e.teluguMonth != teluguMonth) return false;
+      return true;
+    }).toList();
+  }
 }

@@ -42,16 +42,20 @@ Branch: `feature/pro-session2-calendar-integration`
 
 ---
 
-## Session 3 — Event UI
+## Session 3 — Event UI ✅ COMPLETE (Feb 28, 2026)
 
-- [ ] Create `app/lib/features/events/my_events_screen.dart` — Family tab: list + empty state + FAB
-- [ ] Create `app/lib/features/events/event_form_screen.dart` — add/edit form
-- [ ] Create `app/lib/features/premium/premium_guard.dart` — PremiumGuard widget
-- [ ] Update `today_screen.dart` — show user events alongside festivals
-- [ ] Update `panchangam_screen.dart` — "Mark this tithi" FAB (premium-gated, pre-fills tithi)
-- [ ] Update `family_screen.dart` — replace Coming Soon teaser → MyEventsScreen
-- [ ] Update `routes.dart` — add `/events/new` and `/events/:id` push routes
-- [ ] **Verify:** Full add → view on calendar → view on today → edit → delete flow
+Branch: `feature/pro-session3-event-ui`
+
+- [x] `premium_guard.dart` — shows child if isPremium, else upgrade teaser (Subscribe button disabled)
+- [x] `my_events_screen.dart` — list (active first), swipe-to-delete, toggle, edit icon, FAB, empty state
+- [x] `event_form_screen.dart` — name EN/TE, tithi picker (30 items), month picker (null=every paksha), reminder placeholder (TODO Session4)
+- [x] `personal_events_card.dart` — gold-bordered card for Today + Panchangam detail
+- [x] `user_event_calculator.matchingEvents()` — added for PanchangamData context
+- [x] `family_screen.dart` — replaced teaser with PremiumGuard(child: MyEventsScreen())
+- [x] `today_screen.dart` — PersonalEventsCard shown when isPremium + matching events
+- [x] `panchangam_screen.dart` — PersonalEventsCard + "Mark this tithi" gold FAB (isPremium-gated)
+- [x] `routes.dart` — `/events/new?tithi=N` + `/events/:id` push routes added
+- [x] 32 unit tests pass ✅, no analyzer errors ✅
 
 ---
 

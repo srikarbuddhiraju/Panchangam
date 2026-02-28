@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../features/calendar/calendar_screen.dart';
+import '../features/events/event_form_screen.dart';
 import '../features/today/today_screen.dart';
 import '../features/family/family_screen.dart';
 import '../features/panchangam/panchangam_screen.dart';
@@ -11,11 +12,13 @@ import '../shared/widgets/main_scaffold.dart';
 /// Tab structure:
 ///   /         → Calendar
 ///   /today    → Today (daily panchangam with day navigation)
-///   /family   → Family (placeholder for v2 features)
+///   /family   → My Events (Pro) / upgrade teaser (free)
 ///   /settings → Settings
 ///
-/// Full-screen routes (no bottom nav):
-///   /panchangam/:date → Day detail pushed from calendar
+/// Full-screen push routes (no bottom nav):
+///   /panchangam/:date → Day detail
+///   /events/new       → Add event (optional ?tithi=N query param pre-fills tithi)
+///   /events/:id       → Edit event
 class AppRoutes {
   AppRoutes._();
 
@@ -60,13 +63,33 @@ class AppRoutes {
           ),
         ],
       ),
-      // Day detail — full screen, no bottom nav, pushed from calendar grid
+      // Day detail — full screen, pushed from calendar grid
       GoRoute(
         path: '/panchangam/:date',
         builder: (context, state) {
           final String dateStr = state.pathParameters['date']!;
           final DateTime date = DateTime.parse(dateStr);
           return PanchangamScreen(date: date);
+        },
+      ),
+
+      // Add new personal tithi event
+      // Optional query param: ?tithi=N (pre-fills tithi picker, set by "Mark this tithi" FAB)
+      GoRoute(
+        path: '/events/new',
+        builder: (context, state) {
+          final tithiStr = state.uri.queryParameters['tithi'];
+          final prefill = tithiStr != null ? int.tryParse(tithiStr) : null;
+          return EventFormScreen(prefillTithi: prefill);
+        },
+      ),
+
+      // Edit existing personal tithi event
+      GoRoute(
+        path: '/events/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return EventFormScreen(eventId: id);
         },
       ),
     ],

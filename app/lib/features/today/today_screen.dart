@@ -13,6 +13,9 @@ import '../panchangam/widgets/muhurtha_card.dart';
 import '../panchangam/widgets/context_card.dart';
 import '../eclipse/eclipse_provider.dart';
 import '../eclipse/widgets/eclipse_card.dart';
+import '../events/user_event_calculator.dart';
+import '../events/user_event_provider.dart';
+import '../events/widgets/personal_events_card.dart';
 import '../festivals/festival_provider.dart';
 import '../panchangam/widgets/festival_card.dart';
 import '../panchangam/widgets/date_header_card.dart';
@@ -146,6 +149,16 @@ class _TodayContent extends ConsumerWidget {
 
     final festivals = ref.watch(festivalsForDateProvider(data.date));
 
+    // Personal events: only for Pro users
+    final isPremium = ref.watch(settingsProvider).isPremium;
+    final allUserEvents = isPremium ? ref.watch(userEventProvider) : <UserTithiEvent>[];
+    final personalEvents = UserEventCalculator.matchingEvents(
+      events: allUserEvents,
+      tithi: data.tithiNumber,
+      teluguMonth: data.teluguMonthNumber,
+      isAdhikaMaasa: data.isAdhikaMaasa,
+    );
+
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
@@ -157,6 +170,10 @@ class _TodayContent extends ConsumerWidget {
         ],
         if (festivals.isNotEmpty) ...[
           FestivalCard(festivals: festivals),
+          const SizedBox(height: 8),
+        ],
+        if (personalEvents.isNotEmpty) ...[
+          PersonalEventsCard(events: personalEvents),
           const SizedBox(height: 8),
         ],
         FiveLimbsCard(data: data, use24h: use24h),
