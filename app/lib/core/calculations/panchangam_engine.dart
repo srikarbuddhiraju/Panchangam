@@ -324,12 +324,20 @@ class DayData {
   final int nakshatraNumber;
   final String nakshatraNameTe;
   final String nakshatraNameEn;
+
+  // ── Telugu calendar context (needed for personal event filtering) ──────────
+  final int teluguMonthNumber;
+  final bool isAdhikaMaasa;
+
+  // ── Overlays (all filled by calendar_provider after isolate runs) ──────────
   final bool isFestival;
   final List<String> festivalNamesTe;
   final List<String> festivalNamesEn;
   final bool hasEclipse;
   final String eclipseNameTe;
   final String eclipseNameEn;
+  final bool hasPersonalEvent;
+  final List<String> personalEventNames;
 
   const DayData({
     required this.date,
@@ -339,12 +347,16 @@ class DayData {
     required this.nakshatraNumber,
     required this.nakshatraNameTe,
     required this.nakshatraNameEn,
+    required this.teluguMonthNumber,
+    required this.isAdhikaMaasa,
     this.isFestival = false,
     this.festivalNamesTe = const [],
     this.festivalNamesEn = const [],
     this.hasEclipse = false,
     this.eclipseNameTe = '',
     this.eclipseNameEn = '',
+    this.hasPersonalEvent = false,
+    this.personalEventNames = const [],
   });
 
   /// Compute a DayData (lighter than full PanchangamData) for the calendar grid.
@@ -355,6 +367,8 @@ class DayData {
 
     final int tNum = Tithi.number(jdSunrise);
     final int nNum = Nakshatra.number(jdSunrise);
+    final int teluguMonthNum = TeluguCalendar.monthNumber(jdSunrise);
+    final bool isAdhika = TeluguCalendar.isAdhikaMaasa(jdSunrise);
 
     return DayData(
       date: DateTime(date.year, date.month, date.day),
@@ -364,6 +378,8 @@ class DayData {
       nakshatraNumber: nNum,
       nakshatraNameTe: Nakshatra.namesTe[nNum - 1],
       nakshatraNameEn: Nakshatra.namesEn[nNum - 1],
+      teluguMonthNumber: teluguMonthNum,
+      isAdhikaMaasa: isAdhika,
     );
   }
 }

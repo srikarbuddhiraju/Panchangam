@@ -14,6 +14,11 @@ class AppSettings {
   final ThemeMode themeMode;
   final bool use24h;
 
+  /// Whether the user has unlocked Panchangam Pro.
+  /// Persisted in the settings Hive box.
+  /// Billing is deferred — set via debug toggle for now.
+  final bool isPremium;
+
   const AppSettings({
     required this.cityName,
     required this.lat,
@@ -21,6 +26,7 @@ class AppSettings {
     required this.language,
     required this.themeMode,
     required this.use24h,
+    this.isPremium = false,
   });
 
   CityData get city => CityData(
@@ -37,6 +43,7 @@ class AppSettings {
     AppLanguage? language,
     ThemeMode? themeMode,
     bool? use24h,
+    bool? isPremium,
   }) =>
       AppSettings(
         cityName: cityName ?? this.cityName,
@@ -45,6 +52,7 @@ class AppSettings {
         language: language ?? this.language,
         themeMode: themeMode ?? this.themeMode,
         use24h: use24h ?? this.use24h,
+        isPremium: isPremium ?? this.isPremium,
       );
 }
 
@@ -81,6 +89,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
       themeMode: themeMode,
       use24h:
           box.get(HiveKeys.timeFormat, defaultValue: '12h') as String == '24h',
+      isPremium:
+          (box.get(HiveKeys.isPremium, defaultValue: false) as bool?) ?? false,
     );
   }
 
@@ -113,6 +123,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
     final Box box = Hive.box(HiveKeys.settingsBox);
     await box.put(HiveKeys.timeFormat, use24h ? '24h' : '12h');
     state = state.copyWith(use24h: use24h);
+  }
+
+  /// Toggle Panchangam Pro status.
+  /// Debug-only in production — will be wired to billing in a future session.
+  Future<void> setIsPremium(bool value) async {
+    final Box box = Hive.box(HiveKeys.settingsBox);
+    await box.put(HiveKeys.isPremium, value);
+    state = state.copyWith(isPremium: value);
   }
 }
 
