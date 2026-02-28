@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
+import '../events/user_event_calculator.dart';
+import '../events/user_event_provider.dart';
+import '../events/widgets/personal_events_card.dart';
 import '../settings/settings_provider.dart';
 import 'panchangam_provider.dart';
 import 'widgets/five_limbs_card.dart';
@@ -75,6 +80,18 @@ class PanchangamScreen extends ConsumerWidget {
           use24h: settings.use24h,
         ),
       ),
+      // "Mark this tithi" FAB — only visible for Pro users
+      floatingActionButton: asyncData.valueOrNull != null && settings.isPremium
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push(
+                '/events/new?tithi=${asyncData.valueOrNull!.tithiNumber}',
+              ),
+              backgroundColor: AppTheme.kGold,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.bookmark_add_outlined),
+              label: Text(S.isTelugu ? 'ఈ తిథి గుర్తించు' : 'Mark this tithi'),
+            )
+          : null,
     );
   }
 }
@@ -90,8 +107,19 @@ class _PanchangamContent extends ConsumerWidget {
     final eclipse = ref.watch(eclipseForDateProvider(data.date)).valueOrNull;
     final festivals = ref.watch(festivalsForDateProvider(data.date));
 
+    // Personal events: only for Pro users
+    final isPremium = ref.watch(settingsProvider).isPremium;
+    final allUserEvents =
+        isPremium ? ref.watch(userEventProvider) : <UserTithiEvent>[];
+    final personalEvents = UserEventCalculator.matchingEvents(
+      events: allUserEvents,
+      tithi: data.tithiNumber,
+      teluguMonth: data.teluguMonthNumber,
+      isAdhikaMaasa: data.isAdhikaMaasa,
+    );
+
     return ListView(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 88), // bottom padding for FAB
       children: [
         // ── Date header ───────────────────────────────────────────────────
         DateHeaderCard(data: data),
@@ -106,6 +134,12 @@ class _PanchangamContent extends ConsumerWidget {
         // ── Festivals (shown only on festival days) ───────────────────────
         if (festivals.isNotEmpty) ...[
           FestivalCard(festivals: festivals),
+          const SizedBox(height: 8),
+        ],
+
+        // ── Personal events (Pro users only) ─────────────────────────────
+        if (personalEvents.isNotEmpty) ...[
+          PersonalEventsCard(events: personalEvents),
           const SizedBox(height: 8),
         ],
 
