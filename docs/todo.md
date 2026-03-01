@@ -55,77 +55,129 @@ Branch: `feature/pro-session3-event-ui` | Commits: `28e62aa`, `6cead70`, `29cc78
 - [x] `today_screen.dart` — PersonalEventsCard shown when isPremium + matching events
 - [x] `panchangam_screen.dart` — PersonalEventsCard + "Mark this tithi" gold FAB (isPremium-gated)
 - [x] `routes.dart` — `/events/new?tithi=N` + `/events/:id` push routes added
-- [x] `app/.gitignore` — refined: specific paywall files, allows `premium_guard.dart`
 - [x] 32 unit tests pass ✅, no analyzer errors ✅
 
 ---
 
-## Session 4 — Notifications (NEXT)
+## Session 4 — Notifications ✅ COMPLETE (Mar 1, 2026)
 
-Branch to create: `feature/pro-session4-notifications`
+Branch: `feature/pro-session4-notifications` | Merged to main
 
-**Do merges first** (Sessions 1→2→3→main), then create this branch.
-
-- [ ] `flutter pub add flutter_local_notifications` in `app/`
-- [ ] Update `AndroidManifest.xml` — add `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED` permissions + receivers
-- [ ] Create `app/lib/services/notification_service.dart` — singleton: `init()`, `scheduleForEvent()`, `cancelForEvent()`
-- [ ] Add `nextOccurrences()` to `user_event_calculator.dart` — returns next N dates when event's tithi falls
-- [ ] Update `user_event_provider.dart` — schedule on add/update, cancel on delete/disable
-- [ ] Update `main.dart` — `NotificationService.init()` + re-schedule all active events on start
-- [ ] Wire real reminder dropdown in `event_form_screen.dart` (30min, 1hr, 2hr, 6hr, 12hr, 1day, or none)
-- [ ] **Verify on device**: add event with near-future reminder → notification fires ✅
+- [x] `flutter pub add flutter_local_notifications` in `app/`
+- [x] Update `AndroidManifest.xml` — `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED` + receivers
+- [x] Create `app/lib/services/notification_service.dart` — singleton: `init()`, `scheduleForEvent()`, `cancelForEvent()`
+- [x] Add `nextOccurrences()` to `user_event_calculator.dart` — returns next N dates when event's tithi falls
+- [x] Update `user_event_provider.dart` — schedule on add/update, cancel on delete/disable
+- [x] Update `main.dart` — `NotificationService.init()` + re-schedule all active events on start
+- [x] Wire real reminder dropdown in `event_form_screen.dart`
+- [x] `flutter build apk --release` → 54.0 MB ✅, installed ✅
 
 ---
 
-## Session 5 — Paywall + Polish
+## Session 5 — Google Sign-In + Auth UX ✅ COMPLETE (Mar 1, 2026)
 
-- [ ] Re-track `paywall_screen.dart`, update pricing (₹99 Pro / ₹119 Family)
-- [ ] Festival reminder opt-in in Settings (premium-gated)
-- [ ] Full free-user flow test: blocked → upgrade prompt → debug unlock → all works
-- [ ] `flutter build apk --release` → install → full test on device
-- [ ] Commit + push to main
+Branch: `feature/pro-session5-auth` → renamed `feature/pro-session5-auth` | Merged to main
+
+- [x] Firebase Auth + Google Sign-In (google_sign_in v7 API)
+- [x] Sign-in is OPTIONAL — unauthenticated users see full core app
+- [x] `authStateProvider` = `StreamProvider<User?>` watching Firebase auth stream
+- [x] `PanchangamApp` always renders MaterialApp (auth logic merged in, no separate AuthGate)
+- [x] `LoginScreen` — app icon, language-aware title, `onSuccess: VoidCallback?`
+- [x] Settings: `_SignInTile` + `_LoginSheet` bottom sheet (auto-closes on success)
+- [x] Pro tab (`FamilyScreen`): auth check first → MyEventsScreen sign-in prompt if not logged in
+- [x] My Events (`MyEventsScreen`): sign-in prompt when `user == null`
+- [x] `SplashOverlay` hoisted to wrap entire `authAsync.when()` — mantra shows from first frame
+- [x] Fixed `SplashOverlay` Stack missing Directionality (red error screen bug)
+- [x] `flutter build apk --release` ✅, installed ✅
 
 ---
 
-## Data Model
+## Session 6 — Reminders Redesign + Notes + Alarm Type ✅ COMPLETE (Mar 1, 2026)
+
+Branch: `feature/event-reminders-and-notes` | Merged to main
+
+- [x] `UserTithiEvent`: `reminderMinutes` → `reminderHour?` + `reminderMinute` + `reminderDaysBefore` + `reminderType`
+- [x] `UserTithiEvent`: added `notes: String?`
+- [x] `NotificationService`: fires at user-chosen time N days before tithi (not sunrise-based)
+- [x] `NotificationService`: `ReminderType.reminder` → `inexact`; `ReminderType.alarm` → `alarmClock`
+- [x] `NotificationService`: improved `_title()` + `_body()` (timing context + notes snippet)
+- [x] `EventFormScreen`: toggle → SegmentedButton (Reminder/Alarm) + time picker + days dropdown + notes field
+- [x] `PersonalEventsCard` (`_EventEntry`): expandable notes (StatefulWidget, chevron, gold container)
+- [x] `MyEventsScreen` (`_EventTile`): expandable notes (ConsumerStatefulWidget)
+- [x] Backwards-compatible: old events load with `reminderHour: null` (no reminder)
+- [x] `flutter build apk --release` → 57.9 MB ✅, installed ✅
+
+---
+
+## Data Model (current)
 
 ```dart
+enum ReminderType { reminder, alarm }
+
 class UserTithiEvent {
-  final String id;            // UUID
-  final String nameEn;        // User-given name (required)
-  final String? nameTe;       // Optional Telugu name
-  final int tithi;            // 1–30 (matches Tithi.number() output directly)
-  final int? teluguMonth;     // null = recurs every paksha | 1–12 = yearly only
-  final int? reminderMinutes; // null = no reminder | N = remind N minutes before
-  final bool isActive;        // toggle off without deleting
-  final String color;         // hex for calendar dot (default: kGold)
+  final String id;               // UUID
+  final String nameEn;           // User-given name (required)
+  final String? nameTe;          // Optional Telugu name
+  final int tithi;               // 1–30 (matches Tithi.number() output directly)
+  final int? teluguMonth;        // null = recurs every paksha | 1–12 = yearly only
+  final int? reminderHour;       // null = no reminder | 0–23
+  final int reminderMinute;      // 0–59 (default 0)
+  final int reminderDaysBefore;  // 0 = same day, 1 = day before, etc.
+  final ReminderType reminderType; // reminder (inexact) | alarm (alarmClock exact)
+  final String? notes;           // Optional free-text note
+  final bool isActive;           // toggle off without deleting
+  final String color;            // hex for calendar dot (default: kGold '#FFD700')
 }
 ```
 
 ---
 
+## Session 7 — Next Up
+
+### Do First (Housekeeping)
+- [ ] **Doc reorganization** — all `.md` files capped at 200 lines. Microservices-style: one responsibility per file, consistent naming, cross-links. Files currently at/near limit: `LatestTask.md` (221), `lessons.md` (199), `todo.md` (180), `features.md` (170). Split before any feature work.
+
+### Must Do
+- [ ] **Alarm sound** — `ReminderType.alarm` sounds same as reminder. Add `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + system alarm ringtone. Use for alarm mode only.
+- [ ] **To-Do feature (Pro)** — **Tithi-based** to-dos (same date basis as Events) with completion checkbox + optional reminder. Discuss exact recurrence model before implementing. See LatestTask.md for rough plan.
+- [ ] **Festival markers on calendar grid** — gold dot or indicator on days with festivals in the monthly calendar grid
+- [ ] **Firestore Pro subscription check** — replace hardcoded email whitelist with real Firestore document check
+
+### Deferred
+- [ ] Paywall / subscription screen (RevenueCat or Google Play Billing)
+- [ ] Notification settings in Settings tab (default mode: reminder vs alarm)
+- [ ] Theme: light / dark
+- [ ] Mantra splash speed-up (call runApp() before heavy init)
+- [ ] iOS release (after Android stable)
+
+---
+
 ## Architecture Notes
 
-- `isPremium` stored in `settings` Hive box (not a separate box)
+- `isPremium` stored in `settings` Hive box (not a separate box); auto-set from email whitelist in `AuthService`
 - User events stored as JSON strings in `userEventsBox` Hive box (UUID key, no TypeAdapters)
 - `UserEventCalculator` reuses same tithi-check logic as `FestivalCalculator`
 - `PremiumGuard` wraps gated UI — shows child if premium, else upgrade teaser
 - `NotificationService` singleton: init at app start, schedule on event add/edit, cancel on delete/disable
 - Notification ID = `eventId.hashCode ^ (occurrenceIndex * 31)` to avoid collisions
+- `SCHEDULE_EXACT_ALARM` already in `AndroidManifest.xml` (needed for `alarmClock` mode)
 
 ---
 
 ## Verification Checklist (End of All Sessions)
 
-- [ ] `dart run bin/validate.dart` → identical output to before JSON migration
-- [ ] All 32 unit tests pass
-- [ ] Add personal event → gold dot on correct tithi dates on calendar
-- [ ] Edit event → calendar updates, notifications rescheduled
-- [ ] Delete event → dot gone, notifications cancelled
-- [ ] Today screen shows personal events on matching days
-- [ ] "Mark this tithi" on Panchangam detail pre-fills form
-- [ ] Free user hitting premium feature → PaywallScreen shown
-- [ ] Debug unlock (isPremium=true) → all features accessible
-- [ ] Notification fires at correct time
-- [ ] `flutter build apk --release` succeeds
-- [ ] festivals.json covers all ~40 existing festivals (spot-check 10)
+- [x] `dart run bin/validate.dart` → identical output to before JSON migration
+- [x] All 32 unit tests pass
+- [x] Add personal event → gold dot on correct tithi dates on calendar
+- [x] Edit event → calendar updates, notifications rescheduled
+- [x] Delete event → dot gone, notifications cancelled
+- [x] Today screen shows personal events on matching days
+- [x] "Mark this tithi" on Panchangam detail pre-fills form
+- [x] Free user hitting premium feature → PaywallScreen shown
+- [x] Debug unlock (isPremium=true) → all features accessible
+- [x] Notes field on event form → saved + shown in expandable card (My Events + Day card)
+- [x] Reminder/Alarm selector in form → correct notification mode used
+- [x] `flutter build apk --release` succeeds
+- [ ] Real Google Sign-In on device → Pro auto-granted ✅ (tested by Srikar)
+- [ ] Festival markers on calendar grid
+- [ ] Notification fires at correct time (device test)

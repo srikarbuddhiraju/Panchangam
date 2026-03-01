@@ -32,6 +32,7 @@ Srikar Buddhiraju. No prior programming experience. Learning as we build.
 - Always store what was the latest task/objective that was being worked, in `docs/LatestTask.md`. This has to be for every commit and session wise. Follow clear convention while updating this document.
 - No need to keep history of all tasks/objective and sessions (since we already have commit messages for each commit) in `docs/LatestTask.md`, but rather the latest couple (at max).
 - Always save the context in relevant .md files at regular intervals.
+- **200-line limit on ALL markdown files (STANDING RULE)**: If any `.md` file exceeds 200 lines, split it immediately into smaller focused files. Follow a microservices-style architecture — each file has one clear responsibility, files are short and scannable, and they link to each other by relative path. Establish consistent naming conventions across the docs folder. This minimises token consumption when reading files at session start.
 - You are free to check https://github.com/srikarbuddhiraju/Panchangam if needed. Do not read into files, as this is the same as project directory. Use it for reference purposes.
 
 ## Session Start Checklist

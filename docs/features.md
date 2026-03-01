@@ -91,29 +91,36 @@ Premium unlocks:
 
 ## Productivity Features (PREMIUM)
 
-### 1. To-Dos
-- [ ] Create, edit, delete to-do items
-- [ ] Assign to specific date
-- [ ] Mark as complete
-- [ ] Shareable with family group
+### 1. To-Dos (Session 7)
+- [ ] Tithi-based, **one-time** tasks (donate on Ekadashi, visit temple on Panchami etc.)
+- [ ] Pinned to NEXT occurrence of chosen tithi from creation date; stored as `targetDate`
+- [ ] Mark as complete → archived (no recurrence; recurring needs use Personal Events)
+- [ ] Optional reminder notification (reuses `ReminderType`: reminder/alarm)
+- [ ] Notes field (optional)
+- [ ] Lives inside Pro tab (`MyEventsScreen`) as a second tab alongside Events
+- [ ] Day detail: shows matching To-Dos as a checkable card
+- [ ] Shareable with family group (future)
 
-### 2. Reminders
-- [ ] Date + time + label
-- [ ] Repeat options (daily, weekly, custom)
-- [ ] Push notification
-- [ ] Shareable with family group
+### 2. Reminders (via Occasions & Events)
+- [x] Set at specific time on day-of or N days before tithi
+- [x] Inexact mode (push notification, no special permission)
+- [ ] Repeat options beyond tithi-based (daily, weekly, custom) — future
+- [ ] Shareable with family group — future
 
-### 3. Alarms
-- [ ] Date + time + label (set like a reminder)
-- [ ] Sound + vibration alert
-- [ ] Snooze support
-- [ ] Shareable with family group
+### 3. Alarms (via Occasions & Events)
+- [x] Exact `alarmClock` mode — bypasses doze, shows in system clock app
+- [ ] Alarm sound — currently sounds same as notification. Fix: `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + system alarm ringtone URI (Session 7)
+- [ ] Snooze support — future
+- [ ] Shareable with family group — future
 
 ### 4. Occasions & Events (PREMIUM)
-- [ ] Mark any day with label, color, notes
-- [ ] **Tithi-based birthday** — auto-tracks lunar birthday each year
-- [ ] **Death anniversary (Tithi)** — tracks as per tithi, not Gregorian date
-- [ ] Annual repeat option
+- [x] Create tithi-based personal events (name EN/TE, tithi, monthly or yearly)
+- [x] Notes field on event — shown as expandable card in My Events + Day detail
+- [x] Set reminder (inexact, no special permission) or alarm (exact, alarmClock)
+- [x] Reminder time picker (H:MM AM/PM) + days-before selector
+- [x] Events appear on calendar grid (gold dot) and Day detail card
+- [ ] **Tithi-based birthday** — same as above but with birthday label/UX
+- [ ] **Death anniversary (Tithi)** — same with death anniversary UX
 - [ ] Shareable with family group
 
 ---
@@ -128,10 +135,10 @@ Premium unlocks:
 ---
 
 ## User Accounts
-- [ ] Sign in with Google (one tap)
+- [x] Sign in with Google (one tap) — optional, core app works without it
 - [ ] Apple login — added at iOS release
 - [ ] Profile: name, city, language preference
-- [ ] Data synced across user's devices
+- [ ] Data synced across user's devices (Firestore Pro check pending)
 
 ---
 
