@@ -1,20 +1,22 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'app/auth_gate.dart';
 import 'app/theme.dart';
 import 'app/routes.dart';
-import 'app/splash_overlay.dart';
 import 'core/city_lookup/city_lookup.dart';
 import 'core/utils/hive_keys.dart';
 import 'features/events/user_event_calculator.dart';
 import 'features/events/user_tithi_event.dart';
 import 'features/festivals/festival_loader.dart';
 import 'features/settings/settings_provider.dart';
+import 'firebase_options.dart';
 import 'services/notification_service.dart';
 
 Future<void> main() async {
@@ -25,6 +27,9 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize local storage
   await Hive.initFlutter();
@@ -46,7 +51,7 @@ Future<void> main() async {
 
   runApp(
     const ProviderScope(
-      child: SplashOverlay(
+      child: AuthGate(
         child: PanchangamApp(),
       ),
     ),
@@ -55,8 +60,7 @@ Future<void> main() async {
 
 /// Re-schedule notifications for all active events with reminders.
 ///
-/// Called on startup so alarms survive device reboots (the boot receiver
-/// triggers the app, which calls main() → here).
+/// Called on startup so alarms survive device reboots.
 Future<void> _rescheduleAllNotifications() async {
   final settingsBox = Hive.box(HiveKeys.settingsBox);
   final lat =
