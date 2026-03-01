@@ -77,7 +77,7 @@ class NotificationService {
         _body(event),
         tz.TZDateTime.from(notifyAt, tz.local),
         _details(),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexact,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );

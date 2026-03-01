@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
+import '../../core/utils/app_strings.dart';
 import '../../services/auth_service.dart';
 
 /// Shown to users who are not signed in.
 /// A single "Sign in with Google" button — no email/password, no clutter.
+///
+/// [onSuccess] is called after a successful sign-in. Use this to close a
+/// bottom sheet — when omitted the widget just stays mounted and the
+/// surrounding tree will rebuild via authStateProvider.
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final VoidCallback? onSuccess;
+  const LoginScreen({super.key, this.onSuccess});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,11 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       final user = await AuthService.instance.signInWithGoogle();
-      if (user == null && mounted) {
-        // User cancelled — just reset loading state
-        setState(() => _loading = false);
+      if (user != null) {
+        // Success — close sheet or let the tree rebuild.
+        widget.onSuccess?.call();
+        return;
       }
-      // On success, authStateProvider fires and AuthGate rebuilds automatically.
+      // user == null means the user cancelled the Google picker.
+      if (mounted) setState(() => _loading = false);
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -51,23 +59,19 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // App icon placeholder — gold star
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: AppTheme.kGold.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.auto_awesome,
-                    size: 44,
-                    color: AppTheme.kGold,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'assets/icon.png',
+                    width: 88,
+                    height: 88,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(height: 24),
 
                 Text(
-                  'పంచాంగం',
+                  S.isTelugu ? 'పంచాంగం' : 'Panchangam',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: AppTheme.kGold,
                         fontWeight: FontWeight.bold,
