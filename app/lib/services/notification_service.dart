@@ -42,13 +42,17 @@ class NotificationService {
 
   // ── Permissions ─────────────────────────────────────────────────────────────
 
-  /// Request POST_NOTIFICATIONS (Android 13+) and battery-optimization
-  /// exemption. Safe to call multiple times — system dialogs are no-ops once
-  /// already granted. Must be called with an active Activity (post-runApp).
-  Future<void> requestPermissions() async {
+  /// Request POST_NOTIFICATIONS (Android 13+) and, if [askBatteryOpt] is true,
+  /// battery-optimization exemption. Must be called with an active Activity.
+  ///
+  /// [askBatteryOpt] should be false after the first ever prompt — the system
+  /// dialog is annoying if it reappears on every launch.
+  Future<void> requestPermissions({bool askBatteryOpt = true}) async {
     final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     await androidPlugin?.requestNotificationsPermission();
+
+    if (!askBatteryOpt) return;
 
     // Request battery-optimization exemption via MainActivity MethodChannel.
     // Inexact reminders can be heavily deferred on Samsung/MIUI without this.
@@ -63,6 +67,26 @@ class NotificationService {
     } catch (_) {
       // Channel unavailable in tests / non-Android — ignore.
     }
+  }
+
+  /// True if the app is allowed to post notifications (POST_NOTIFICATIONS granted).
+  Future<bool> areNotificationsEnabled() async {
+    final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    return await androidPlugin?.areNotificationsEnabled() ?? true;
+  }
+
+  /// Fire an immediate visible notification to verify the channel + permission.
+  /// Use from a "Test notification" button in Settings.
+  Future<void> showTestNotification(bool isTelugu) async {
+    await _plugin.show(
+      0xDEAD,
+      isTelugu ? 'పరీక్ష నోటిఫికేషన్' : 'Test Notification',
+      isTelugu
+          ? 'Panchangam నోటిఫికేషన్లు పని చేస్తున్నాయి!'
+          : 'Panchangam notifications are working!',
+      _details(),
+    );
   }
 
   /// True if exact-alarm scheduling is permitted on this device.

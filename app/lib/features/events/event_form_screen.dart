@@ -7,7 +7,9 @@ import '../../core/calculations/telugu_calendar.dart';
 import '../../core/utils/app_strings.dart';
 import 'user_tithi_event.dart';
 import 'user_event_provider.dart';
+import 'user_event_calculator.dart';
 import '../../services/notification_service.dart';
+import '../../features/settings/settings_provider.dart';
 
 /// Add or edit a personal tithi event.
 ///
@@ -300,10 +302,70 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
         }
       }
 
+      // Show when the next notification will fire (helps user verify tithi/time).
+      if (_reminderHour != null && mounted) {
+        _showReminderScheduledSnackBar();
+      }
+
       if (mounted) context.pop();
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  void _showReminderScheduledSnackBar() {
+    final isTelugu = S.isTelugu;
+    final settings = ref.read(settingsProvider);
+    final tempEvent = UserTithiEvent(
+      id: 'preview',
+      nameEn: _nameEnCtrl.text.trim(),
+      tithi: _tithi,
+      teluguMonth: _teluguMonth,
+      reminderHour: _reminderHour,
+      reminderMinute: _reminderMinute,
+      reminderDaysBefore: _reminderDaysBefore,
+      reminderType: _reminderType,
+    );
+    final occurrences = UserEventCalculator.nextOccurrences(
+      tempEvent,
+      DateTime.now(),
+      settings.lat,
+      settings.lng,
+    );
+
+    final String message;
+    if (occurrences.isEmpty) {
+      message = isTelugu
+          ? 'తిథి సరిపోలలేదు — 400 రోజులలో రిమైండర్ కనుగొనబడలేదు'
+          : 'No occurrence found in 400 days — check the tithi selection';
+    } else {
+      final tithiDate = occurrences.first;
+      final notifyDate =
+          tithiDate.subtract(Duration(days: _reminderDaysBefore));
+      final notifyAt = DateTime(
+        notifyDate.year,
+        notifyDate.month,
+        notifyDate.day,
+        _reminderHour!,
+        _reminderMinute,
+      );
+      final h = _reminderHour! % 12 == 0 ? 12 : _reminderHour! % 12;
+      final m = _reminderMinute.toString().padLeft(2, '0');
+      final period = _reminderHour! < 12 ? 'AM' : 'PM';
+      final dateStr =
+          '${notifyAt.day}/${notifyAt.month}/${notifyAt.year} at $h:$m $period';
+      message = isTelugu
+          ? 'రిమైండర్ సెట్ చేయబడింది: $dateStr'
+          : 'Reminder set for $dateStr';
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 4),
+        backgroundColor: occurrences.isEmpty ? Colors.red.shade700 : null,
+      ),
+    );
   }
 
   void _showAlarmPermissionDialog() {
