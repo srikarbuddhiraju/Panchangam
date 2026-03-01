@@ -86,3 +86,31 @@ At the start of EVERY new session, read these files before doing anything else:
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+
+## HARD RULES — Never Break These (learned the hard way)
+
+### 1. Surface the error BEFORE writing any fix
+When something is not working, the FIRST and ONLY action is to make it fail loudly.
+- Remove or temporarily replace `catch (_)` with error surfacing
+- Add a diagnostic UI (button, SnackBar, log) to expose the real error
+- Read the error. Then — and only then — write a fix.
+- **NEVER apply fixes to a silent failure. NEVER.**
+- Applying fixes before reading the error is guessing. Guessing wastes builds, wastes the user's time, and erodes trust.
+
+### 2. Never write a platform API call without verifying the exact method name
+Before calling ANY method from a third-party package or platform plugin:
+- `grep` the pub-cache source for the exact method signature
+- Do not assume from memory, docs for a different version, or intuition
+- One wrong method name = one failed build = wasted install cycle
+
+### 3. Never use bare `catch (_)` on platform API code paths
+`catch (_) { }` or `catch (_) { // silently skip }` on scheduling, permissions, or platform channel calls is forbidden.
+- At minimum: `catch (e) { debugPrint('$e'); }`
+- In user-facing flows: surface the error via SnackBar or rethrow
+- Silent failures hide root causes and make debugging sessions multi-session nightmares
+
+### 4. Read the relevant doc section before designing a feature
+Before proposing a model or architecture for any feature:
+- Read the relevant section in `docs/features.md` and `docs/LatestTask.md`
+- Do not invent a design that contradicts what is already written
+- One misread = wrong model = wasted planning + rework
