@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/app_strings.dart';
@@ -101,20 +100,18 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Text('1.0.0'),
           ),
 
-          // ── Debug: Pro unlock (only visible in debug builds) ──────────────
-          if (kDebugMode) ...[
-            const Divider(height: 1),
-            SwitchListTile(
-              secondary: const Icon(Icons.developer_mode, color: Colors.orange),
-              title: const Text(
-                '[DEBUG] Panchangam Pro',
-                style: TextStyle(color: Colors.orange),
-              ),
-              subtitle: const Text('Unlocks Pro features for testing'),
-              value: settings.isPremium,
-              onChanged: (v) => notifier.setIsPremium(v),
+          // ── Pro unlock toggle (temp — replaced by auth in Session 5) ─────────
+          const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.star_rounded, color: Colors.orange),
+            title: const Text(
+              'Panchangam Pro',
+              style: TextStyle(color: Colors.orange),
             ),
-          ],
+            subtitle: const Text('Unlock Pro features'),
+            value: settings.isPremium,
+            onChanged: (v) => notifier.setIsPremium(v),
+          ),
         ],
       ),
     );
