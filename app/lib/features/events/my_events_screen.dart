@@ -185,20 +185,29 @@ class _EventList extends ConsumerWidget {
   }
 }
 
-class _EventTile extends ConsumerWidget {
+class _EventTile extends ConsumerStatefulWidget {
   final UserTithiEvent event;
   const _EventTile({required this.event});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_EventTile> createState() => _EventTileState();
+}
+
+class _EventTileState extends ConsumerState<_EventTile> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final isTelugu = S.isTelugu;
     final notifier = ref.read(userEventProvider.notifier);
+    final event = widget.event;
 
     final String name =
         isTelugu && event.nameTe != null ? event.nameTe! : event.nameEn;
     final String tithiLabel = _tithiLabel(event.tithi, isTelugu);
     final String monthLabel = _monthLabel(event.teluguMonth, isTelugu);
+    final bool hasNotes = event.notes != null && event.notes!.isNotEmpty;
 
     return Dismissible(
       key: ValueKey(event.id),
@@ -214,73 +223,107 @@ class _EventTile extends ConsumerWidget {
       ),
       confirmDismiss: (_) => _confirmDelete(context, isTelugu),
       onDismissed: (_) => notifier.delete(event.id),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: event.isActive
-                ? AppTheme.kGold.withValues(alpha: 0.35)
-                : cs.outlineVariant.withValues(alpha: 0.5),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            // Color dot
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: event.isActive
-                    ? AppTheme.kGold
-                    : cs.onSurfaceVariant.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
+      child: GestureDetector(
+        onTap: hasNotes ? () => setState(() => _expanded = !_expanded) : null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: cs.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: event.isActive
+                  ? AppTheme.kGold.withValues(alpha: 0.35)
+                  : cs.outlineVariant.withValues(alpha: 0.5),
+              width: 1,
             ),
-            const SizedBox(width: 12),
-
-            // Name + tithi
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: event.isActive
-                              ? null
-                              : cs.onSurfaceVariant,
-                        ),
+                  // Color dot
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: event.isActive
+                          ? AppTheme.kGold
+                          : cs.onSurfaceVariant.withValues(alpha: 0.3),
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '$tithiLabel · $monthLabel',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant,
+                  const SizedBox(width: 12),
+
+                  // Name + tithi
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: event.isActive
+                                        ? null
+                                        : cs.onSurfaceVariant,
+                                  ),
                         ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '$tithiLabel · $monthLabel',
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Expand chevron (only when notes exist)
+                  if (hasNotes)
+                    Icon(
+                      _expanded
+                          ? Icons.expand_less
+                          : Icons.expand_more,
+                      size: 18,
+                      color: cs.onSurfaceVariant,
+                    ),
+
+                  // Active toggle
+                  Switch(
+                    value: event.isActive,
+                    onChanged: (_) => notifier.toggleActive(event.id),
+                    activeColor: AppTheme.kGold,
+                  ),
+
+                  // Edit
+                  IconButton(
+                    icon: Icon(Icons.edit_outlined,
+                        size: 18, color: cs.onSurfaceVariant),
+                    onPressed: () => context.push('/events/${event.id}'),
+                    visualDensity: VisualDensity.compact,
                   ),
                 ],
               ),
-            ),
 
-            // Active toggle
-            Switch(
-              value: event.isActive,
-              onChanged: (_) => notifier.toggleActive(event.id),
-              activeColor: AppTheme.kGold,
-            ),
-
-            // Edit
-            IconButton(
-              icon: Icon(Icons.edit_outlined,
-                  size: 18, color: cs.onSurfaceVariant),
-              onPressed: () => context.push('/events/${event.id}'),
-              visualDensity: VisualDensity.compact,
-            ),
-          ],
+              // Expanded notes
+              if (hasNotes && _expanded) ...[
+                const SizedBox(height: 10),
+                const Divider(height: 1),
+                const SizedBox(height: 10),
+                Text(
+                  event.notes!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                        height: 1.5,
+                      ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

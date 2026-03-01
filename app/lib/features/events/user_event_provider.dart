@@ -48,7 +48,11 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
     String? nameTe,
     required int tithi,
     int? teluguMonth,
-    int? reminderMinutes,
+    int? reminderHour,
+    int reminderMinute = 0,
+    int reminderDaysBefore = 0,
+    ReminderType reminderType = ReminderType.reminder,
+    String? notes,
     String color = '#FFD700',
   }) async {
     final event = UserTithiEvent(
@@ -57,7 +61,11 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
       nameTe: nameTe,
       tithi: tithi,
       teluguMonth: teluguMonth,
-      reminderMinutes: reminderMinutes,
+      reminderHour: reminderHour,
+      reminderMinute: reminderMinute,
+      reminderDaysBefore: reminderDaysBefore,
+      reminderType: reminderType,
+      notes: notes,
       isActive: true,
       color: color,
     );
@@ -103,7 +111,7 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
   }
 
   Future<void> _scheduleNotifications(UserTithiEvent event) async {
-    if (!event.isActive || event.reminderMinutes == null) return;
+    if (!event.isActive || event.reminderHour == null) return;
     try {
       final settings = ref.read(settingsProvider);
       final occurrences = UserEventCalculator.nextOccurrences(

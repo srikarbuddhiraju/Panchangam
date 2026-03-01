@@ -2,8 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../core/calculations/sunrise_sunset.dart';
-import '../features/events/user_tithi_event.dart';
+import '../features/events/user_tithi_event.dart'
+    show UserTithiEvent, ReminderType;
 
 /// Handles scheduling and cancelling local notifications for personal tithi events.
 ///
@@ -46,10 +46,11 @@ class NotificationService {
 
   /// Schedule up to [maxOccurrences] notifications for [event].
   ///
-  /// Each notification fires [event.reminderMinutes] before sunrise on the
-  /// matching tithi day. Occurrences already in the past are skipped silently.
+  /// Each notification fires at [event.reminderHour]:[event.reminderMinute]
+  /// on the day that is [event.reminderDaysBefore] days before the tithi date.
+  /// Occurrences already in the past are skipped silently.
   ///
-  /// No-op if [event.reminderMinutes] is null.
+  /// No-op if [event.reminderHour] is null.
   Future<void> scheduleForEvent(
     UserTithiEvent event,
     List<DateTime> occurrences,
@@ -57,27 +58,35 @@ class NotificationService {
     double lng, {
     int maxOccurrences = 3,
   }) async {
-    if (event.reminderMinutes == null) return;
+    if (event.reminderHour == null) return;
 
     final now = DateTime.now();
     int scheduled = 0;
 
     for (int i = 0; i < occurrences.length && scheduled < maxOccurrences; i++) {
-      final date = occurrences[i];
-      final sunrise = SunriseSunset.computeNOAA(date, lat, lng)[0];
-      final notifyAt =
-          sunrise.subtract(Duration(minutes: event.reminderMinutes!));
+      final tithiDate = occurrences[i];
+      final notifyDate =
+          tithiDate.subtract(Duration(days: event.reminderDaysBefore));
+      final notifyAt = DateTime(
+        notifyDate.year,
+        notifyDate.month,
+        notifyDate.day,
+        event.reminderHour!,
+        event.reminderMinute,
+      );
 
       if (notifyAt.isBefore(now)) continue;
 
       final id = event.id.hashCode ^ (i * 31);
       await _plugin.zonedSchedule(
         id,
-        event.nameEn,
+        _title(event),
         _body(event),
         tz.TZDateTime.from(notifyAt, tz.local),
         _details(),
-        androidScheduleMode: AndroidScheduleMode.inexact,
+        androidScheduleMode: event.reminderType == ReminderType.alarm
+            ? AndroidScheduleMode.alarmClock
+            : AndroidScheduleMode.inexact,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );
@@ -96,9 +105,33 @@ class NotificationService {
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
+  /// Notification title: Telugu name · English name (or just one if same).
+  String _title(UserTithiEvent event) {
+    if (event.nameTe != null && event.nameTe != event.nameEn) {
+      return '${event.nameTe} · ${event.nameEn}';
+    }
+    return event.nameEn;
+  }
+
+  /// Notification body: timing context + notes snippet if available.
   String _body(UserTithiEvent event) {
-    final name = event.nameTe ?? event.nameEn;
-    return 'నేడు $name · Today is ${event.nameEn}';
+    final String when;
+    switch (event.reminderDaysBefore) {
+      case 0:
+        when = 'నేడు · Today';
+      case 1:
+        when = 'రేపు · Tomorrow';
+      default:
+        when = 'In ${event.reminderDaysBefore} days';
+    }
+
+    if (event.notes != null && event.notes!.isNotEmpty) {
+      final snippet = event.notes!.length > 80
+          ? '${event.notes!.substring(0, 77)}…'
+          : event.notes!;
+      return '$when · $snippet';
+    }
+    return when;
   }
 
   NotificationDetails _details() => const NotificationDetails(

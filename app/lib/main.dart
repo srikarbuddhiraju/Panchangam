@@ -78,7 +78,7 @@ Future<void> _rescheduleAllNotifications() async {
       if (raw == null) continue;
       final event =
           UserTithiEvent.fromMap(jsonDecode(raw) as Map<String, dynamic>);
-      if (!event.isActive || event.reminderMinutes == null) continue;
+      if (!event.isActive || event.reminderHour == null) continue;
       final occurrences =
           UserEventCalculator.nextOccurrences(event, DateTime.now(), lat, lng);
       await NotificationService.instance
