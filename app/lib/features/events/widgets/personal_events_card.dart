@@ -58,66 +58,116 @@ class PersonalEventsCard extends StatelessWidget {
   }
 }
 
-class _EventEntry extends StatelessWidget {
+class _EventEntry extends StatefulWidget {
   final UserTithiEvent event;
   final ColorScheme cs;
 
   const _EventEntry({required this.event, required this.cs});
 
   @override
-  Widget build(BuildContext context) {
-    final String name =
-        S.isTelugu && event.nameTe != null ? event.nameTe! : event.nameEn;
+  State<_EventEntry> createState() => _EventEntryState();
+}
 
+class _EventEntryState extends State<_EventEntry> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final UserTithiEvent event = widget.event;
+    final ColorScheme cs = widget.cs;
+    final bool isTelugu = S.isTelugu;
+
+    final String name =
+        isTelugu && event.nameTe != null ? event.nameTe! : event.nameEn;
     final String subtitle = event.teluguMonth != null
-        ? (S.isTelugu ? 'వార్షిక' : 'Yearly')
-        : (S.isTelugu ? 'ప్రతి పక్షం' : 'Every paksha');
+        ? (isTelugu ? 'వార్షిక' : 'Yearly')
+        : (isTelugu ? 'ప్రతి పక్షం' : 'Every paksha');
+    final bool hasNotes = event.notes != null && event.notes!.isNotEmpty;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gold dot
-          Padding(
-            padding: const EdgeInsets.only(top: 4, right: 8),
-            child: Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                color: AppTheme.kGold,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-
-          // Name + recurrence label
-          Expanded(
-            child: Column(
+          GestureDetector(
+            onTap: hasNotes ? () => setState(() => _expanded = !_expanded) : null,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                // Gold dot
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, right: 8),
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppTheme.kGold,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: cs.onSurfaceVariant,
+
+                // Name + recurrence label
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: cs.onSurfaceVariant,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Expand chevron (only when notes exist)
+                if (hasNotes)
+                  Icon(
+                    _expanded ? Icons.expand_less : Icons.expand_more,
+                    size: 16,
+                    color: cs.onSurfaceVariant,
+                  ),
+
+                const SizedBox(width: 4),
+
+                // Edit icon → go to edit form
+                GestureDetector(
+                  onTap: () => context.push('/events/${event.id}'),
+                  child: Icon(Icons.edit_outlined,
+                      size: 16, color: cs.onSurfaceVariant),
                 ),
               ],
             ),
           ),
 
-          // Edit icon → go to edit form
-          GestureDetector(
-            onTap: () => context.push('/events/${event.id}'),
-            child: Icon(Icons.edit_outlined, size: 16, color: cs.onSurfaceVariant),
-          ),
+          // Expanded notes — same style as FestivalCard description
+          if (hasNotes && _expanded) ...[
+            const SizedBox(height: 6),
+            Container(
+              margin: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.kGold.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                event.notes!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      height: 1.5,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
+              ),
+            ),
+          ],
         ],
       ),
     );
