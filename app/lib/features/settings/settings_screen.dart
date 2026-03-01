@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../features/auth/auth_provider.dart';
+import '../../features/auth/login_screen.dart';
 import '../../services/auth_service.dart';
 import '../../shared/widgets/city_picker_dialog.dart';
 import '../../shared/widgets/language_toggle.dart';
@@ -25,6 +26,9 @@ class SettingsScreen extends ConsumerWidget {
           // ── Account ───────────────────────────────────────────────────────
           if (user != null) ...[
             _AccountTile(user: user),
+            const Divider(height: 1),
+          ] else ...[
+            _SignInTile(),
             const Divider(height: 1),
           ],
 
@@ -111,6 +115,44 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Text('1.0.0'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Sign-in tile (shown when logged out) ──────────────────────────────────────
+
+class _SignInTile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.account_circle_outlined),
+      title: Text(S.isTelugu ? 'సైన్ ఇన్ చేయండి' : 'Sign in'),
+      subtitle: Text(
+        S.isTelugu
+            ? 'మీ సందర్భాలు మరియు రిమైండర్‌లను యాక్సెస్ చేయండి'
+            : 'Access your personal events and reminders',
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => const _LoginSheet(),
+      ),
+    );
+  }
+}
+
+class _LoginSheet extends StatelessWidget {
+  const _LoginSheet();
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: LoginScreen(onSuccess: () => Navigator.of(context).pop()),
       ),
     );
   }
