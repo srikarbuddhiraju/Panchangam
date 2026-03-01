@@ -6,6 +6,7 @@ import '../../core/utils/app_strings.dart';
 import '../../features/auth/auth_provider.dart';
 import '../../features/auth/login_screen.dart';
 import '../../services/auth_service.dart';
+import '../../services/notification_service.dart';
 import '../../shared/widgets/city_picker_dialog.dart';
 import '../../shared/widgets/language_toggle.dart';
 import 'settings_provider.dart';
@@ -108,6 +109,10 @@ class SettingsScreen extends ConsumerWidget {
 
           const Divider(height: 1),
 
+          // ── Notifications ─────────────────────────────────────────────────
+          const _NotificationSettingsTile(),
+          const Divider(height: 1),
+
           // ── App version ───────────────────────────────────────────────────
           ListTile(
             leading: const Icon(Icons.info_outline),
@@ -115,6 +120,122 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Text('1.0.0'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Notifications tile ────────────────────────────────────────────────────────
+
+class _NotificationSettingsTile extends StatefulWidget {
+  const _NotificationSettingsTile();
+
+  @override
+  State<_NotificationSettingsTile> createState() =>
+      _NotificationSettingsTileState();
+}
+
+class _NotificationSettingsTileState
+    extends State<_NotificationSettingsTile> {
+  bool? _enabled; // null = loading
+
+  @override
+  void initState() {
+    super.initState();
+    _checkStatus();
+  }
+
+  Future<void> _checkStatus() async {
+    final enabled = await NotificationService.instance.areNotificationsEnabled();
+    if (mounted) setState(() => _enabled = enabled);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isTelugu = S.isTelugu;
+    final cs = Theme.of(context).colorScheme;
+    final enabled = _enabled;
+
+    if (enabled == null) {
+      return ListTile(
+        leading: const Icon(Icons.notifications_outlined),
+        title: Text(isTelugu ? 'నోటిఫికేషన్లు' : 'Notifications'),
+        trailing: const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+
+    if (!enabled) {
+      // Notifications blocked — show warning banner
+      return Container(
+        margin: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: cs.errorContainer,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.notifications_off_outlined,
+                color: cs.onErrorContainer, size: 22),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isTelugu
+                        ? 'నోటిఫికేషన్లు నిలిపివేయబడ్డాయి'
+                        : 'Notifications are disabled',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: cs.onErrorContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isTelugu
+                        ? 'Settings → Apps → Panchangam → Notifications లో ఆన్ చేయండి'
+                        : 'Go to Settings → Apps → Panchangam → Notifications to enable',
+                    style: TextStyle(
+                        fontSize: 12, color: cs.onErrorContainer),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Notifications enabled — show test button
+    return ListTile(
+      leading: const Icon(Icons.notifications_active_outlined,
+          color: AppTheme.kGold),
+      title: Text(isTelugu ? 'నోటిఫికేషన్లు' : 'Notifications'),
+      subtitle: Text(isTelugu ? 'అనుమతి ఇవ్వబడింది' : 'Permission granted'),
+      trailing: TextButton(
+        onPressed: () async {
+          await NotificationService.instance
+              .showTestNotification(isTelugu);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(isTelugu
+                    ? 'పరీక్ష నోటిఫికేషన్ పంపబడింది'
+                    : 'Test notification sent'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+        child: Text(
+          isTelugu ? 'పరీక్ష' : 'Test',
+          style: const TextStyle(color: AppTheme.kGold),
+        ),
       ),
     );
   }
