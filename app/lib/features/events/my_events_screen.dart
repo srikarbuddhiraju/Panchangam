@@ -5,18 +5,97 @@ import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/calculations/tithi.dart';
 import '../../core/calculations/telugu_calendar.dart';
+import '../../features/auth/auth_provider.dart';
+import '../../features/auth/login_screen.dart';
 import 'user_tithi_event.dart';
 import 'user_event_provider.dart';
 
 /// Lists all personal tithi events; lets the user add, edit, toggle, and delete.
-/// Shown in the Family tab when the user has Pro.
+/// Shown in the Pro tab. Prompts sign-in if not authenticated.
 class MyEventsScreen extends ConsumerWidget {
   const MyEventsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(userEventProvider);
+    final user = ref.watch(authStateProvider).valueOrNull;
     final isTelugu = S.isTelugu;
+
+    // Not signed in — show a prompt instead of the events list.
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(isTelugu ? 'నా సందర్భాలు' : 'My Events'),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: 88,
+                    height: 88,
+                    color: const Color(0xFF0B1437),
+                    child: Image.asset(
+                      'assets/icon_fg.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  isTelugu ? 'సైన్ ఇన్ అవసరం' : 'Sign in required',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  isTelugu
+                      ? 'మీ వ్యక్తిగత సందర్భాలు మరియు రిమైండర్‌లను సేవ్ చేయడానికి సైన్ ఇన్ చేయండి.'
+                      : 'Sign in to save your personal events and reminders.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        height: 1.5,
+                      ),
+                ),
+                const SizedBox(height: 32),
+                FilledButton.icon(
+                  onPressed: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: LoginScreen(onSuccess: () => Navigator.of(context).pop()),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.login),
+                  label: Text(isTelugu ? 'సైన్ ఇన్ చేయండి' : 'Sign in'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppTheme.kGold,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 52),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final events = ref.watch(userEventProvider);
 
     return Scaffold(
       appBar: AppBar(

@@ -88,7 +88,11 @@ class _SplashOverlayState extends State<SplashOverlay>
     // Font size: Telugu script renders slightly larger visually
     final double fontSize = isTelugu ? 21.0 : 19.0;
 
-    return Stack(
+    // Directionality is required here because SplashOverlay may sit above any
+    // MaterialApp in the tree (which is what normally provides it).
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
       children: [
         // The real app renders underneath — content is ready when splash fades
         widget.child,
@@ -139,6 +143,7 @@ class _SplashOverlayState extends State<SplashOverlay>
           ),
         ),
       ],
+      ),
     );
   }
 }
