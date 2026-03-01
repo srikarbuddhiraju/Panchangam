@@ -63,7 +63,7 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
     );
     await _save(event);
     state = [...state, event];
-    await _scheduleNotifications(event);
+    _scheduleNotifications(event).ignore();
     return event;
   }
 
@@ -74,8 +74,8 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
       for (final e in state)
         if (e.id == updated.id) updated else e,
     ];
-    await NotificationService.instance.cancelForEvent(updated.id);
-    if (updated.isActive) await _scheduleNotifications(updated);
+    // Notifications are best-effort — never block the save flow.
+    _cancelAndReschedule(updated);
   }
 
   /// Toggle active/inactive without deleting.
@@ -87,23 +87,34 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
 
   /// Permanently delete an event.
   Future<void> delete(String id) async {
-    await NotificationService.instance.cancelForEvent(id);
     final box = Hive.box(HiveKeys.userEventsBox);
     await box.delete(id);
     state = state.where((e) => e.id != id).toList();
+    // Notifications are best-effort — never block the delete flow.
+    NotificationService.instance.cancelForEvent(id).ignore();
   }
 
-  // ── Notification helpers ───────────────────────────────────────────────────
+  // ── Notification helpers (fire-and-forget, never throw to caller) ──────────
+
+  void _cancelAndReschedule(UserTithiEvent event) {
+    NotificationService.instance.cancelForEvent(event.id).then((_) {
+      if (event.isActive) _scheduleNotifications(event);
+    }).ignore();
+  }
 
   Future<void> _scheduleNotifications(UserTithiEvent event) async {
     if (!event.isActive || event.reminderMinutes == null) return;
-    final settings = ref.read(settingsProvider);
-    final occurrences = UserEventCalculator.nextOccurrences(
-      event, DateTime.now(), settings.lat, settings.lng,
-    );
-    await NotificationService.instance.scheduleForEvent(
-      event, occurrences, settings.lat, settings.lng,
-    );
+    try {
+      final settings = ref.read(settingsProvider);
+      final occurrences = UserEventCalculator.nextOccurrences(
+        event, DateTime.now(), settings.lat, settings.lng,
+      );
+      await NotificationService.instance.scheduleForEvent(
+        event, occurrences, settings.lat, settings.lng,
+      );
+    } catch (_) {
+      // Permission not yet granted or scheduling failed — silently skip.
+    }
   }
 
   // ── Persistence helpers ────────────────────────────────────────────────────
