@@ -26,17 +26,20 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameEnCtrl = TextEditingController();
   final _nameTeCtrl = TextEditingController();
+  final _notesCtrl = TextEditingController();
 
   late int _tithi;
-  int? _teluguMonth;     // null = every paksha
-  int? _reminderMinutes; // null = no reminder
+  int? _teluguMonth;      // null = every paksha
+  int? _reminderHour;     // null = no reminder
+  int _reminderMinute = 0;
+  int _reminderDaysBefore = 0;
+  ReminderType _reminderType = ReminderType.reminder;
 
   bool _isEditing = false;
   bool _saving = false;
   UserTithiEvent? _original;
 
-  // Available reminder options: null = off, values in minutes.
-  static const _reminderOptions = [null, 30, 60, 120, 360, 720, 1440];
+  static const _daysBeforeOptions = [0, 1, 2, 3, 7];
 
   @override
   void initState() {
@@ -50,9 +53,13 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       if (_original != null) {
         _nameEnCtrl.text = _original!.nameEn;
         _nameTeCtrl.text = _original!.nameTe ?? '';
+        _notesCtrl.text = _original!.notes ?? '';
         _tithi = _original!.tithi;
         _teluguMonth = _original!.teluguMonth;
-        _reminderMinutes = _original!.reminderMinutes;
+        _reminderHour = _original!.reminderHour;
+        _reminderMinute = _original!.reminderMinute;
+        _reminderDaysBefore = _original!.reminderDaysBefore;
+        _reminderType = _original!.reminderType;
       }
     }
   }
@@ -61,6 +68,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   void dispose() {
     _nameEnCtrl.dispose();
     _nameTeCtrl.dispose();
+    _notesCtrl.dispose();
     super.dispose();
   }
 
@@ -98,9 +106,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
               controller: _nameEnCtrl,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
-                hintText: isTelugu
-                    ? 'ఉదా. Guru Jayanti'
-                    : 'e.g. Guru Jayanti',
+                hintText: isTelugu ? 'ఉదా. Guru Jayanti' : 'e.g. Guru Jayanti',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -153,28 +159,62 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── Reminder picker ────────────────────────────────────────────
-            _SectionLabel(
-              label: isTelugu ? 'రిమైండర్' : 'Reminder',
-            ),
+            // ── Reminder ───────────────────────────────────────────────────
+            _SectionLabel(label: isTelugu ? 'రిమైండర్' : 'Reminder'),
             const SizedBox(height: 6),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: cs.outline),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<int?>(
-                  isExpanded: true,
-                  value: _reminderMinutes,
-                  items: _reminderOptions.map((mins) {
-                    return DropdownMenuItem<int?>(
-                      value: mins,
-                      child: Text(_reminderLabel(mins, isTelugu)),
-                    );
-                  }).toList(),
-                  onChanged: (v) => setState(() => _reminderMinutes = v),
+            _ReminderRow(
+              reminderHour: _reminderHour,
+              reminderMinute: _reminderMinute,
+              reminderDaysBefore: _reminderDaysBefore,
+              reminderType: _reminderType,
+              daysBeforeOptions: _daysBeforeOptions,
+              isTelugu: isTelugu,
+              cs: cs,
+              onToggle: (enabled) {
+                setState(() {
+                  if (enabled) {
+                    _reminderHour = 8;
+                    _reminderMinute = 0;
+                    _reminderDaysBefore = 0;
+                  } else {
+                    _reminderHour = null;
+                  }
+                });
+              },
+              onPickTime: () async {
+                final picked = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay(
+                    hour: _reminderHour ?? 8,
+                    minute: _reminderMinute,
+                  ),
+                );
+                if (picked != null) {
+                  setState(() {
+                    _reminderHour = picked.hour;
+                    _reminderMinute = picked.minute;
+                  });
+                }
+              },
+              onDaysChanged: (d) => setState(() => _reminderDaysBefore = d),
+              onTypeChanged: (t) => setState(() => _reminderType = t),
+            ),
+            const SizedBox(height: 20),
+
+            // ── Notes (optional) ───────────────────────────────────────────
+            _SectionLabel(
+                label: isTelugu ? 'గమనికలు (ఐచ్ఛికం)' : 'Notes (optional)'),
+            const SizedBox(height: 6),
+            TextFormField(
+              controller: _notesCtrl,
+              maxLines: 3,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                hintText: isTelugu
+                    ? 'వ్యక్తిగత గమనికలు...'
+                    : 'Any personal note...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -208,15 +248,6 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     );
   }
 
-  String _reminderLabel(int? mins, bool isTelugu) {
-    if (mins == null) return isTelugu ? 'రిమైండర్ లేదు' : 'No reminder';
-    if (mins < 60) return isTelugu ? '$mins నిమిషాలు ముందు' : '$mins min before';
-    final hours = mins ~/ 60;
-    if (hours == 1) return isTelugu ? '1 గంట ముందు' : '1 hour before';
-    if (hours == 24) return isTelugu ? '1 రోజు ముందు' : '1 day before';
-    return isTelugu ? '$hours గంటలు ముందు' : '$hours hours before';
-  }
-
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
@@ -225,6 +256,8 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     final nameEn = _nameEnCtrl.text.trim();
     final nameTe =
         _nameTeCtrl.text.trim().isEmpty ? null : _nameTeCtrl.text.trim();
+    final notes =
+        _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim();
 
     try {
       if (_isEditing && _original != null) {
@@ -233,7 +266,11 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           nameTe: nameTe,
           tithi: _tithi,
           teluguMonth: _teluguMonth,
-          reminderMinutes: _reminderMinutes,
+          reminderHour: _reminderHour,
+          reminderMinute: _reminderMinute,
+          reminderDaysBefore: _reminderDaysBefore,
+          reminderType: _reminderType,
+          notes: notes,
         ));
       } else {
         await notifier.add(
@@ -241,7 +278,11 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           nameTe: nameTe,
           tithi: _tithi,
           teluguMonth: _teluguMonth,
-          reminderMinutes: _reminderMinutes,
+          reminderHour: _reminderHour,
+          reminderMinute: _reminderMinute,
+          reminderDaysBefore: _reminderDaysBefore,
+          reminderType: _reminderType,
+          notes: notes,
         );
       }
       if (mounted) context.pop();
@@ -278,6 +319,146 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       await ref.read(userEventProvider.notifier).delete(_original!.id);
       if (mounted) context.pop();
     }
+  }
+}
+
+// ── Reminder row ───────────────────────────────────────────────────────────────
+
+class _ReminderRow extends StatelessWidget {
+  final int? reminderHour;
+  final int reminderMinute;
+  final int reminderDaysBefore;
+  final ReminderType reminderType;
+  final List<int> daysBeforeOptions;
+  final bool isTelugu;
+  final ColorScheme cs;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onPickTime;
+  final ValueChanged<int> onDaysChanged;
+  final ValueChanged<ReminderType> onTypeChanged;
+
+  const _ReminderRow({
+    required this.reminderHour,
+    required this.reminderMinute,
+    required this.reminderDaysBefore,
+    required this.reminderType,
+    required this.daysBeforeOptions,
+    required this.isTelugu,
+    required this.cs,
+    required this.onToggle,
+    required this.onPickTime,
+    required this.onDaysChanged,
+    required this.onTypeChanged,
+  });
+
+  String _formatTime() {
+    final period = reminderHour! < 12
+        ? (isTelugu ? 'AM' : 'AM')
+        : (isTelugu ? 'PM' : 'PM');
+    final h = reminderHour! % 12 == 0 ? 12 : reminderHour! % 12;
+    final m = reminderMinute.toString().padLeft(2, '0');
+    return '$h:$m $period';
+  }
+
+  String _daysLabel(int days) {
+    if (days == 0) return isTelugu ? 'అదే రోజు' : 'Same day';
+    if (days == 1) return isTelugu ? '1 రోజు ముందు' : '1 day before';
+    if (days == 7) return isTelugu ? '1 వారం ముందు' : '1 week before';
+    return isTelugu ? '$days రోజులు ముందు' : '$days days before';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = reminderHour != null;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: cs.outline),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          // Toggle row
+          SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+            title: Text(isTelugu ? 'రిమైండర్ సెట్ చేయి' : 'Set reminder'),
+            value: enabled,
+            activeColor: AppTheme.kGold,
+            onChanged: onToggle,
+          ),
+
+          if (enabled) ...[
+            const Divider(height: 1),
+            // Reminder vs Alarm selector
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: SegmentedButton<ReminderType>(
+                segments: [
+                  ButtonSegment(
+                    value: ReminderType.reminder,
+                    icon: const Icon(Icons.notifications_outlined, size: 18),
+                    label: Text(isTelugu ? 'రిమైండర్' : 'Reminder'),
+                  ),
+                  ButtonSegment(
+                    value: ReminderType.alarm,
+                    icon: const Icon(Icons.alarm, size: 18),
+                    label: Text(isTelugu ? 'అలారం' : 'Alarm'),
+                  ),
+                ],
+                selected: {reminderType},
+                onSelectionChanged: (s) => onTypeChanged(s.first),
+                style: SegmentedButton.styleFrom(
+                  selectedBackgroundColor: AppTheme.kGold.withValues(alpha: 0.15),
+                  selectedForegroundColor: AppTheme.kGold,
+                ),
+              ),
+            ),
+            const Divider(height: 1),
+            // Time + days before row
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Row(
+                children: [
+                  // Time picker button
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: onPickTime,
+                      icon: const Icon(Icons.access_time, size: 18),
+                      label: Text(_formatTime()),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Days before dropdown
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: reminderDaysBefore,
+                      borderRadius: BorderRadius.circular(10),
+                      items: daysBeforeOptions
+                          .map((d) => DropdownMenuItem(
+                                value: d,
+                                child: Text(_daysLabel(d)),
+                              ))
+                          .toList(),
+                      onChanged: (v) {
+                        if (v != null) onDaysChanged(v);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 
