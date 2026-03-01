@@ -30,7 +30,24 @@ Once `google-services.json` is in place:
 - Add packages: `firebase_core`, `firebase_auth`, `google_sign_in`, `cloud_firestore`
 - Build Google Sign-In flow + login screen
 - Pro user check: `srikarbuddhiraju@gmail.com` → auto-grant Pro (stored in Firestore)
-- Replace `kDebugMode` debug toggle with real auth-based Pro check
+- Replace Pro toggle in Settings with real auth-based check
+
+---
+
+## Pro Tab Tweaks — Queued for After Session 5
+
+### 1. Reminder redesign
+- **Remove**: "N minutes before" dropdown (meaningless without a reference time)
+- **Replace with**: specific time picker + days-before selector
+  - e.g., "8:00 AM, 1 day before" or "7:30 AM, on the day"
+  - `UserTithiEvent` model: replace `reminderMinutes: int?` with `reminderTime: TimeOfDay?` + `reminderDaysBefore: int` (0 = same day, 1 = day before, etc.)
+  - `NotificationService`: schedule at `tithi_date - reminderDaysBefore days` at `reminderTime`
+
+### 2. Notes field on events
+- Add optional free-text `notes` field to `UserTithiEvent`
+- Show in `EventFormScreen` as a multiline text field
+- In `MyEventsScreen` event cards: expandable section (like festival cards) showing notes when tapped
+- `UserTithiEvent.toMap()` / `fromMap()` updated to persist notes
 
 ---
 
