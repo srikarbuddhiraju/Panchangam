@@ -83,70 +83,93 @@ class _EventEntryState extends State<_EventEntry> {
         ? (isTelugu ? 'వార్షిక' : 'Yearly')
         : (isTelugu ? 'ప్రతి పక్షం' : 'Every paksha');
     final bool hasNotes = event.notes != null && event.notes!.isNotEmpty;
+    final String reminder = _reminderLabel(event, isTelugu);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: hasNotes ? () => setState(() => _expanded = !_expanded) : null,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Gold dot
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 8),
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: AppTheme.kGold,
-                      shape: BoxShape.circle,
-                    ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Gold dot
+              Padding(
+                padding: const EdgeInsets.only(top: 5, right: 8),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppTheme.kGold,
+                    shape: BoxShape.circle,
                   ),
                 ),
+              ),
 
-                // Name + recurrence label
-                Expanded(
+              // Name + recurrence + reminder
+              Expanded(
+                child: GestureDetector(
+                  onTap: hasNotes
+                      ? () => setState(() => _expanded = !_expanded)
+                      : null,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         name,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: cs.onSurfaceVariant,
+                                ),
                       ),
+                      if (reminder.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          reminder,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                    fontSize: 11,
+                                  ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
+              ),
 
-                // Expand chevron (only when notes exist)
-                if (hasNotes)
-                  Icon(
-                    _expanded ? Icons.expand_less : Icons.expand_more,
-                    size: 16,
-                    color: cs.onSurfaceVariant,
-                  ),
-
-                const SizedBox(width: 4),
-
-                // Edit icon → go to edit form
+              // Expand chevron (only when notes exist)
+              if (hasNotes)
                 GestureDetector(
-                  onTap: () => context.push('/events/${event.id}'),
-                  child: Icon(Icons.edit_outlined,
-                      size: 16, color: cs.onSurfaceVariant),
+                  onTap: () => setState(() => _expanded = !_expanded),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      _expanded ? Icons.expand_less : Icons.expand_more,
+                      size: 18,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-              ],
-            ),
+
+              // Edit button — large tap target
+              GestureDetector(
+                onTap: () => context.push('/events/${event.id}'),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Icon(Icons.edit_outlined,
+                      size: 20, color: cs.onSurfaceVariant),
+                ),
+              ),
+            ],
           ),
 
           // Expanded notes — same style as FestivalCard description
@@ -172,4 +195,24 @@ class _EventEntryState extends State<_EventEntry> {
       ),
     );
   }
+}
+
+// ── Shared reminder label helper ───────────────────────────────────────────────
+
+String _reminderLabel(UserTithiEvent event, bool isTelugu) {
+  if (event.reminderHour == null) return '';
+  final h = event.reminderHour! % 12 == 0 ? 12 : event.reminderHour! % 12;
+  final m = event.reminderMinute.toString().padLeft(2, '0');
+  final period = event.reminderHour! < 12 ? 'AM' : 'PM';
+  final time = '$h:$m $period';
+  final when = switch (event.reminderDaysBefore) {
+    0 => isTelugu ? 'అదే రోజు' : 'same day',
+    1 => isTelugu ? '1 రోజు ముందు' : '1 day before',
+    7 => isTelugu ? '1 వారం ముందు' : '1 week before',
+    _ => isTelugu
+        ? '${event.reminderDaysBefore} రోజులు ముందు'
+        : '${event.reminderDaysBefore} days before',
+  };
+  final icon = event.reminderType == ReminderType.alarm ? '⏰' : '🔔';
+  return '$icon $time · $when';
 }

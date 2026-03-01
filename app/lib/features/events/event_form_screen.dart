@@ -7,6 +7,7 @@ import '../../core/calculations/telugu_calendar.dart';
 import '../../core/utils/app_strings.dart';
 import 'user_tithi_event.dart';
 import 'user_event_provider.dart';
+import '../../services/notification_service.dart';
 
 /// Add or edit a personal tithi event.
 ///
@@ -285,10 +286,61 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           notes: notes,
         );
       }
+
+      // If alarm mode was chosen, verify exact-alarm permission is granted.
+      // Do this after saving so the event is persisted regardless.
+      if (_reminderHour != null &&
+          _reminderType == ReminderType.alarm &&
+          mounted) {
+        final canExact =
+            await NotificationService.instance.canScheduleExactNotifications();
+        if (!canExact && mounted) {
+          _showAlarmPermissionDialog();
+          return; // don't pop — stay so user can see the dialog
+        }
+      }
+
       if (mounted) context.pop();
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  void _showAlarmPermissionDialog() {
+    final isTelugu = S.isTelugu;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(isTelugu ? 'అలారం అనుమతి కావాలి' : 'Alarm Permission Needed'),
+        content: Text(
+          isTelugu
+              ? 'ఖచ్చితమైన అలారాల కోసం ప్రత్యేక అనుమతి అవసరం.\n'
+                  'సెట్టింగ్స్ → అప్లికేషన్లు → ప్రత్యేక యాక్సెస్ → అలారాలు & రిమైండర్లు\n'
+                  'లో Panchangam ని ఆన్ చేయండి.'
+              : 'Exact alarms need a special permission.\n'
+                  'Open Settings → Apps → Special app access →'
+                  ' Alarms & reminders and enable Panchangam.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              if (mounted) context.pop();
+            },
+            child: Text(isTelugu ? 'తర్వాత' : 'Later'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              NotificationService.instance.openAlarmSettings();
+              if (mounted) context.pop();
+            },
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.kGold),
+            child: Text(isTelugu ? 'సెట్టింగ్స్ తెరవు' : 'Open Settings'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _confirmDelete() async {
