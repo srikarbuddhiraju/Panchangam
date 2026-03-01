@@ -48,7 +48,8 @@ Future<void> main() async {
   // Load festival definitions from JSON asset
   await FestivalLoader.initialize(rootBundle);
 
-  // Initialize notification service and reschedule active event reminders.
+  // Initialise notification plugin + timezone (no permission request here —
+  // no Activity exists before runApp; permissions are requested post-frame).
   await NotificationService.instance.init();
   await _rescheduleAllNotifications();
 
@@ -57,6 +58,12 @@ Future<void> main() async {
       child: PanchangamApp(),
     ),
   );
+
+  // Request POST_NOTIFICATIONS + battery-optimisation exemption once the
+  // Flutter Activity is live. Safe to call multiple times.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    NotificationService.instance.requestPermissions().ignore();
+  });
 }
 
 /// Re-schedule notifications for all active events with reminders.

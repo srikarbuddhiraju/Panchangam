@@ -208,6 +208,7 @@ class _EventTileState extends ConsumerState<_EventTile> {
     final String tithiLabel = _tithiLabel(event.tithi, isTelugu);
     final String monthLabel = _monthLabel(event.teluguMonth, isTelugu);
     final bool hasNotes = event.notes != null && event.notes!.isNotEmpty;
+    final String reminder = _reminderLabel(event, isTelugu);
 
     return Dismissible(
       key: ValueKey(event.id),
@@ -278,6 +279,19 @@ class _EventTileState extends ConsumerState<_EventTile> {
                                     color: cs.onSurfaceVariant,
                                   ),
                         ),
+                        if (reminder.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            reminder,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: cs.onSurfaceVariant,
+                                  fontSize: 11,
+                                ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -371,5 +385,23 @@ class _EventTileState extends ConsumerState<_EventTile> {
     return isTelugu
         ? TeluguCalendar.monthNamesTe[month - 1]
         : TeluguCalendar.monthNamesEn[month - 1];
+  }
+
+  String _reminderLabel(UserTithiEvent event, bool isTelugu) {
+    if (event.reminderHour == null) return '';
+    final h = event.reminderHour! % 12 == 0 ? 12 : event.reminderHour! % 12;
+    final m = event.reminderMinute.toString().padLeft(2, '0');
+    final period = event.reminderHour! < 12 ? 'AM' : 'PM';
+    final time = '$h:$m $period';
+    final when = switch (event.reminderDaysBefore) {
+      0 => isTelugu ? 'అదే రోజు' : 'same day',
+      1 => isTelugu ? '1 రోజు ముందు' : '1 day before',
+      7 => isTelugu ? '1 వారం ముందు' : '1 week before',
+      _ => isTelugu
+          ? '${event.reminderDaysBefore} రోజులు ముందు'
+          : '${event.reminderDaysBefore} days before',
+    };
+    final icon = event.reminderType == ReminderType.alarm ? '⏰' : '🔔';
+    return '$icon $time · $when';
   }
 }
