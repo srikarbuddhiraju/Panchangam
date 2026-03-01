@@ -30,9 +30,9 @@ class MainScaffold extends StatelessWidget {
             label: S.today,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.people_outline),
-            activeIcon: const Icon(Icons.people),
-            label: S.family,
+            icon: const Icon(Icons.star_outline_rounded),
+            activeIcon: const Icon(Icons.star_rounded),
+            label: S.pro,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings_outlined),

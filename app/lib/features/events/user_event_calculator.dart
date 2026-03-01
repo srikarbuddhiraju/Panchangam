@@ -55,4 +55,32 @@ class UserEventCalculator {
       return true;
     }).toList();
   }
+
+  /// Return the next [count] calendar dates on which [event] falls.
+  ///
+  /// Scans forward from [from] (inclusive) up to 400 days.
+  /// Returns fewer than [count] items if no more occurrences are found.
+  ///
+  /// [lat] / [lng] are needed to compute sunrise-based tithi for each day.
+  static List<DateTime> nextOccurrences(
+    UserTithiEvent event,
+    DateTime from,
+    double lat,
+    double lng, {
+    int count = 3,
+  }) {
+    final List<DateTime> results = [];
+    DateTime cursor = DateTime(from.year, from.month, from.day);
+    for (int i = 0; i < 400 && results.length < count; i++) {
+      final day = DayData.compute(cursor, lat, lng);
+      if (!day.isAdhikaMaasa &&
+          day.tithiNumber == event.tithi &&
+          (event.teluguMonth == null ||
+              event.teluguMonth == day.teluguMonthNumber)) {
+        results.add(cursor);
+      }
+      cursor = cursor.add(const Duration(days: 1));
+    }
+    return results;
+  }
 }

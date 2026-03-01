@@ -28,12 +28,15 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
   final _nameTeCtrl = TextEditingController();
 
   late int _tithi;
-  int? _teluguMonth; // null = every paksha
-  bool _reminderEnabled = false;
+  int? _teluguMonth;     // null = every paksha
+  int? _reminderMinutes; // null = no reminder
 
   bool _isEditing = false;
   bool _saving = false;
   UserTithiEvent? _original;
+
+  // Available reminder options: null = off, values in minutes.
+  static const _reminderOptions = [null, 30, 60, 120, 360, 720, 1440];
 
   @override
   void initState() {
@@ -49,7 +52,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
         _nameTeCtrl.text = _original!.nameTe ?? '';
         _tithi = _original!.tithi;
         _teluguMonth = _original!.teluguMonth;
-        _reminderEnabled = _original!.reminderMinutes != null;
+        _reminderMinutes = _original!.reminderMinutes;
       }
     }
   }
@@ -139,7 +142,9 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
 
             // ── Month picker ───────────────────────────────────────────────
             _SectionLabel(
-              label: isTelugu ? 'నెల (ఖాళీ = ప్రతి పక్షం)' : 'Month (empty = every paksha)',
+              label: isTelugu
+                  ? 'నెల (ఖాళీ = ప్రతి పక్షం)'
+                  : 'Month (empty = every paksha)',
             ),
             const SizedBox(height: 6),
             _MonthPicker(
@@ -148,28 +153,29 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── Reminder (placeholder) ─────────────────────────────────────
+            // ── Reminder picker ────────────────────────────────────────────
+            _SectionLabel(
+              label: isTelugu ? 'రిమైండర్' : 'Reminder',
+            ),
+            const SizedBox(height: 6),
             Container(
               decoration: BoxDecoration(
-                color: cs.surfaceContainerLow,
+                border: Border.all(color: cs.outline),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: cs.outlineVariant),
               ),
-              child: SwitchListTile(
-                title: Text(isTelugu ? 'రిమైండర్' : 'Reminder'),
-                subtitle: Text(
-                  isTelugu
-                      ? 'తదుపరి అప్‌డేట్‌లో వస్తుంది'
-                      : 'Coming in the next update',
-                  style: TextStyle(
-                    color: cs.onSurfaceVariant,
-                    fontSize: 12,
-                  ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int?>(
+                  isExpanded: true,
+                  value: _reminderMinutes,
+                  items: _reminderOptions.map((mins) {
+                    return DropdownMenuItem<int?>(
+                      value: mins,
+                      child: Text(_reminderLabel(mins, isTelugu)),
+                    );
+                  }).toList(),
+                  onChanged: (v) => setState(() => _reminderMinutes = v),
                 ),
-                value: _reminderEnabled,
-                onChanged: (v) => setState(() => _reminderEnabled = v),
-                activeColor: AppTheme.kGold,
-                // TODO(Session4): wire to NotificationService
               ),
             ),
             const SizedBox(height: 32),
@@ -202,15 +208,23 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     );
   }
 
+  String _reminderLabel(int? mins, bool isTelugu) {
+    if (mins == null) return isTelugu ? 'రిమైండర్ లేదు' : 'No reminder';
+    if (mins < 60) return isTelugu ? '$mins నిమిషాలు ముందు' : '$mins min before';
+    final hours = mins ~/ 60;
+    if (hours == 1) return isTelugu ? '1 గంట ముందు' : '1 hour before';
+    if (hours == 24) return isTelugu ? '1 రోజు ముందు' : '1 day before';
+    return isTelugu ? '$hours గంటలు ముందు' : '$hours hours before';
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
 
     final notifier = ref.read(userEventProvider.notifier);
     final nameEn = _nameEnCtrl.text.trim();
-    final nameTe = _nameTeCtrl.text.trim().isEmpty
-        ? null
-        : _nameTeCtrl.text.trim();
+    final nameTe =
+        _nameTeCtrl.text.trim().isEmpty ? null : _nameTeCtrl.text.trim();
 
     try {
       if (_isEditing && _original != null) {
@@ -219,7 +233,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           nameTe: nameTe,
           tithi: _tithi,
           teluguMonth: _teluguMonth,
-          // reminder handled in Session 4
+          reminderMinutes: _reminderMinutes,
         ));
       } else {
         await notifier.add(
@@ -227,6 +241,7 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
           nameTe: nameTe,
           tithi: _tithi,
           teluguMonth: _teluguMonth,
+          reminderMinutes: _reminderMinutes,
         );
       }
       if (mounted) context.pop();
@@ -291,9 +306,7 @@ class _TithiPicker extends StatelessWidget {
         final paksha = tithi <= 15
             ? (isTelugu ? 'శు' : 'S')
             : (isTelugu ? 'కృ' : 'K');
-        final name = isTelugu
-            ? Tithi.namesTe[i]
-            : Tithi.namesEn[i];
+        final name = isTelugu ? Tithi.namesTe[i] : Tithi.namesEn[i];
         return DropdownMenuItem(
           value: tithi,
           child: Text('$tithi · $paksha · $name',
@@ -330,7 +343,9 @@ class _MonthPicker extends StatelessWidget {
       items: [
         DropdownMenuItem<int?>(
           value: null,
-          child: Text(isTelugu ? 'ప్రతి పక్షం (నెల లేదు)' : 'Every paksha (no month)'),
+          child: Text(isTelugu
+              ? 'ప్రతి పక్షం (నెల లేదు)'
+              : 'Every paksha (no month)'),
         ),
         ...List.generate(12, (i) {
           final month = i + 1;
