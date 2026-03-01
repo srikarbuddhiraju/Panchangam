@@ -1,142 +1,100 @@
-# Latest Task — Panchangam Pro: Sessions 1–3 Merged, APK Installed
+# Latest Task — Session 4 Complete: Notifications Live
 
-**Last updated:** Feb 28, 2026
-**Status:** Sessions 1–3 merged to main. Bug fixed. APK built (52.9MB) and installed on device. Ready for Session 4.
-
----
-
-## Quick Fixes — Do Before Session 4
-
-### 1. Rename "Family" tab → "Pro"
-**Files to change:**
-- `app/lib/shared/widgets/main_scaffold.dart` — bottom nav label `'Family'` → `'Pro'`
-- `app/lib/core/utils/app_strings.dart` — Telugu label for Family tab (if exists)
-
-### 2. Debug toggle not visible in Settings
-`kDebugMode` is `true` only in debug builds (`flutter run`), NOT in release APKs.
-The toggle is hidden in the installed release APK — this is correct behaviour by design.
-**To test Pro features on device:** either:
-- Option A: Use `flutter run` (debug build) — toggle will appear in Settings
-- Option B: Change the guard from `kDebugMode` to a compile-time flag or always-show in dev
-- **Decision needed from Srikar**: keep it debug-only, or add a hidden tap gesture (e.g., tap version number 5× to unlock) for release testing?
+**Last updated:** Mar 1, 2026
+**Status:** Session 4 done. APK built (54.0 MB) and installed. Session 5 (Login + Pro user list) is next.
 
 ---
 
-## FIRST THING NEXT SESSION — Start Session 4 (Notifications)
+## FIRST THING NEXT SESSION — Login + Pro User List (Session 5)
 
-Sessions 1–3 are merged to main. APK is on the device. Begin Session 4:
+This requires Firebase setup steps that Srikar must do manually first.
 
-```bash
-cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam
-git checkout main && git pull   # if needed after Srikar pushes manually
-git checkout -b feature/pro-session4-notifications
-cd app && flutter pub add flutter_local_notifications
-```
+### Step A — Firebase project setup (Srikar does this)
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Create (or open) the Panchangam project
+3. Enable **Authentication → Google Sign-In**
+4. Add your Android app (`com.example.panchangam`) if not already added
+5. Get the **SHA-1 fingerprint** for Google Sign-In:
+   ```bash
+   cd /var/home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
+   /home/srikarbuddhiraju/development/flutter/bin/keytool -list -v \
+     -keystore ~/.android/debug.keystore -alias androiddebugkey \
+     -storepass android -keypass android | grep SHA1
+   ```
+   Add that SHA-1 to the Firebase Android app settings.
+6. Download `google-services.json` → place at:
+   `app/android/app/google-services.json`
 
-Also: Srikar needs to manually push to GitHub (SSH auth needed):
-```bash
-git push origin main
-```
-
----
-
-## What Was Done This Session
-
-### Branches merged to main (fast-forward, no conflicts)
-- `feature/pro-session1-data-foundation` → main ✅
-- `feature/pro-session2-calendar-integration` → main ✅
-- `feature/pro-session3-event-ui` → main ✅
-
-### Bug fixed during build
-**Missing `import 'user_tithi_event.dart'`** in three files:
-- `features/calendar/calendar_provider.dart`
-- `features/today/today_screen.dart`
-- `features/panchangam/panchangam_screen.dart`
-
-`dart analyze` (MCP tool) reported no errors — the compiler caught it during `flutter build apk --release`. Fixed and committed (`faa31a0`). Lesson added to `docs/lessons.md`.
-
-### APK built and installed
-- Build: `✓ Built app-release.apk (52.9MB)`
-- Installed: `adb install -r` → Success on device `10BDAH07CM000MQ`
-- GitHub push: **PENDING** — auth token expired. Srikar needs to push manually.
-
-### Main branch log (top commits)
-```
-efe15d5  docs: add build lesson
-faa31a0  fix: add missing UserTithiEvent import (3 files)
-c3fbf92  docs: full Session 4 handoff
-29cc78c  docs: add lessons + Q&A from Pro Sessions 1–3
-6cead70  docs: update LatestTask — Session 3 complete, Session 4 ready
-28e62aa  feat(pro-session3): Event UI — MyEventsScreen, EventFormScreen, PremiumGuard, routes
-7e52895  feat(pro-s2): Session 2 — calendar integration for personal events
-77f1603  feat(pro-s1): Session 1 — data foundation for Panchangam Pro
-```
+### Step B — Claude implements (next session)
+Once `google-services.json` is in place:
+- Add packages: `firebase_core`, `firebase_auth`, `google_sign_in`, `cloud_firestore`
+- Build Google Sign-In flow + login screen
+- Pro user check: `srikarbuddhiraju@gmail.com` → auto-grant Pro (stored in Firestore)
+- Replace `kDebugMode` debug toggle with real auth-based Pro check
 
 ---
 
-## Session 4 — Notifications (TODO)
+## What Was Done This Session (Mar 1, 2026)
 
-**Branch to create:** `feature/pro-session4-notifications`
+### Quick fix
+- Renamed "Family" tab → "Pro" (gold star icon)
+- `app_strings.dart`: `S.family` → `S.pro` (English: "Pro", Telugu: "ప్రో")
+- `main_scaffold.dart`: icon `Icons.people` → `Icons.star_rounded`
 
-### Step-by-step plan
+### Session 4 — Notifications (complete)
 
-**Step 1 — Add package**
-```bash
-cd app && flutter pub add flutter_local_notifications
-```
+**7 files changed, 1 new file created**
 
-**Step 2 — AndroidManifest.xml**
-File: `app/android/app/src/main/AndroidManifest.xml`
-Add inside `<manifest>` (before `<application>`):
-```xml
-<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-```
-Also add inside `<application>`:
-```xml
-<receiver android:exported="false"
-    android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
-<receiver android:exported="false"
-    android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
-  <intent-filter>
-    <action android:name="android.intent.action.BOOT_COMPLETED"/>
-    <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
-  </intent-filter>
-</receiver>
-```
+#### New: `app/lib/services/notification_service.dart`
+- Singleton — `NotificationService.instance`
+- `init()`: initialises timezone (Asia/Kolkata, hardcoded — India-only app), inits FLN plugin, requests POST_NOTIFICATIONS permission on Android 13+
+- `scheduleForEvent(event, occurrences, lat, lng)`: schedules up to 3 notifications, each firing `event.reminderMinutes` minutes before sunrise on the tithi day
+- `cancelForEvent(eventId)`: cancels all 3 potential slots for that event
+- Notification ID formula: `event.id.hashCode ^ (i * 31)` (stable across restarts)
 
-**Step 3 — Create NotificationService**
-File: `app/lib/services/notification_service.dart`
-- Singleton class
-- `init()` — initialize plugin, request permission (Android 13+)
-- `scheduleForEvent(UserTithiEvent event, List<DateTime> occurrences)` — schedules one notification per occurrence (up to 3), N minutes before the datetime
-- `cancelForEvent(String eventId)` — cancels all notifications for that event
-- Notification ID formula: `eventId.hashCode ^ (occurrenceIndex * 31)`
+#### `AndroidManifest.xml`
+Added:
+- Permissions: `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `RECEIVE_BOOT_COMPLETED`
+- Receivers: `ScheduledNotificationReceiver`, `ScheduledNotificationBootReceiver`
 
-**Step 4 — Add nextOccurrences to UserEventCalculator**
-File: `app/lib/features/events/user_event_calculator.dart`
-Add: `static List<DateTime> nextOccurrences(UserTithiEvent event, DateTime from, {int count = 3})`
+#### `user_event_calculator.dart` — `nextOccurrences()`
+- Scans forward up to 400 days from a given date
+- Returns up to N calendar dates where the event's tithi (+ optional month) matches
+- Skips adhika maasa days (consistent with festival logic)
 
-**Step 5 — Wire UserEventProvider**
-File: `app/lib/features/events/user_event_provider.dart`
-- `add()` / `update()`: schedule after saving
-- `toggleActive()`: cancel if disabling, reschedule if enabling
-- `delete()`: cancel before removing
+#### `user_event_provider.dart`
+- `add()`: schedules notifications after saving
+- `update()`: cancels then reschedules
+- `delete()`: cancels before removing
 
-**Step 6 — Wire main.dart**
-- `await NotificationService.instance.init()`
-- Re-schedule all active events with reminders on app start
+#### `main.dart`
+- `NotificationService.instance.init()` called before `runApp()`
+- `_rescheduleAllNotifications()`: reads Hive directly, reschedules all active events on every startup — keeps alarms alive after device reboots
 
-**Step 7 — Wire EventFormScreen reminder picker**
-File: `app/lib/features/events/event_form_screen.dart`
-- Replace placeholder with real `DropdownButtonFormField<int?>`
-- Options: null (No reminder), 30, 60, 120, 360, 720, 1440 minutes
+#### `event_form_screen.dart`
+- Replaced "Coming soon" placeholder with a real `DropdownButton<int?>`
+- Options: No reminder / 30 min / 1 h / 2 h / 6 h / 12 h / 1 day (before sunrise)
+- `_save()` now passes `reminderMinutes` to `add()` and `update()`
+- Both English and Telugu labels
 
-**Step 8 — Verify on device**
-- Enable isPremium via debug toggle
-- Add event with reminder = 30 min, tithi = near future
-- Confirm notification fires
+### APK
+- Built: `✓ Built app-release.apk (54.0MB)`
+- Installed via `adb install -r` → **Success**
+- Branch: `feature/pro-session4-notifications`
+- GitHub push: **PENDING** — Srikar needs to push manually
+
+---
+
+## How to Test Notifications
+
+Since Pro is currently debug-toggle only:
+1. Run `flutter run` (debug build) — toggle appears in Settings
+2. Enable Pro toggle → go to Pro tab → Add Event
+3. Set a tithi that occurs soon (check which tithi is 2–3 days away in the app)
+4. Set reminder = 30 min
+5. Notification will fire 30 min before sunrise on that day
+
+Once login is done (Session 5), you can test on the release APK with your real account.
 
 ---
 
