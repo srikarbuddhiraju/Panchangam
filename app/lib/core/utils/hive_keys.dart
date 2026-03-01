@@ -15,6 +15,11 @@ class HiveKeys {
   static const String themeMode = 'themeMode';
   static const String timeFormat = 'timeFormat';
 
+  // ── Notification keys (in settingsBox) ───────────────────────────────────
+  /// True once we have asked the user for battery-optimisation exemption.
+  /// After the first ask we never prompt again (user can change it in Settings).
+  static const String batteryOptAsked = 'batteryOptAsked';
+
   // ── Premium key (in settingsBox) ──────────────────────────────────────────
   /// Stored as bool. Default: false.
   /// Set to true on purchase confirmation (billing deferred — debug toggle only for now).

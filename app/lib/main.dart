@@ -59,10 +59,17 @@ Future<void> main() async {
     ),
   );
 
-  // Request POST_NOTIFICATIONS + battery-optimisation exemption once the
-  // Flutter Activity is live. Safe to call multiple times.
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    NotificationService.instance.requestPermissions().ignore();
+  // Request POST_NOTIFICATIONS once the Flutter Activity is live.
+  // Battery-opt dialog is shown only on the FIRST ever launch (stored in Hive).
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    final settingsBox = Hive.box(HiveKeys.settingsBox);
+    final alreadyAsked =
+        settingsBox.get(HiveKeys.batteryOptAsked, defaultValue: false) as bool;
+    await NotificationService.instance
+        .requestPermissions(askBatteryOpt: !alreadyAsked);
+    if (!alreadyAsked) {
+      await settingsBox.put(HiveKeys.batteryOptAsked, true);
+    }
   });
 }
 
