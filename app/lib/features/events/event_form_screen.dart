@@ -333,27 +333,39 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       settings.lng,
     );
 
-    final String message;
-    if (occurrences.isEmpty) {
-      message = isTelugu
-          ? 'తిథి సరిపోలలేదు — 400 రోజులలో రిమైండర్ కనుగొనబడలేదు'
-          : 'No occurrence found in 400 days — check the tithi selection';
-    } else {
-      final tithiDate = occurrences.first;
-      final notifyDate =
-          tithiDate.subtract(Duration(days: _reminderDaysBefore));
-      final notifyAt = DateTime(
+    // Find the first occurrence whose notify timestamp is still in the future.
+    // (Same logic as scheduleForEvent — past notifyAt times are silently skipped.)
+    final now = DateTime.now();
+    DateTime? nextNotifyAt;
+    for (final tithiDate in occurrences) {
+      final notifyDate = tithiDate.subtract(Duration(days: _reminderDaysBefore));
+      final candidate = DateTime(
         notifyDate.year,
         notifyDate.month,
         notifyDate.day,
         _reminderHour!,
         _reminderMinute,
       );
-      final h = _reminderHour! % 12 == 0 ? 12 : _reminderHour! % 12;
-      final m = _reminderMinute.toString().padLeft(2, '0');
-      final period = _reminderHour! < 12 ? 'AM' : 'PM';
+      if (candidate.isAfter(now)) {
+        nextNotifyAt = candidate;
+        break;
+      }
+    }
+
+    final String message;
+    final bool isError;
+    if (occurrences.isEmpty || nextNotifyAt == null) {
+      isError = true;
+      message = isTelugu
+          ? 'రిమైండర్ సెట్ కాలేదు — తిథి లేదా సమయం తనిఖీ చేయండి'
+          : 'No upcoming slot found — check tithi selection or reminder time';
+    } else {
+      isError = false;
+      final h = nextNotifyAt.hour % 12 == 0 ? 12 : nextNotifyAt.hour % 12;
+      final m = nextNotifyAt.minute.toString().padLeft(2, '0');
+      final period = nextNotifyAt.hour < 12 ? 'AM' : 'PM';
       final dateStr =
-          '${notifyAt.day}/${notifyAt.month}/${notifyAt.year} at $h:$m $period';
+          '${nextNotifyAt.day}/${nextNotifyAt.month}/${nextNotifyAt.year} at $h:$m $period';
       message = isTelugu
           ? 'రిమైండర్ సెట్ చేయబడింది: $dateStr'
           : 'Reminder set for $dateStr';
@@ -362,8 +374,8 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 4),
-        backgroundColor: occurrences.isEmpty ? Colors.red.shade700 : null,
+        duration: const Duration(seconds: 5),
+        backgroundColor: isError ? Colors.red.shade700 : null,
       ),
     );
   }

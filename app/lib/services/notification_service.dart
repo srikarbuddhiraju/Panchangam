@@ -89,6 +89,27 @@ class NotificationService {
     );
   }
 
+  /// Schedule a notification via [zonedSchedule] for 1 minute from now.
+  ///
+  /// Use from Settings to verify that scheduled (non-immediate) notifications
+  /// work on this device. If this fires after ~1 minute, scheduling works fine
+  /// and the real reminders are simply waiting for their tithi date.
+  Future<void> scheduleMinuteTestNotification(bool isTelugu) async {
+    final notifyAt = DateTime.now().add(const Duration(minutes: 1));
+    await _plugin.zonedSchedule(
+      0xBEEF,
+      isTelugu ? 'షెడ్యూల్ పరీక్ష' : 'Scheduled Test',
+      isTelugu
+          ? '1 నిమిషం ముందు సెట్ చేయబడింది — షెడ్యూలింగ్ పని చేస్తోంది!'
+          : 'Scheduled 1 minute ago — scheduling is working!',
+      tz.TZDateTime.from(notifyAt, tz.local),
+      _details(),
+      androidScheduleMode: AndroidScheduleMode.inexact,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
   /// True if exact-alarm scheduling is permitted on this device.
   ///
   /// Always true on Android < 12. On Android 12+, the user must grant

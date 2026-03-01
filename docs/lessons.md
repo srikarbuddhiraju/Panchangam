@@ -125,6 +125,69 @@ Updated after every user correction, per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Android Notifications (CRITICAL — tricky platform behaviour)
+
+### requestNotificationsPermission() must not be called before runApp()
+- **Mistake**: Called `requestNotificationsPermission()` inside `NotificationService.init()`, which runs before `runApp()` in `main()`. No Activity exists at that point, so the system permission dialog is never shown → POST_NOTIFICATIONS never granted → all notifications silently dropped.
+- **Fix**: Remove the call from `init()`. Add a `requestPermissions()` method and call it via `WidgetsBinding.instance.addPostFrameCallback((_) { ... })` AFTER `runApp()` so an Activity is live.
+- **Rule**: Any platform API that requires an Activity (permission dialogs, system intents) must be called AFTER `runApp()`. Pre-runApp code has no Activity context.
+
+### Battery-optimization dialog must only show once — store a Hive flag
+- **Mistake**: Called `requestIgnoreBatteryOptimizations` on every app start (via `addPostFrameCallback`). Even after granting, the check might return false on Samsung, re-showing the dialog every launch.
+- **Fix**: Add `HiveKeys.batteryOptAsked` (bool) to the settingsBox. Read it in `main.dart` before calling `requestPermissions()`. Pass `askBatteryOpt: false` on subsequent launches. Set the flag to `true` after the first prompt.
+- **Rule**: Any one-time system dialog (battery opt, rating prompt, onboarding) must be gated behind a persisted "already asked" flag. Never re-show them on each app start.
+
+### ScheduledNotificationBootReceiver must be exported=true on Android 12+
+- **Mistake**: Boot receiver declared `android:exported="false"`. On Android 12+, system broadcasts (BOOT_COMPLETED, MY_PACKAGE_REPLACED) are NOT delivered to receivers with `exported=false`. Notifications never recovered after device reboot.
+- **Fix**: Set `android:exported="true"` on the boot receiver. The ScheduledNotificationReceiver (used by AlarmManager explicit intents) can stay `exported=false`.
+- **Rule**: Any receiver with an intent-filter for system broadcasts (BOOT_COMPLETED, PACKAGE_REPLACED etc.) MUST be `exported=true` on Android 12+.
+
+### R8 v3+ breaks GSON TypeToken — requires two specific `-keep,allowobfuscation,allowshrinking` rules
+- **Symptom**: `zonedSchedule()` throws `PlatformException: Missing type parameter` in release builds only. Debug builds work fine. `show()` (immediate) always works.
+- **Exact cause**: `flutter_local_notifications` creates `new TypeToken<List<NotificationDetails>>() {}` in `loadScheduledNotifications()`. R8 v3+ removes the `Signature` attribute from TypeToken anonymous subclasses even when `-keepattributes Signature` is set, unless two specific rules (from GSON 2.9.1 official R8 guidance) are present.
+- **Insufficient fix**: `-keep class com.dexterous.flutterlocalnotifications.** { *; }` + `-keepattributes Signature` — not enough for R8 v3+.
+- **Correct fix** (from GSON official R8 docs):
+  ```
+  -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+  -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+  ```
+  These preserve generic signatures on ALL TypeToken subclasses. The `allowobfuscation` lets R8 rename them; `allowshrinking` lets R8 remove unused ones. But R8 MUST preserve the class structure (Signature) to allow TypeToken to introspect the generic type via reflection.
+- **File**: `android/app/proguard-rules.pro`
+- **Rule**: For any Flutter release build using `flutter_local_notifications` with `zonedSchedule()`: add `proguard-rules.pro` with the GSON TypeToken rules above. The plugin ships NO consumer ProGuard rules of its own.
+
+### canScheduleExactAlarms() is canScheduleExactNotifications() in v18
+- **Mistake**: Called `canScheduleExactAlarms()` which doesn't exist in flutter_local_notifications v18. Build failed.
+- **Fix**: The correct method name in v18 is `canScheduleExactNotifications()`.
+- **Rule**: Always verify exact API method names against the installed package version — don't assume from docs for a different version. Use `grep` on the pub-cache source before writing.
+
+### Alarm mode (alarmClock) silently fails without SCHEDULE_EXACT_ALARM grant
+- **Mistake**: Used `AndroidScheduleMode.alarmClock` without checking if `SCHEDULE_EXACT_ALARM` was granted. The exception was swallowed by `catch (_)`, so the notification silently disappeared.
+- **Fix**: Call `canScheduleExactNotifications()` before scheduling; fall back to `inexact` if not granted. Show a dialog guiding the user to Settings → Apps → Special app access → Alarms & reminders.
+- **Rule**: Never silently swallow permission-related exceptions for features the user explicitly enabled. Either fall back with a user-visible notice, or surface the error.
+
+### Battery optimization kills inexact reminders on Samsung/MIUI
+- **Root cause**: Inexact alarms use `AlarmManager.set()` which can be deferred during deep doze. Samsung's aggressive battery optimization routinely kills these before they fire.
+- **Fix**: Added `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` permission to manifest. Added `panchangam/system` MethodChannel in `MainActivity.kt` to check `isIgnoringBatteryOptimizations` and call `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` intent. Called from `requestPermissions()` at app start.
+- **Note**: `alarmClock` mode (exact alarms) IS exempt from doze — that's why alarm mode works without battery exemption.
+- **Rule**: For reliable background notifications on any Android device, request battery-optimization exemption early. Add the MethodChannel to MainActivity.kt at project setup, not after.
+
+---
+
+## Debugging Discipline (CRITICAL)
+
+### Do NOT apply fixes without knowing the root cause
+- **Mistake**: Applied 4+ rounds of notification fixes (manifest changes, permission flow, battery opt, MethodChannel) while `zonedSchedule()` was silently failing with an unread exception. Each fix addressed peripheral issues while the core error was never surfaced.
+- **Mistake**: User said "strategize, think then act" — but the next action was still a guess rather than first surfacing the actual error.
+- **Root rule**: When something silently fails, the FIRST action must be to make it fail loudly. `catch (_)` hides the real problem. Surface the exception, read it, THEN fix it.
+- **Consequence**: Multiple builds, multiple installs, wasted sessions, frustrated user.
+- **Rule**: Before writing any fix for a broken feature: (1) remove silent catches, (2) surface the error to the UI or logcat, (3) read the error, (4) only then write the fix.
+
+### Silent `catch (_)` is the enemy of debugging
+- **Pattern**: `catch (_) { // silently skip }` in scheduling code means errors vanish completely.
+- **Rule**: In production code, a scheduling failure should at minimum log the error. During debugging, it must surface to the UI. Never use bare `catch (_)` for code paths that involve platform APIs.
+
+---
+
 ## Data Persistence (CRITICAL)
 
 ### Never lose user-pasted data between sessions
