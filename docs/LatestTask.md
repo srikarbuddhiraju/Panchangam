@@ -1,41 +1,47 @@
-# Latest Task — Session 7 In Progress
+# Latest Task — Session 7 Complete
 
 **Last updated:** Mar 1, 2026
-**Branch:** `feature/alarm-sound-channel` (in progress)
+**Branch:** `feature/alarm-sound-channel` (pending merge to main)
+**Commits:** `d9d08e0` (feat: alarm channel + To-Do feature), `395b528` (fix: targetDate live recompute)
 **APK:** 58.6 MB, installed ✓
 
 ---
 
-## Session 7 — What's Done
+## Session 7 — All Done ✓
 
 ### 1. Alarm sound channel ✓
-- New `panchangam_alarms` channel: `AudioAttributesUsage.alarm` + `UriAndroidNotificationSound('content://settings/system/alarm_alert')` + `fullScreenIntent: true`
-- `scheduleForEvent()` now uses `_alarmDetails()` for alarm type, `_details()` for reminder
+- New `panchangam_alarms` channel: `AudioAttributesUsage.alarm` + `UriAndroidNotificationSound('content://settings/system/alarm_alert')` + `fullScreenIntent: true` + `Importance.max`
+- `scheduleForEvent()` uses `_alarmDetails()` for alarm type, `_details()` for reminder
 - `scheduleForTodo()` + `cancelForTodo()` added to `NotificationService`
 
-### 2. To-Do feature ✓ (pending device test)
+### 2. To-Do feature ✓
 - `user_todo.dart` — model with `targetDate`, `isCompleted`, `isActive`, optional reminder
 - `user_todo_provider.dart` — CRUD + Hive (`userTodosBox`), single notification per todo
-- `todo_form_screen.dart` — title + tithi + month + reminder + notes form
+- `todo_form_screen.dart` — title + tithi + month + reminder + notes form; **live targetDate preview** (gold italic, updates on every tithi/month change via `_recomputePreview()`)
 - `my_events_screen.dart` — Events | To-Dos tab bar (ConsumerStatefulWidget + TabController)
 - `main.dart` — opens `userTodosBox` + `_rescheduleTodoNotifications()` on startup
 - `routes.dart` — `/todos/new` + `/todos/:id` push routes
-- `UserEventCalculator.nextOccurrenceDate()` — helper for computing To-Do `targetDate`
+- `UserEventCalculator.nextOccurrenceDate()` — scans forward ≤400 days for tithi match
 
 ### 3. Festival markers ✓
-- Already implemented in `day_cell.dart` (amber border + festival name) — checkboxes ticked in `features.md`
+- Already in `day_cell.dart` (amber border + festival name) — confirmed + ticked in `features.md`
+
+### 4. Bug fix: To-Do targetDate in edit mode ✓
+- Root cause: form showed stored `_original!.targetDate`; save didn't recompute even when tithi/month changed
+- Fix: `_previewDate` state + `_recomputePreview()` called in `initState` (post-frame) + on each tithi/month `onChanged`; save passes recomputed date to `copyWith(targetDate: newTarget)`
 
 ---
 
-## Verification Checklist (Session 7)
+## Verification Checklist (Session 7) — Confirmed by Srikar
 
-- [ ] Alarm mode sounds like a real alarm (not a notification tone)
-- [ ] "Sched." test in Settings still works (scheduled notification fires after 1 min)
-- [ ] To-Do: create a To-Do → appears in My Events → To-Dos tab with correct target date
-- [ ] To-Do: check the checkbox → moves to "Completed" section
-- [ ] To-Do: swipe to delete works
-- [ ] To-Do: edit button → TodoFormScreen pre-fills correctly
-- [ ] Events tab still works (existing events unaffected)
+- [x] Alarm mode sounds like a real alarm ✓
+- [x] To-Do: create → correct target date shown ✓
+- [x] To-Do: checkbox → Completed section ✓
+- [x] To-Do: swipe to delete ✓
+- [x] To-Do: edit + tithi change → Gregorian date updates live ✓
+- [x] Events tab unaffected ✓
+- [ ] "Sched." test notification fires after 1 min (not re-tested this session)
+- [ ] Merge `feature/alarm-sound-channel` → main
 
 ---
 
