@@ -71,13 +71,13 @@ Premium unlocks:
 ## Calendar View (FREE)
 - [x] Gregorian calendar grid (month view)
 - [x] Each day cell: Tithi, Nakshatra
-- [ ] Festival marker on calendar cells
+- [x] Festival marker on calendar cells
 - [x] Day detail view: full Panchangam
 - [x] Swipe left/right to navigate months
 - [x] Today button (Outlook-style outlined button) to jump to current month
 - [x] Calendar grid fills full screen height dynamically
 - [ ] Week view
-- [ ] Festival markers on grid
+- [x] Festival markers on grid
 
 ---
 
@@ -92,13 +92,13 @@ Premium unlocks:
 ## Productivity Features (PREMIUM)
 
 ### 1. To-Dos (Session 7)
-- [ ] Tithi-based, **one-time** tasks (donate on Ekadashi, visit temple on Panchami etc.)
-- [ ] Pinned to NEXT occurrence of chosen tithi from creation date; stored as `targetDate`
-- [ ] Mark as complete → archived (no recurrence; recurring needs use Personal Events)
-- [ ] Optional reminder notification (reuses `ReminderType`: reminder/alarm)
-- [ ] Notes field (optional)
-- [ ] Lives inside Pro tab (`MyEventsScreen`) as a second tab alongside Events
-- [ ] Day detail: shows matching To-Dos as a checkable card
+- [x] Tithi-based, **one-time** tasks (donate on Ekadashi, visit temple on Panchami etc.)
+- [x] Pinned to NEXT occurrence of chosen tithi from creation date; stored as `targetDate`
+- [x] Mark as complete → archived (no recurrence; recurring needs use Personal Events)
+- [x] Optional reminder notification (reuses `ReminderType`: reminder/alarm)
+- [x] Notes field (optional)
+- [x] Lives inside Pro tab (`MyEventsScreen`) as a second tab alongside Events
+- [ ] Day detail: shows matching To-Dos as a checkable card (deferred)
 - [ ] Shareable with family group (future)
 
 ### 2. Reminders (via Occasions & Events)
@@ -109,7 +109,7 @@ Premium unlocks:
 
 ### 3. Alarms (via Occasions & Events)
 - [x] Exact `alarmClock` mode — bypasses doze, shows in system clock app
-- [ ] Alarm sound — currently sounds same as notification. Fix: `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + system alarm ringtone URI (Session 7)
+- [x] Alarm sound — `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + system alarm ringtone URI
 - [ ] Snooze support — future
 - [ ] Shareable with family group — future
 
