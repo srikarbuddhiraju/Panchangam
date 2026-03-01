@@ -5,6 +5,23 @@
 
 ---
 
+## Quick Fixes — Do Before Session 4
+
+### 1. Rename "Family" tab → "Pro"
+**Files to change:**
+- `app/lib/shared/widgets/main_scaffold.dart` — bottom nav label `'Family'` → `'Pro'`
+- `app/lib/core/utils/app_strings.dart` — Telugu label for Family tab (if exists)
+
+### 2. Debug toggle not visible in Settings
+`kDebugMode` is `true` only in debug builds (`flutter run`), NOT in release APKs.
+The toggle is hidden in the installed release APK — this is correct behaviour by design.
+**To test Pro features on device:** either:
+- Option A: Use `flutter run` (debug build) — toggle will appear in Settings
+- Option B: Change the guard from `kDebugMode` to a compile-time flag or always-show in dev
+- **Decision needed from Srikar**: keep it debug-only, or add a hidden tap gesture (e.g., tap version number 5× to unlock) for release testing?
+
+---
+
 ## FIRST THING NEXT SESSION — Start Session 4 (Notifications)
 
 Sessions 1–3 are merged to main. APK is on the device. Begin Session 4:

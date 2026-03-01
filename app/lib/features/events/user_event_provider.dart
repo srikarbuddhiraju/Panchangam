@@ -5,6 +5,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/utils/hive_keys.dart';
+import '../../services/notification_service.dart';
+import '../settings/settings_provider.dart';
+import 'user_event_calculator.dart';
 import 'user_tithi_event.dart';
 
 // ── Provider ──────────────────────────────────────────────────────────────────
@@ -60,7 +63,7 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
     );
     await _save(event);
     state = [...state, event];
-    // TODO(Session4): NotificationService.scheduleNext(event)
+    await _scheduleNotifications(event);
     return event;
   }
 
@@ -71,7 +74,8 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
       for (final e in state)
         if (e.id == updated.id) updated else e,
     ];
-    // TODO(Session4): NotificationService.cancelAll(updated.id) then reschedule
+    await NotificationService.instance.cancelForEvent(updated.id);
+    if (updated.isActive) await _scheduleNotifications(updated);
   }
 
   /// Toggle active/inactive without deleting.
@@ -83,10 +87,23 @@ class UserEventNotifier extends Notifier<List<UserTithiEvent>> {
 
   /// Permanently delete an event.
   Future<void> delete(String id) async {
+    await NotificationService.instance.cancelForEvent(id);
     final box = Hive.box(HiveKeys.userEventsBox);
     await box.delete(id);
     state = state.where((e) => e.id != id).toList();
-    // TODO(Session4): NotificationService.cancelAll(id)
+  }
+
+  // ── Notification helpers ───────────────────────────────────────────────────
+
+  Future<void> _scheduleNotifications(UserTithiEvent event) async {
+    if (!event.isActive || event.reminderMinutes == null) return;
+    final settings = ref.read(settingsProvider);
+    final occurrences = UserEventCalculator.nextOccurrences(
+      event, DateTime.now(), settings.lat, settings.lng,
+    );
+    await NotificationService.instance.scheduleForEvent(
+      event, occurrences, settings.lat, settings.lng,
+    );
   }
 
   // ── Persistence helpers ────────────────────────────────────────────────────
