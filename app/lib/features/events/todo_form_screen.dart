@@ -6,9 +6,11 @@ import '../../app/theme.dart';
 import '../../core/calculations/tithi.dart';
 import '../../core/calculations/telugu_calendar.dart';
 import '../../core/utils/app_strings.dart';
+import 'user_event_calculator.dart';
 import 'user_tithi_event.dart' show ReminderType;
 import 'user_todo.dart';
 import 'user_todo_provider.dart';
+import '../settings/settings_provider.dart';
 
 /// Add or edit a personal To-Do item.
 ///
@@ -38,6 +40,7 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
   bool _isEditing = false;
   bool _saving = false;
   UserTodo? _original;
+  DateTime? _previewDate; // computed next occurrence for current tithi/month
 
   static const _daysBeforeOptions = [0, 1, 2, 3, 7];
 
@@ -60,6 +63,23 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
         _reminderType = _original!.reminderType;
       }
     }
+
+    // Compute initial preview date after the first frame (ref.read is safe then).
+    WidgetsBinding.instance.addPostFrameCallback((_) => _recomputePreview());
+  }
+
+  /// Recomputes the next occurrence of the current tithi/month and updates
+  /// [_previewDate]. Called on init and whenever the user changes tithi or month.
+  void _recomputePreview() {
+    final settings = ref.read(settingsProvider);
+    final date = UserEventCalculator.nextOccurrenceDate(
+      _tithi,
+      _teluguMonth,
+      DateTime.now(),
+      settings.lat,
+      settings.lng,
+    );
+    if (mounted) setState(() => _previewDate = date);
   }
 
   @override
@@ -122,7 +142,10 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
             const SizedBox(height: 6),
             _TithiDropdown(
               selected: _tithi,
-              onChanged: (t) => setState(() => _tithi = t),
+              onChanged: (t) {
+                setState(() => _tithi = t);
+                _recomputePreview();
+              },
             ),
             const SizedBox(height: 20),
 
@@ -135,18 +158,32 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
             const SizedBox(height: 6),
             _MonthDropdown(
               selected: _teluguMonth,
-              onChanged: (m) => setState(() => _teluguMonth = m),
+              onChanged: (m) {
+                setState(() => _teluguMonth = m);
+                _recomputePreview();
+              },
             ),
             const SizedBox(height: 8),
 
-            // Target date info (edit mode)
-            if (_isEditing && _original != null)
+            // Target date preview — shown in both add and edit mode, updates live
+            if (_previewDate != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: Text(
                   isTelugu
-                      ? 'లక్ష్య తేదీ: ${DateFormat('d/M/y').format(_original!.targetDate)}'
-                      : 'Pinned to: ${DateFormat('d MMM y').format(_original!.targetDate)}',
+                      ? 'తదుపరి తేదీ: ${DateFormat('d/M/y').format(_previewDate!)}'
+                      : 'Next occurrence: ${DateFormat('d MMM y').format(_previewDate!)}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.kGold,
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+              )
+            else if (_isEditing)
+              Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 4),
+                child: Text(
+                  isTelugu ? 'తేదీ లెక్కిస్తున్నాము…' : 'Computing date…',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: cs.onSurfaceVariant,
                         fontStyle: FontStyle.italic,
@@ -242,11 +279,20 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
 
     try {
       if (_isEditing && _original != null) {
+        // Recompute targetDate if tithi/month changed from original.
+        // Use already-computed _previewDate if available, else fall back
+        // to the stored date.
+        final newTarget = (_tithi != _original!.tithi ||
+                _teluguMonth != _original!.teluguMonth)
+            ? (_previewDate ?? _original!.targetDate)
+            : _original!.targetDate;
+
         await notifier.update(_original!.copyWith(
           title: title,
           notes: notes,
           tithi: _tithi,
           teluguMonth: _teluguMonth,
+          targetDate: newTarget,
           reminderHour: _reminderHour,
           reminderMinute: _reminderMinute,
           reminderType: _reminderType,
