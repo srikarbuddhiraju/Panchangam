@@ -114,3 +114,58 @@ Before proposing a model or architecture for any feature:
 - Read the relevant section in `docs/features.md` and `docs/LatestTask.md`
 - Do not invent a design that contradicts what is already written
 - One misread = wrong model = wasted planning + rework
+
+### 5. Diagnose → propose → confirm → implement. In that order. Always.
+For any non-trivial fix:
+1. Get the actual error (surface it if needed)
+2. Explain the root cause clearly
+3. Wait for Srikar's nod before building
+4. Implement, build, install
+5. Wait for device confirmation before moving on
+- Never chain multiple fix attempts without confirmation between them
+- Never install a new build while the previous one hasn't been tested yet
+
+### 6. Notification changes require explicit device confirmation before closing
+There is no substitute for "I tested it, the notification fired."
+- `dart analyze` passing = nothing. Build succeeding = nothing.
+- Every notification-related change must end with: device test → confirmed → then close.
+- Never mark a notification task complete based on code alone.
+
+### 7. For R8/ProGuard/plugin issues — check the library's GitHub issues first
+Before writing any ProGuard rule or platform workaround:
+- Search the library's GitHub issues for the exact error string
+- Check if the library has a `consumer-rules.pro` or documented R8 guidance
+- The correct fix is almost always already documented — find it before guessing
+
+### 8. Release builds are a different environment — test release explicitly
+R8, ProGuard, minification, and reflection all behave differently in release vs debug.
+- Any plugin using GSON, reflection, or serialisation must be tested in `--release`
+- "Works in debug" means nothing for release-only failures
+- For notification, platform channel, and persistence code: always build and test release
+
+### 9. Never use `.ignore()` on user-facing async calls
+`.ignore()` silences every error permanently. It is only acceptable when the operation has zero user-visible effect.
+- For notifications, persistence, permissions, platform channels: NEVER use `.ignore()`
+- If fire-and-forget is genuinely needed, use a named catchError:
+  ```dart
+  unawaited(_scheduleNotifications(event).catchError((e) => debugPrint('schedule: $e')));
+  ```
+- `_scheduleNotifications(event).ignore()` was the original sin that hid the R8 error for multiple sessions
+
+### 10. Ship diagnostic/test UI on day 1 for any system-level feature
+Any feature that cannot be verified visually in 10 seconds needs a test button shipped alongside it.
+- Notifications: "Test" (immediate) + "Schedule Test" (1-min zonedSchedule) buttons
+- Permissions: show granted/denied status in Settings
+- If the diagnostic had existed in Session 4, the R8 error would have been caught the same day
+- Rule: do not close the PR for any system-level feature without a way to test it manually
+
+### 11. Notification channels are immutable once created on a device — design all channels upfront
+Android notification channels cannot have their sound, importance, or audio attributes changed after creation.
+- Before the first real-device install of any notification feature, define ALL required channels
+- Reminder channel (notification sound) and Alarm channel (alarm ringtone, AudioAttributesUsage.alarm) must be separate from day 1
+- You get one shot per channel ID — plan it before shipping
+
+### 12. An unchecked verification item is a hard blocker — do not merge
+If `docs/todo.md` or `docs/LatestTask.md` has an unchecked `[ ]` verification item, the branch does not merge.
+- `[ ] Notification fires at correct time (device test)` sat unchecked across 3 merged sessions
+- Treat unchecked verification items the same as failing tests: they block the merge

@@ -56,6 +56,30 @@ class UserEventCalculator {
     }).toList();
   }
 
+  /// Return the next date on which [tithi] / [teluguMonth] falls, starting from [from].
+  ///
+  /// Used by To-Do creation to pin the task to a specific date.
+  /// Returns null if no occurrence is found within 400 days.
+  static DateTime? nextOccurrenceDate(
+    int tithi,
+    int? teluguMonth,
+    DateTime from,
+    double lat,
+    double lng,
+  ) {
+    DateTime cursor = DateTime(from.year, from.month, from.day);
+    for (int i = 0; i < 400; i++) {
+      final day = DayData.compute(cursor, lat, lng);
+      if (!day.isAdhikaMaasa &&
+          day.tithiNumber == tithi &&
+          (teluguMonth == null || teluguMonth == day.teluguMonthNumber)) {
+        return cursor;
+      }
+      cursor = cursor.add(const Duration(days: 1));
+    }
+    return null;
+  }
+
   /// Return the next [count] calendar dates on which [event] falls.
   ///
   /// Scans forward from [from] (inclusive) up to 400 days.

@@ -23,8 +23,11 @@ class NotificationService {
 
   static const _channelId = 'panchangam_events';
   static const _channelName = 'Personal Events';
-  static const _channelDesc =
-      'Reminders for your personal tithi events';
+  static const _channelDesc = 'Reminders for your personal tithi events';
+
+  static const _alarmChannelId = 'panchangam_alarms';
+  static const _alarmChannelName = 'Personal Alarms';
+  static const _alarmChannelDesc = 'Alarms for your personal tithi events';
 
   // ── Init ────────────────────────────────────────────────────────────────────
 
@@ -185,13 +188,63 @@ class NotificationService {
         _title(event),
         _body(event),
         tz.TZDateTime.from(notifyAt, tz.local),
-        _details(),
+        event.reminderType == ReminderType.alarm ? _alarmDetails() : _details(),
         androidScheduleMode: scheduleMode,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );
       scheduled++;
     }
+  }
+
+  // ── To-Do notifications ──────────────────────────────────────────────────────
+
+  /// Schedule a single notification for a To-Do on [targetDate] at
+  /// [reminderHour]:[reminderMinute]. No-op if already in the past.
+  ///
+  /// Uses the alarm channel (and alarmClock mode) when [isAlarm] is true.
+  Future<void> scheduleForTodo({
+    required String id,
+    required String title,
+    String? body,
+    required DateTime targetDate,
+    required int reminderHour,
+    required int reminderMinute,
+    required bool isAlarm,
+  }) async {
+    final notifyAt = DateTime(
+      targetDate.year,
+      targetDate.month,
+      targetDate.day,
+      reminderHour,
+      reminderMinute,
+    );
+    if (notifyAt.isBefore(DateTime.now())) return;
+
+    final AndroidScheduleMode mode;
+    if (isAlarm) {
+      final canExact = await canScheduleExactNotifications();
+      mode =
+          canExact ? AndroidScheduleMode.alarmClock : AndroidScheduleMode.inexact;
+    } else {
+      mode = AndroidScheduleMode.inexact;
+    }
+
+    await _plugin.zonedSchedule(
+      id.hashCode,
+      title,
+      body ?? (isAlarm ? '⏰ నేడు · Today' : '🔔 నేడు · Today'),
+      tz.TZDateTime.from(notifyAt, tz.local),
+      isAlarm ? _alarmDetails() : _details(),
+      androidScheduleMode: mode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
+  /// Cancel the scheduled notification for the given To-Do id.
+  Future<void> cancelForTodo(String todoId) async {
+    await _plugin.cancel(todoId.hashCode);
   }
 
   // ── Cancel ───────────────────────────────────────────────────────────────────
@@ -242,6 +295,22 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
+        ),
+      );
+
+  NotificationDetails _alarmDetails() => const NotificationDetails(
+        android: AndroidNotificationDetails(
+          _alarmChannelId,
+          _alarmChannelName,
+          channelDescription: _alarmChannelDesc,
+          importance: Importance.max,
+          priority: Priority.max,
+          icon: '@mipmap/ic_launcher',
+          sound: UriAndroidNotificationSound(
+            'content://settings/system/alarm_alert',
+          ),
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+          fullScreenIntent: true,
         ),
       );
 }
