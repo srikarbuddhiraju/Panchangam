@@ -37,10 +37,10 @@ final monthDataProvider = FutureProvider
   final List<EclipseData> eclipses =
       await ref.watch(eclipseProvider(ym.year).future);
 
-  // Overlay personal event markers (sync — already loaded from Hive)
+  // Overlay personal event markers — watch state (not notifier) for reactivity.
   final bool isPremium = ref.watch(settingsProvider).isPremium;
   final List<UserTithiEvent> userEvents = isPremium
-      ? ref.watch(userEventProvider.notifier).active
+      ? ref.watch(userEventProvider).where((e) => e.isActive).toList()
       : const [];
 
   return days.map((d) {
