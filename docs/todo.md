@@ -132,23 +132,30 @@ class UserTithiEvent {
 
 ---
 
-## Session 7 — Next Up
+## Session 7 — ✅ COMPLETE (Mar 1, 2026)
 
-### Do First (Housekeeping)
-- [ ] **Doc reorganization** — all `.md` files capped at 200 lines. Microservices-style: one responsibility per file, consistent naming, cross-links. Files currently at/near limit: `LatestTask.md` (221), `lessons.md` (199), `todo.md` (180), `features.md` (170). Split before any feature work.
+Branch: `feature/alarm-sound-channel` | Commits: `d9d08e0`, `395b528` | APK: 58.6 MB ✓
 
-### Must Do
-- [ ] **Alarm sound** — `ReminderType.alarm` sounds same as reminder. Add `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + system alarm ringtone. Use for alarm mode only.
-- [ ] **To-Do feature (Pro)** — **Tithi-based** to-dos (same date basis as Events) with completion checkbox + optional reminder. Discuss exact recurrence model before implementing. See LatestTask.md for rough plan.
-- [ ] **Festival markers on calendar grid** — gold dot or indicator on days with festivals in the monthly calendar grid
-- [ ] **Firestore Pro subscription check** — replace hardcoded email whitelist with real Firestore document check
+### Housekeeping
+- [x] **Doc reorganization** — `LatestTask.md` trimmed (222→114 lines); `lessons.md` split into `lessons.md` + `lessons_platform.md`; `panchangam-concepts.md` left as-is (user instruction)
 
-### Deferred
+### Features
+- [x] **Alarm sound** — `panchangam_alarms` channel with `AudioAttributesUsage.alarm` + `UriAndroidNotificationSound('content://settings/system/alarm_alert')` + `fullScreenIntent: true`
+- [x] **To-Do feature (Pro)** — `user_todo.dart` model, `user_todo_provider.dart` CRUD+Hive, `todo_form_screen.dart` form, Events|To-Dos tab bar in `my_events_screen.dart`, `/todos/new` + `/todos/:id` routes, reschedule on startup
+- [x] **Festival markers on calendar grid** — already implemented (amber border + festival name in `day_cell.dart`); confirmed ✓
+- [ ] **Firestore Pro subscription check** — deferred to Session 8
+
+### Bug Fix (Session 7)
+- [x] **To-Do targetDate not updating in edit mode** — Added `_previewDate` state + `_recomputePreview()` called on tithi/month change; save now passes recomputed date to `copyWith()`
+
+### Deferred (Session 8+)
 - [ ] Paywall / subscription screen (RevenueCat or Google Play Billing)
+- [ ] Firestore Pro subscription check (replace email whitelist in `AuthService`)
 - [ ] Notification settings in Settings tab (default mode: reminder vs alarm)
 - [ ] Theme: light / dark
-- [ ] Mantra splash speed-up (call runApp() before heavy init)
+- [ ] Mantra splash speed-up
 - [ ] iOS release (after Android stable)
+- [ ] Day detail: show matching To-Dos as checkable card (`PanchangamScreen`)
 
 ---
 
@@ -178,6 +185,12 @@ class UserTithiEvent {
 - [x] Notes field on event form → saved + shown in expandable card (My Events + Day card)
 - [x] Reminder/Alarm selector in form → correct notification mode used
 - [x] `flutter build apk --release` succeeds
-- [ ] Real Google Sign-In on device → Pro auto-granted ✅ (tested by Srikar)
-- [ ] Festival markers on calendar grid
-- [ ] Notification fires at correct time (device test)
+- [x] Real Google Sign-In on device → Pro auto-granted (tested by Srikar) ✓
+- [x] Festival markers on calendar grid ✓
+- [x] Alarm mode sounds like real alarm (tested by Srikar) ✓
+- [x] To-Do: create → appears in My Events → To-Dos tab with correct target date ✓
+- [x] To-Do: check checkbox → moves to Completed section ✓
+- [x] To-Do: swipe to delete ✓
+- [x] To-Do: edit → form pre-fills; tithi/month change → targetDate updates live ✓
+- [x] Events tab unaffected ✓
+- [ ] Notification fires at correct time (device test pending)
