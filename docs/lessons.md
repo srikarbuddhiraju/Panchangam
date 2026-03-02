@@ -29,6 +29,16 @@ Updated after every user correction per CLAUDE.md Self-Improvement Loop.
 - **Fix**: Correct Amavasyant = find next Amavasya → read sun rashi
 - **Rule**: Telugu months are lunar (Amavasyant), not solar — never conflate the two
 
+### Eclipse contact times used detection threshold, not shadow geometry
+- **Bug**: `sutakThreshold = 9.5°` (node-distance limit for eclipse to occur) was used as Sparsha/Moksha threshold → 31h durations
+- **Fix**: Shadow miss-distance = `√(delta_lon² + beta²)` where `delta_lon = moonSunDiff - 180°`, `beta = latitude`. Threshold = `umbralR + moonR = 1.0°`.
+- **Rule**: Eclipse *detection* threshold ≠ contact *timing* threshold. Never reuse one for the other.
+
+### Lunar latitude ΔB corrections had wrong variable references
+- **Bug**: Used `sin(F)` instead of `sin(Lp)` for -2235 term; used `A1` instead of `A3` for +382 term; missing 4 terms
+- **Fix**: Correct Meeus eq. 47.2: `-2235×sin(Lp) + 382×sin(A3) + 175×sin(A1-F) + 175×sin(A1+F) + 127×sin(Lp-Mp) - 115×sin(Lp+Mp)`
+- **Rule**: For Meeus corrections, always match variable names to the exact equation — `Lp`, `A1`, `A3`, `F` are all different angles
+
 ---
 
 ## UI / Navigation
