@@ -4,21 +4,41 @@ import 'lunar_position.dart';
 import 'tithi.dart';
 import 'ayanamsa.dart';
 
-/// Eclipse detection and data model.
+/// Eclipse detection and timing.
 ///
-/// Algorithm: Scan each Amavasya (solar eclipse candidate) and Purnima
-/// (lunar eclipse candidate) in a year, check if Moon is within the
-/// eclipse limit of a lunar node.
+/// Detection: scan each Amavasya/Purnima; check if Moon is within the
+/// eclipse limit of a lunar node (rough pre-filter).
 ///
-/// Sutak is calculated from the actual Sparsha (first umbral contact) time,
-/// not from the calendar date.
+/// Timing (Sparsha/Moksha): use actual shadow geometry — Moon's distance
+/// from the centre of Earth's umbral shadow, accounting for Moon's
+/// ecliptic latitude. This replaces the old "node-distance threshold"
+/// approach that was giving contact times off by many hours.
+///
+/// Shadow constants (mean distances; ±2% over the year):
+///   Umbral radius at Moon's mean distance  = 0.7275°
+///   Penumbral radius at Moon's mean distance = 1.2686°
+///   Moon's apparent radius                 = 0.2725°
+///
+/// For lunar eclipses:
+///   Umbral first/last contact  : miss < umbral + moon = 1.0000°
+///   Total first/last contact   : miss < umbral − moon = 0.4550°
+///   Penumbral first/last contact: miss < penumbral + moon = 1.5411°
 class Eclipse {
   Eclipse._();
 
+  // ── Shadow geometry constants ─────────────────────────────────────────────
+
+  static const double _umbralR     = 0.7275;  // Earth umbral shadow radius (°)
+  static const double _penumbralR  = 1.2686;  // Earth penumbral shadow radius (°)
+  static const double _moonR       = 0.2725;  // Moon apparent radius (°)
+
+  static const double _umbralContact     = _umbralR + _moonR;   // 1.0000° — partial begins/ends
+  static const double _totalContact      = _umbralR - _moonR;   // 0.4550° — total begins/ends
+  static const double _penumbralContact  = _penumbralR + _moonR; // 1.5411° — penumbral begins/ends
+
+  // ── Node longitude (kept for detection pre-filter) ────────────────────────
+
   /// Sidereal longitude of Rahu (North Node) for a given JD.
-  /// Formula: Meeus, Astronomical Algorithms Ch.47 (mean ascending node).
-  /// Tropical Ω = 125.0445479 − 0.052953915°/day from J2000.
-  /// Converted to sidereal because our Moon longitude is sidereal.
   static double rahuLongitude(double jd) {
     final double tropicalRahu = JulianDay.normalize360(
       125.0445479 - 0.052953915 * (jd - JulianDay.j2000),
@@ -31,13 +51,149 @@ class Eclipse {
     return JulianDay.normalize360(rahuLongitude(jd) + 180.0);
   }
 
-  /// Node distance for a given JD (minimum of distRahu and distKetu).
+  /// Longitude distance Moon→nearest node (pre-filter only, not used for timing).
   static double _nodeDist(double jd) {
     final double moonLon = LunarPosition.siderealLongitude(jd);
     final double rahu = rahuLongitude(jd);
     final double ketu = ketuLongitude(jd);
     return math.min(_angularDistance(moonLon, rahu), _angularDistance(moonLon, ketu));
   }
+
+  // ── Shadow miss-distance ──────────────────────────────────────────────────
+
+  /// Angular distance (°) between Moon's centre and Earth's shadow centre.
+  ///
+  /// shadow_centre = anti-solar point = Sun's longitude + 180°
+  /// delta_lon     = Moon − shadow_centre = (Moon − Sun) − 180° = moonSunDiff − 180°
+  /// miss          = √(delta_lon² + beta²)   where beta = Moon's ecliptic latitude
+  static double _shadowMiss(double jd) {
+    double delta = Tithi.moonSunDiff(jd) - 180.0;
+    // Normalise to (−180, 180]
+    delta = ((delta + 180.0) % 360.0) - 180.0;
+    final double beta = LunarPosition.latitude(jd);
+    return math.sqrt(delta * delta + beta * beta);
+  }
+
+  // ── Eclipse maximum (minimum miss-distance) ───────────────────────────────
+
+  /// Find the JD of minimum shadow miss-distance (= eclipse maximum).
+  /// Two-pass: hourly over ±36 h to bracket peak, then 1-min refinement.
+  static double _findLunarMaximumJD(DateTime date) {
+    // Pass 1 — hourly
+    double minMiss = double.infinity;
+    double roughJD = JulianDay.fromDateTime(
+        date.year, date.month, date.day, 12, 0, 0);
+
+    for (int h = -36; h <= 36; h++) {
+      final DateTime dt =
+          DateTime.utc(date.year, date.month, date.day, 12)
+              .add(Duration(hours: h));
+      final double jd = JulianDay.fromDateTime(
+          dt.year, dt.month, dt.day, dt.hour, 0, 0);
+      final double miss = _shadowMiss(jd);
+      if (miss < minMiss) {
+        minMiss = miss;
+        roughJD = jd;
+      }
+    }
+
+    // Pass 2 — 1-min steps over ±60 min around rough peak
+    double fineJD = roughJD;
+    double fineMiss = minMiss;
+    for (int m = -60; m <= 60; m++) {
+      final double jd = roughJD + m / 1440.0;
+      final double miss = _shadowMiss(jd);
+      if (miss < fineMiss) {
+        fineMiss = miss;
+        fineJD = jd;
+      }
+    }
+    return fineJD;
+  }
+
+  /// Existing node-distance maximum finder — kept for solar eclipses.
+  static double _findSolarMaximumJD(DateTime date) {
+    double minDist = double.infinity;
+    double maxJD = JulianDay.fromDateTime(
+        date.year, date.month, date.day, 12, 0, 0);
+
+    for (int h = -30; h <= 30; h++) {
+      final DateTime dt = DateTime.utc(
+              date.year, date.month, date.day, 12)
+          .add(Duration(hours: h));
+      final double jd = JulianDay.fromDateTime(
+          dt.year, dt.month, dt.day, dt.hour, 0, 0);
+      final double dist = _nodeDist(jd);
+      if (dist < minDist) {
+        minDist = dist;
+        maxJD = jd;
+      }
+    }
+    return maxJD;
+  }
+
+  // ── Sparsha / Moksha (lunar) ──────────────────────────────────────────────
+
+  /// Scan backward from [maxJD] at 1-min steps to find when shadow miss
+  /// first rises above [threshold] — this is Sparsha (first contact).
+  static DateTime _findLunarSparsha(double maxJD, double threshold) {
+    for (int m = 1; m <= 1440; m++) {
+      final double jd = maxJD - m / 1440.0;
+      if (_shadowMiss(jd) >= threshold) {
+        // Refine to nearest 10 seconds
+        for (int s = 0; s <= 60; s += 10) {
+          final double jd2 = jd + s / 86400.0;
+          if (_shadowMiss(jd2) < threshold) {
+            return JulianDay.toIST(jd2);
+          }
+        }
+        return JulianDay.toIST(jd + 30.0 / 86400.0);
+      }
+    }
+    return JulianDay.toIST(maxJD - 3.0 / 24.0); // fallback
+  }
+
+  /// Scan forward from [maxJD] at 1-min steps to find when shadow miss
+  /// rises above [threshold] — this is Moksha (last contact).
+  static DateTime _findLunarMoksha(double maxJD, double threshold) {
+    for (int m = 1; m <= 1440; m++) {
+      final double jd = maxJD + m / 1440.0;
+      if (_shadowMiss(jd) >= threshold) {
+        for (int s = 0; s <= 60; s += 10) {
+          final double jd2 = jd - s / 86400.0;
+          if (_shadowMiss(jd2) < threshold) {
+            return JulianDay.toIST(jd2);
+          }
+        }
+        return JulianDay.toIST(jd - 30.0 / 86400.0);
+      }
+    }
+    return JulianDay.toIST(maxJD + 3.0 / 24.0); // fallback
+  }
+
+  // ── Sparsha / Moksha (solar — node-distance approach, unchanged) ──────────
+
+  static DateTime _findSolarSparsha(double maxJD, double threshold) {
+    for (int m = 5; m <= 1440; m += 5) {
+      final double jd = maxJD - m / 1440.0;
+      if (_nodeDist(jd) >= threshold) {
+        return JulianDay.toIST(jd + 5.0 / 1440.0);
+      }
+    }
+    return JulianDay.toIST(maxJD - 6.0 / 24.0);
+  }
+
+  static DateTime _findSolarMoksha(double maxJD, double threshold) {
+    for (int m = 5; m <= 1440; m += 5) {
+      final double jd = maxJD + m / 1440.0;
+      if (_nodeDist(jd) >= threshold) {
+        return JulianDay.toIST(jd - 5.0 / 1440.0);
+      }
+    }
+    return JulianDay.toIST(maxJD + 6.0 / 24.0);
+  }
+
+  // ── Find all eclipses in a year ───────────────────────────────────────────
 
   /// Find all eclipses in a given Gregorian year.
   static List<EclipseData> findInYear(int year) {
@@ -72,57 +228,7 @@ class Eclipse {
     return _deduplicate(eclipses);
   }
 
-  // ── Sparsha / Moksha helpers ───────────────────────────────────────────────
-
-  /// Find the JD of minimum node distance (eclipse maximum) by scanning
-  /// hourly over ±30 hours around the candidate date's noon.
-  static double _findMaximumJD(DateTime date) {
-    double minDist = double.infinity;
-    double maxJD = JulianDay.fromDateTime(
-        date.year, date.month, date.day, 12, 0, 0);
-
-    for (int h = -30; h <= 30; h++) {
-      final DateTime dt = DateTime.utc(
-              date.year, date.month, date.day, 12)
-          .add(Duration(hours: h));
-      final double jd = JulianDay.fromDateTime(
-          dt.year, dt.month, dt.day, dt.hour, 0, 0);
-      final double dist = _nodeDist(jd);
-      if (dist < minDist) {
-        minDist = dist;
-        maxJD = jd;
-      }
-    }
-    return maxJD;
-  }
-
-  /// Scan backward from eclipse maximum at 5-min steps to find Sparsha
-  /// (when node distance first drops below [threshold]).
-  static DateTime _findSparsha(double maxJD, double threshold) {
-    // At maxJD, dist < threshold. Go backward until dist >= threshold.
-    for (int m = 5; m <= 1440; m += 5) {
-      final double jd = maxJD - m / 1440.0;
-      if (_nodeDist(jd) >= threshold) {
-        // Crossed threshold between (jd) and (jd + 5min)
-        return JulianDay.toIST(jd + 5.0 / 1440.0);
-      }
-    }
-    return JulianDay.toIST(maxJD - 6.0 / 24.0); // fallback: 6h before max
-  }
-
-  /// Scan forward from eclipse maximum at 5-min steps to find Moksha
-  /// (when node distance rises back above [threshold]).
-  static DateTime _findMoksha(double maxJD, double threshold) {
-    for (int m = 5; m <= 1440; m += 5) {
-      final double jd = maxJD + m / 1440.0;
-      if (_nodeDist(jd) >= threshold) {
-        return JulianDay.toIST(jd - 5.0 / 1440.0);
-      }
-    }
-    return JulianDay.toIST(maxJD + 6.0 / 24.0); // fallback: 6h after max
-  }
-
-  // ── Eclipse checkers ───────────────────────────────────────────────────────
+  // ── Eclipse checkers ──────────────────────────────────────────────────────
 
   static EclipseData? _checkSolarEclipse(double jd, DateTime date) {
     final double moonLon = LunarPosition.siderealLongitude(jd);
@@ -141,10 +247,9 @@ class Eclipse {
               ? EclipseType.solarAnnular
               : EclipseType.solarPartial;
 
-      // Compute actual contact times
-      final double maxJD = _findMaximumJD(date);
-      final DateTime sparsha = _findSparsha(maxJD, solarEclipseLimit);
-      final DateTime moksha = _findMoksha(maxJD, solarEclipseLimit);
+      final double maxJD = _findSolarMaximumJD(date);
+      final DateTime sparsha = _findSolarSparsha(maxJD, solarEclipseLimit);
+      final DateTime moksha = _findSolarMoksha(maxJD, solarEclipseLimit);
 
       return EclipseData(
         date: date,
@@ -169,40 +274,45 @@ class Eclipse {
     final double distKetu = _angularDistance(moonLon, ketu);
 
     const double lunarEclipseLimit = 12.0;
-    // Umbral threshold (below this = partial or total, not just penumbral)
-    const double umbralThreshold = 9.5;
 
-    if (distRahu <= lunarEclipseLimit || distKetu <= lunarEclipseLimit) {
-      final double nodeDist = distRahu < distKetu ? distRahu : distKetu;
-
-      // Calibrated against NASA 2025-2026 eclipse data
-      final EclipseType type = nodeDist < 7
-          ? EclipseType.lunarTotal
-          : nodeDist < 9.5
-              ? EclipseType.lunarPartial
-              : EclipseType.lunarPenumbral;
-
-      // Compute actual umbral contact times (used for sutak)
-      final double maxJD = _findMaximumJD(date);
-      final double sutakThreshold =
-          nodeDist < umbralThreshold ? umbralThreshold : lunarEclipseLimit;
-
-      final DateTime sparsha = _findSparsha(maxJD, sutakThreshold);
-      final DateTime moksha = _findMoksha(maxJD, sutakThreshold);
-
-      return EclipseData(
-        date: date,
-        type: type,
-        sparsha: sparsha,
-        moksha: moksha,
-        sutakStart: sparsha.subtract(const Duration(hours: 9)),
-        sutakStartVulnerable: sparsha.subtract(const Duration(hours: 3)),
-        isVisibleInIndia: true,
-        moonSunDiff: Tithi.moonSunDiff(jd),
-        nodeDistance: nodeDist,
-      );
+    if (distRahu > lunarEclipseLimit && distKetu > lunarEclipseLimit) {
+      return null; // not near a node — no eclipse possible
     }
-    return null;
+
+    // Find actual maximum using shadow geometry
+    final double maxJD = _findLunarMaximumJD(date);
+    final double missDist = _shadowMiss(maxJD);
+
+    // No eclipse if miss-distance exceeds penumbral contact limit
+    if (missDist >= _penumbralContact) return null;
+
+    // Classify by minimum miss-distance
+    final EclipseType type = missDist < _totalContact
+        ? EclipseType.lunarTotal
+        : missDist < _umbralContact
+            ? EclipseType.lunarPartial
+            : EclipseType.lunarPenumbral;
+
+    // Contact times using shadow geometry
+    final double contactThreshold =
+        type == EclipseType.lunarPenumbral ? _penumbralContact : _umbralContact;
+
+    final DateTime sparsha = _findLunarSparsha(maxJD, contactThreshold);
+    final DateTime moksha  = _findLunarMoksha(maxJD, contactThreshold);
+
+    final double nodeDist = distRahu < distKetu ? distRahu : distKetu;
+
+    return EclipseData(
+      date: date,
+      type: type,
+      sparsha: sparsha,
+      moksha: moksha,
+      sutakStart: sparsha.subtract(const Duration(hours: 9)),
+      sutakStartVulnerable: sparsha.subtract(const Duration(hours: 3)),
+      isVisibleInIndia: true,
+      moonSunDiff: Tithi.moonSunDiff(jd),
+      nodeDistance: nodeDist,
+    );
   }
 
   static double _angularDistance(double lon1, double lon2) {

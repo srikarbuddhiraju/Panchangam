@@ -1,53 +1,45 @@
-# Latest Task — Session 7 Complete
+# Latest Task — Session 8 In Progress
 
 **Last updated:** Mar 2, 2026
-**Branch:** `feature/alarm-sound-channel` (pending merge to main)
-**APK:** 58.6 MB, installed ✓
+**Branch:** `feature/grahanam-timing-fix` (active)
+**Previous branch:** `feature/alarm-sound-channel` → merged to main ✓
 
 ---
 
-## Session 7 — All Done ✓
+## Session 8 — In Progress
 
-- Alarm sound channel (`panchangam_alarms`) — `AudioAttributesUsage.alarm` + system alarm ringtone
-- To-Do feature (Pro) — `UserTodo` model, `UserTodoProvider`, `TodoFormScreen`, Events|To-Dos tab bar, live targetDate preview
-- Festival markers — confirmed in `day_cell.dart` (amber border + name)
-- Bug fix: To-Do targetDate recomputes live on tithi/month change in edit mode
+### Completed this session
+- [x] Merged `feature/alarm-sound-channel` → main (Session 7 work)
+- [x] Created `.claude/skills/` with 8 project slash commands (session-start, session-end, build-release, build-debug, new-feature, verify-date, grahanam-check, notify-test)
+- [x] `docs/agents/README.md` — index of all commands
+- [x] **Eclipse timing fix** — `feature/grahanam-timing-fix` committed
+  - Rewrote `eclipse.dart` with shadow geometry (shadow miss-distance vs old 9.5° node threshold)
+  - Fixed `lunar_position.dart` latitude corrections to correct Meeus eq. 47.2
+  - Sep 7 2025: duration 207 min (NASA 208 min ✓), dates correct, sutak correct
+  - Mar 3 2026: duration 216 min (NASA 212 min ✓), dates correct
 
-## Verification Checklist (Session 7)
-- [x] Alarm mode sounds like a real alarm
-- [x] To-Do: create → correct target date shown
-- [x] To-Do: checkbox → Completed section
-- [x] To-Do: swipe to delete
-- [x] To-Do: edit + tithi change → Gregorian date updates live
-- [x] Events tab unaffected
-- [ ] "Sched." test notification fires after 1 min (not re-tested this session)
-- [ ] Merge `feature/alarm-sound-channel` → main
+### Pending this session
+- [x] Create `/accuracy-check`, `/code-review`, `/dep-check` skills
+- [x] Build release APK + install on device
+- [x] Device test: eclipse screen verified against Sringeri Panchangam
+  - App: Sparsha 15:16, Moksha 18:53 IST (Mar 3 2026)
+  - Sringeri: Sparsha 15:20, Moksha 18:47 IST — delta ±4–6 min ✓
+- [ ] Merge `feature/grahanam-timing-fix` → main
 
 ---
 
 ## Next Session — Work Items
 
-### New (Mar 2, 2026 — Srikar)
-1. **Agents folder** — create `agents/` directory with hierarchical folder structure; write `.md` agent files relevant to the project (calculation agents, notification agents, data agents, etc.)
-2. **Re-validate Grahanam timings** — eclipse start/peak/end times appear to be off; full re-check needed
-
-### From Previous Claude Session (captured Mar 1, 2026 — still pending)
-3. **"Mark this Tithi" paywall fix** — currently works without sign-in. Gate on `user != null` + `isPremium`; redirect to Pro screen if either fails.
-4. **Pro screen feature excerpt** — add short readable list of Pro features so users understand what they get before subscribing.
-5. **"Mark this Tithi" → two buttons** — split into Event (bookmark icon) + To-Do (checklist icon). Both behind paywall. To-Do opens `TodoFormScreen`.
-6. **Splash screen — app logo** — show app logo asset above/below mantra text, same deep-blue bg.
-7. **Sign-out → sign-in false error** — sign-in succeeds in state but shows "Sign in failed". Surface exact error from logcat, find root cause, fix.
-8. **Disclaimer tile** — collapsible tile in Settings/About. Collapsed by default. Text: calculations may not be fully accurate for all regions/traditions; team actively improving.
+1. **"Mark this Tithi" paywall fix** — gate on `user != null` + `isPremium`; redirect to Pro screen if either fails
+2. **Pro screen feature excerpt** — short readable list of Pro features before subscribing
+3. **"Mark this Tithi" → two buttons** — split into Event (bookmark) + To-Do (checklist). Both paywall-gated.
+4. **Splash screen — app logo** — show logo asset above/below mantra text, same deep-blue bg
+5. **Sign-out → sign-in false error** — sign-in succeeds in state but shows "Sign in failed". Logcat → fix.
+6. **Disclaimer tile** — collapsible tile in Settings/About, collapsed by default
 
 ### Housekeeping
-- Delete remote branch `claude/review-project-context-pT0c8` — content already absorbed into LatestTask.md
-
-### Deferred
-- Paywall screen (RevenueCat / Google Play Billing)
-- Firestore Pro subscription check (replace hardcoded email whitelist)
-- Settings notification preferences
-- Light/dark theme
-- iOS support
+- Delete remote branch `claude/review-project-context-pT0c8`
+- Push `feature/grahanam-timing-fix` and merge to main (after device test)
 
 ---
 
