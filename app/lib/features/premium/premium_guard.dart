@@ -6,7 +6,7 @@ import '../settings/settings_provider.dart';
 /// Wraps a premium-gated widget.
 ///
 /// If the user has Pro, [child] is shown.
-/// If not, a "Coming Soon" teaser is shown instead.
+/// If not, a [PremiumTeaser] is shown instead.
 ///
 /// TODO(Session5): Replace teaser with real PaywallScreen when billing is wired.
 class PremiumGuard extends ConsumerWidget {
@@ -18,13 +18,14 @@ class PremiumGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isPremium = ref.watch(settingsProvider).isPremium;
     if (isPremium) return child;
-    return const _PremiumTeaser();
+    return const PremiumTeaser();
   }
 }
 
-/// Shown to non-premium users in place of gated content.
-class _PremiumTeaser extends StatelessWidget {
-  const _PremiumTeaser();
+/// Shown to non-premium users in place of gated content, or as a bottom-sheet
+/// paywall when a Pro action is tapped.
+class PremiumTeaser extends StatelessWidget {
+  const PremiumTeaser({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,18 +61,30 @@ class _PremiumTeaser extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
 
-            // Description
-            Text(
-              'Create personal tithi events — birthdays, anniversaries, and '
-              'family traditions — that appear on your calendar automatically '
-              'each year.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    height: 1.5,
-                  ),
+            // Feature list
+            ..._features.map(
+              (f) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.check_circle_outline_rounded,
+                        size: 18, color: AppTheme.kGold),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        f,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: cs.onSurfaceVariant,
+                              height: 1.4,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 28),
 
@@ -89,20 +102,16 @@ class _PremiumTeaser extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-
-            // Debug hint
-            Text(
-              'Enable via Settings → [DEBUG] toggle to test features.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontStyle: FontStyle.italic,
-                  ),
-            ),
           ],
         ),
       ),
     );
   }
+
+  static const _features = [
+    'Mark personal tithi events — birthdays, anniversaries, family traditions',
+    'Events auto-appear on your calendar every year, on the correct tithi',
+    'Reminders before each event',
+    'Family sharing (coming soon)',
+  ];
 }
