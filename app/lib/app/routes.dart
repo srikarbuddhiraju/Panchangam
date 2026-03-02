@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/events/event_form_screen.dart';
+import '../features/events/todo_form_screen.dart';
 import '../features/today/today_screen.dart';
 import '../features/family/family_screen.dart';
 import '../features/panchangam/panchangam_screen.dart';
@@ -90,6 +91,26 @@ class AppRoutes {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return EventFormScreen(eventId: id);
+        },
+      ),
+
+      // Add new To-Do
+      // Optional query param: ?tithi=N (pre-fills tithi picker)
+      GoRoute(
+        path: '/todos/new',
+        builder: (context, state) {
+          final tithiStr = state.uri.queryParameters['tithi'];
+          final prefill = tithiStr != null ? int.tryParse(tithiStr) : null;
+          return TodoFormScreen(prefillTithi: prefill);
+        },
+      ),
+
+      // Edit existing To-Do
+      GoRoute(
+        path: '/todos/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return TodoFormScreen(todoId: id);
         },
       ),
     ],
