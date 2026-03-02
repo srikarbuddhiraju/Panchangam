@@ -5,6 +5,15 @@ _Source: Sringeri Panchangam PDF (month TBD — ask Srikar to confirm month/year
 
 ---
 
+## Eclipse Reference — Mar 2, 2026 (Session 8)
+
+### Mar 3, 2026 — Total Lunar Eclipse (Sringeri Panchangam)
+- **Sparsha**: Pa|| 3.20 → 3:20 PM IST = 15:20 IST
+- **Moksha**: Sa|| 6.47 → 6:47 PM IST = 18:47 IST
+- **App output** (after shadow geometry fix): Sparsha 15:16, Moksha 18:53 — delta ±4–6 min ✓
+
+---
+
 ## Batch 1 — Pasted Feb 28, 2026
 
 ### Day 13 — Mangal (Tuesday)
