@@ -39,6 +39,9 @@
 7. **Sign-out → sign-in false error** — sign-in succeeds in state but shows "Sign in failed". Surface exact error from logcat, find root cause, fix.
 8. **Disclaimer tile** — collapsible tile in Settings/About. Collapsed by default. Text: calculations may not be fully accurate for all regions/traditions; team actively improving.
 
+### Housekeeping
+- Delete remote branch `claude/review-project-context-pT0c8` — content already absorbed into LatestTask.md
+
 ### Deferred
 - Paywall screen (RevenueCat / Google Play Billing)
 - Firestore Pro subscription check (replace hardcoded email whitelist)
