@@ -1,44 +1,33 @@
-# Latest Task — Session 8 Complete ✓
+# Latest Task — Session 9 In Progress
 
 **Last updated:** Mar 2, 2026
-**Branch:** `feature/grahanam-timing-fix` → merged to main ✓
+**Branch:** `feature/session9-pro-ui`
 
 ---
 
-## Session 8 — In Progress
+## Session 9 — Work Items
 
 ### Completed this session
-- [x] Merged `feature/alarm-sound-channel` → main (Session 7 work)
-- [x] Created `.claude/skills/` with 8 project slash commands (session-start, session-end, build-release, build-debug, new-feature, verify-date, grahanam-check, notify-test)
-- [x] `docs/agents/README.md` — index of all commands
-- [x] **Eclipse timing fix** — `feature/grahanam-timing-fix` committed
-  - Rewrote `eclipse.dart` with shadow geometry (shadow miss-distance vs old 9.5° node threshold)
-  - Fixed `lunar_position.dart` latitude corrections to correct Meeus eq. 47.2
-  - Sep 7 2025: duration 207 min (NASA 208 min ✓), dates correct, sutak correct
-  - Mar 3 2026: duration 216 min (NASA 212 min ✓), dates correct
+- [x] "Mark this Tithi" paywall fix — FAB visible to all; tapping redirects: not signed-in → login sheet, not Pro → PremiumTeaser sheet, Pro → action picker
+- [x] "Mark this Tithi" → two buttons — Event (bookmark) + To-Do (checklist), both wired to real routes (`/events/new` + `/todos/new`)
+- [x] Pro screen feature excerpt — PremiumTeaser now shows 4 bullet-point feature list with check icons
+- [x] Splash screen logo — icon.png (80×80, rounded) above mantras
+- [x] Disclaimer tile — collapsible ExpansionTile in Settings (after Version), bilingual, acknowledges Sringeri as primary reference
+- [x] Sign-in false error — surfaced with `debugPrint` + shows exception type in UI per HARD RULE #1
 
 ### Pending this session
-- [x] Create `/accuracy-check`, `/code-review`, `/dep-check` skills
-- [x] Build release APK + install on device
-- [x] Device test: eclipse screen verified against Sringeri Panchangam
-  - App: Sparsha 15:16, Moksha 18:53 IST (Mar 3 2026)
-  - Sringeri: Sparsha 15:20, Moksha 18:47 IST — delta ±4–6 min ✓
-- [x] Merge `feature/grahanam-timing-fix` → main ✓
+- [ ] Build release APK + install on device
+- [ ] Device test: FAB visible, paywall gate works, action picker opens
+- [ ] Device test: splash shows logo
+- [ ] Device test: disclaimer tile visible and collapsible in Settings
+- [ ] Device test: sign in/out flow — record exception type from UI if error appears
+- [ ] Commit + delete remote branch `claude/review-project-context-pT0c8`
 
 ---
 
-## Next Session — Work Items
-
-1. **"Mark this Tithi" paywall fix** — gate on `user != null` + `isPremium`; redirect to Pro screen if either fails
-2. **Pro screen feature excerpt** — short readable list of Pro features before subscribing
-3. **"Mark this Tithi" → two buttons** — split into Event (bookmark) + To-Do (checklist). Both paywall-gated.
-4. **Splash screen — app logo** — show logo asset above/below mantra text, same deep-blue bg
-5. **Sign-out → sign-in false error** — sign-in succeeds in state but shows "Sign in failed". Logcat → fix.
-6. **Disclaimer tile** — collapsible tile in Settings/About, collapsed by default
-
-### Housekeeping
-- Delete remote branch `claude/review-project-context-pT0c8`
-- Push main to origin (Srikar — SSH not configured on this machine)
+## Housekeeping
+- Delete remote branch `claude/review-project-project-pT0c8` — `git push origin --delete claude/review-project-context-pT0c8`
+- Push `feature/session9-pro-ui` to origin when session complete
 
 ---
 
