@@ -19,10 +19,12 @@
   - Mar 3 2026: duration 216 min (NASA 212 min ✓), dates correct
 
 ### Pending this session
-- [ ] Create `/accuracy-check` skill + additional design-philosophy skills
-- [ ] Build release APK + install on device
-- [ ] Device test: eclipse screen shows correct Sparsha/Moksha times
-- [ ] Merge `feature/grahanam-timing-fix` → main when verified
+- [x] Create `/accuracy-check`, `/code-review`, `/dep-check` skills
+- [x] Build release APK + install on device
+- [x] Device test: eclipse screen verified against Sringeri Panchangam
+  - App: Sparsha 15:16, Moksha 18:53 IST (Mar 3 2026)
+  - Sringeri: Sparsha 15:20, Moksha 18:47 IST — delta ±4–6 min ✓
+- [ ] Merge `feature/grahanam-timing-fix` → main
 
 ---
 
