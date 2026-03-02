@@ -110,6 +110,17 @@ class _SplashOverlayState extends State<SplashOverlay>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // App logo
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/icon.png',
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 28),
                       Text(
                         mantra1,
                         style: TextStyle(

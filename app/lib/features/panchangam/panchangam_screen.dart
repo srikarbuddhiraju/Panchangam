@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
+import '../../features/auth/auth_provider.dart';
+import '../../features/auth/login_screen.dart';
+import '../../features/premium/premium_guard.dart';
 import '../events/user_tithi_event.dart';
 import '../events/user_event_calculator.dart';
 import '../events/user_event_provider.dart';
@@ -32,6 +35,7 @@ class PanchangamScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncData = ref.watch(panchangamForDateProvider(date));
     final settings = ref.watch(settingsProvider);
+    final user = ref.watch(authStateProvider).valueOrNull;
 
     final String dateLabel = S.isTelugu
         ? DateFormat('d MMMM y', 'te').format(date)
@@ -81,21 +85,201 @@ class PanchangamScreen extends ConsumerWidget {
           use24h: settings.use24h,
         ),
       ),
-      // "Mark this tithi" FAB — only visible for Pro users
-      floatingActionButton: asyncData.valueOrNull != null && settings.isPremium
+      // "Mark this tithi" FAB — visible to all users when data is loaded.
+      // Tapping redirects based on auth + pro state.
+      floatingActionButton: asyncData.valueOrNull != null
           ? FloatingActionButton.extended(
-              onPressed: () => context.push(
-                '/events/new?tithi=${asyncData.valueOrNull!.tithiNumber}',
+              onPressed: () => _onMarkThisTithi(
+                context,
+                tithiNumber: asyncData.valueOrNull!.tithiNumber,
+                user: user,
+                isPremium: settings.isPremium,
               ),
-              backgroundColor: AppTheme.kGold,
+              backgroundColor: settings.isPremium
+                  ? AppTheme.kGold
+                  : AppTheme.kGold.withValues(alpha: 0.55),
               foregroundColor: Colors.white,
-              icon: const Icon(Icons.bookmark_add_outlined),
+              icon: Icon(
+                settings.isPremium
+                    ? Icons.bookmark_add_outlined
+                    : Icons.lock_outline_rounded,
+              ),
               label: Text(S.isTelugu ? 'ఈ తిథి గుర్తించు' : 'Mark this tithi'),
             )
           : null,
     );
   }
+
+  void _onMarkThisTithi(
+    BuildContext context, {
+    required int tithiNumber,
+    required Object? user,
+    required bool isPremium,
+  }) {
+    // Not signed in → show login sheet
+    if (user == null) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _BottomSheet(
+          height: 0.6,
+          child: LoginScreen(onSuccess: () => Navigator.of(context).pop()),
+        ),
+      );
+      return;
+    }
+
+    // Signed in but not Pro → show Pro teaser
+    if (!isPremium) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => const _BottomSheet(
+          height: 0.65,
+          child: PremiumTeaser(),
+        ),
+      );
+      return;
+    }
+
+    // Pro user → show action picker
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _MarkTithiSheet(
+        tithiNumber: tithiNumber,
+        parentContext: context,
+      ),
+    );
+  }
 }
+
+// ── Bottom-sheet wrapper ───────────────────────────────────────────────────────
+
+class _BottomSheet extends StatelessWidget {
+  final double height; // fraction of screen height
+  final Widget child;
+
+  const _BottomSheet({required this.height, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * height,
+        child: child,
+      ),
+    );
+  }
+}
+
+// ── Action picker for Pro users ────────────────────────────────────────────────
+
+class _MarkTithiSheet extends StatelessWidget {
+  final int tithiNumber;
+  final BuildContext parentContext; // used for navigation after sheet closes
+
+  const _MarkTithiSheet({
+    required this.tithiNumber,
+    required this.parentContext,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      child: Container(
+        color: cs.surface,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: Text(
+                  S.isTelugu ? 'ఈ తిథిని గుర్తించు' : 'Mark this Tithi',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+              const Divider(height: 1),
+
+              // Event option
+              ListTile(
+                leading: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppTheme.kGold.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.bookmark_add_outlined,
+                      color: AppTheme.kGold),
+                ),
+                title: Text(S.isTelugu ? 'ఈవెంట్' : 'Event'),
+                subtitle: Text(
+                  S.isTelugu
+                      ? 'పుట్టినరోజు, పండుగ లేదా సంప్రదాయాన్ని గుర్తు పెట్టుకోండి'
+                      : 'Birthday, festival, or family tradition',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  parentContext.push('/events/new?tithi=$tithiNumber');
+                },
+              ),
+
+              // To-Do option
+              ListTile(
+                leading: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppTheme.kGold.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.checklist_rounded,
+                      color: AppTheme.kGold),
+                ),
+                title: Text(S.isTelugu ? 'చేయవలసినవి' : 'To-Do'),
+                subtitle: Text(
+                  S.isTelugu
+                      ? 'ఈ తిథికి చెకిస్ట్ లేదా పని జాబితా'
+                      : 'Checklist or task list for this tithi',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  parentContext.push('/todos/new?tithi=$tithiNumber');
+                },
+              ),
+
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _PanchangamContent extends ConsumerWidget {
   final PanchangamData data;
@@ -167,4 +351,3 @@ class _PanchangamContent extends ConsumerWidget {
     );
   }
 }
-
