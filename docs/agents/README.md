@@ -31,12 +31,20 @@ Type the command in Claude Code to invoke it.
 |---------|------------|
 | `/verify-date <YYYY-MM-DD>` | Verify all 5 Panchangam elements for a specific date against references |
 | `/grahanam-check` | Investigate eclipse start/peak/end timing discrepancies |
+| `/accuracy-check` | Full accuracy audit: validate script + eclipse reference cross-check |
 
 ## Notifications
 
 | Command | When to use |
 |---------|------------|
 | `/notify-test` | Step-by-step device verification checklist for all notification types |
+
+## Code Quality
+
+| Command | When to use |
+|---------|------------|
+| `/code-review` | Audit changed files against all 6 design philosophy pillars (Easy/Scalable/Robust/Secure/Light/Accurate) |
+| `/dep-check` | Audit pubspec dependencies for bloat, outdated versions, ProGuard coverage |
 
 ---
 
@@ -46,6 +54,8 @@ Type the command in Claude Code to invoke it.
 /session-start          ← read docs, get summary
 /new-feature <name>     ← create branch (if new session)
 ... do the work ...
+/accuracy-check         ← after any calculation change
+/code-review            ← before committing
 /build-release          ← verify release build
 /notify-test            ← if notification changes were made
 /session-end            ← update docs, confirm merge readiness
