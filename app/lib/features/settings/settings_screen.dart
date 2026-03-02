@@ -119,6 +119,10 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(S.isTelugu ? 'వెర్షన్' : 'Version'),
             trailing: const Text('1.0.0'),
           ),
+          const Divider(height: 1),
+
+          // ── Disclaimer ────────────────────────────────────────────────────
+          const _DisclaimerTile(),
         ],
       ),
     );
@@ -363,6 +367,48 @@ class _AccountTile extends StatelessWidget {
           style: TextStyle(color: cs.error),
         ),
       ),
+    );
+  }
+}
+
+// ── Disclaimer tile ────────────────────────────────────────────────────────────
+
+class _DisclaimerTile extends StatelessWidget {
+  const _DisclaimerTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isTelugu = S.isTelugu;
+
+    return ExpansionTile(
+      leading: const Icon(Icons.gavel_outlined),
+      title: Text(isTelugu ? 'నిరాకరణ' : 'Disclaimer'),
+      initiallyExpanded: false,
+      childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      children: [
+        Text(
+          isTelugu
+              ? 'ఈ యాప్‌లోని పంచాంగ గణనలు సంప్రదాయ సూర్యసిద్ధాంత పద్ధతులపై '
+                'ఆధారపడి ఉంటాయి. శృంగేరి పీఠం ప్రచురించే శ్రీ శారదా పీఠం '
+                'పంచాంగం ప్రాథమిక సూచన మూలం. '
+                'గ్రహస్థితులు, తిథి, నక్షత్రాదుల సమయాలు స్థానిక '
+                'ఖగోళ స్థానం ఆధారంగా లెక్కించబడతాయి. '
+                'ముఖ్యమైన ధార్మిక కార్యక్రమాలకు స్థానిక పండితులతో '
+                'నిర్ధారించుకోండి.'
+              : 'Panchangam calculations in this app are based on traditional '
+                'Suryasiddhanta astronomical methods. The primary reference is '
+                'the Sri Sharada Peetham Panchangam published by Sringeri Matha. '
+                'Timings for tithi, nakshatra, and planetary positions are '
+                'computed for your configured location. '
+                'For important religious occasions, please verify with a '
+                'local pandit.',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+                height: 1.6,
+              ),
+        ),
+      ],
     );
   }
 }
