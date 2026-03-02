@@ -21,10 +21,9 @@
 
 ## Next Session — Work Items
 
-1. **Sign-in false error fix** — after device shows exception type, fix root cause in `login_screen.dart` / `auth_service.dart`
-2. **Calendar first-load bug** — festivals and eclipse highlights don't appear on landing page until month navigation
-3. **UX refinement pass** — small improvements identified from daily use (needs its own session)
-4. **Push main to origin** — Srikar to do via SSH
+1. **Calendar first-load bug** — festivals and eclipse highlights don't appear on landing page until month navigation
+2. **UX refinement pass** — small improvements identified from daily use (needs its own session)
+3. **Push main to origin** — Srikar to do via SSH
 
 ### Housekeeping
 - Delete remote branch `claude/review-project-context-pT0c8` — `git push origin --delete claude/review-project-context-pT0c8`

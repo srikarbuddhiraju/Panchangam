@@ -36,13 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
       // user == null means the user cancelled the Google picker.
       if (mounted) setState(() => _loading = false);
     } catch (e) {
-      // Surface the real error so we can diagnose (HARD RULE #1).
-      // Once the error type is confirmed, replace with a user-friendly message.
       debugPrint('Sign-in exception: ${e.runtimeType}: $e');
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Sign-in error: ${e.runtimeType}';
+          _error = 'Sign-in failed. Please try again.';
         });
       }
     }
