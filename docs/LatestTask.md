@@ -1,8 +1,7 @@
-# Latest Task — Session 8 In Progress
+# Latest Task — Session 8 Complete ✓
 
 **Last updated:** Mar 2, 2026
-**Branch:** `feature/grahanam-timing-fix` (active)
-**Previous branch:** `feature/alarm-sound-channel` → merged to main ✓
+**Branch:** `feature/grahanam-timing-fix` → merged to main ✓
 
 ---
 
@@ -24,7 +23,7 @@
 - [x] Device test: eclipse screen verified against Sringeri Panchangam
   - App: Sparsha 15:16, Moksha 18:53 IST (Mar 3 2026)
   - Sringeri: Sparsha 15:20, Moksha 18:47 IST — delta ±4–6 min ✓
-- [ ] Merge `feature/grahanam-timing-fix` → main
+- [x] Merge `feature/grahanam-timing-fix` → main ✓
 
 ---
 
@@ -39,7 +38,7 @@
 
 ### Housekeeping
 - Delete remote branch `claude/review-project-context-pT0c8`
-- Push `feature/grahanam-timing-fix` and merge to main (after device test)
+- Push main to origin (Srikar — SSH not configured on this machine)
 
 ---
 
