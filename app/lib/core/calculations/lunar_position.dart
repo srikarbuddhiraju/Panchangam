@@ -189,7 +189,7 @@ class LunarPosition {
     // Moon's latitude (simplified, from Meeus Table 47.B — key terms only)
     final double lon = tropicalLongitude(jd);
     // For declination, we need latitude too. Use simplified beta:
-    final double beta = _latitude(jd);
+    final double beta = latitude(jd);
 
     final double lonRad = JulianDay.toRad(lon);
     final double latRad = JulianDay.toRad(beta);
@@ -208,7 +208,7 @@ class LunarPosition {
   }
 
   /// Moon's ecliptic latitude in degrees (simplified, main terms only).
-  static double _latitude(double jd) {
+  static double latitude(double jd) {
     final double T = JulianDay.julianCentury(jd);
     final T2 = T * T;
     final T3 = T2 * T;
@@ -247,11 +247,22 @@ class LunarPosition {
         4324 * math.sin(JulianDay.toRad(2 * D - 2 * Mp - F)) +
         4200 * math.sin(JulianDay.toRad(2 * D + Mp + F));
 
-    // Correction: A1
+    // Additional corrections (Meeus eq. 47.2 — ΣB corrections)
+    // Lp = Moon's mean longitude (same formula as in tropicalLongitude)
+    double Lp = 218.3164477 + 481267.88123421 * T - 0.0015786 * T2 +
+        T3 / 538841.0 - T4 / 65194000.0;
     double A1 = 119.75 + 131.849 * T;
+    double A3 = 313.45 + 481266.484 * T;
+    Lp = JulianDay.normalize360(Lp);
     A1 = JulianDay.normalize360(A1);
-    sumB -= 2235 * math.sin(JulianDay.toRad(F)) +
-        382 * math.sin(JulianDay.toRad(A1));
+    A3 = JulianDay.normalize360(A3);
+
+    sumB += -2235 * math.sin(JulianDay.toRad(Lp))
+          +  382 * math.sin(JulianDay.toRad(A3))
+          +  175 * math.sin(JulianDay.toRad(A1 - F))
+          +  175 * math.sin(JulianDay.toRad(A1 + F))
+          +  127 * math.sin(JulianDay.toRad(Lp - Mp))
+          -  115 * math.sin(JulianDay.toRad(Lp + Mp));
 
     return sumB / 1000000.0;
   }
