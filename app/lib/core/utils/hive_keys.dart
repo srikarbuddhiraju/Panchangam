@@ -6,6 +6,7 @@ class HiveKeys {
   // ── Box names ─────────────────────────────────────────────────────────────
   static const String settingsBox = 'settings';
   static const String userEventsBox = 'userEvents';
+  static const String userTodosBox = 'userTodos';
 
   // ── Settings keys (in settingsBox) ────────────────────────────────────────
   static const String city = 'city';

@@ -16,6 +16,7 @@ import 'features/auth/auth_provider.dart';
 import 'features/auth/login_screen.dart';
 import 'features/events/user_event_calculator.dart';
 import 'features/events/user_tithi_event.dart';
+import 'features/events/user_todo.dart';
 import 'features/festivals/festival_loader.dart';
 import 'features/settings/settings_provider.dart';
 import 'firebase_options.dart';
@@ -38,6 +39,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox(HiveKeys.settingsBox);
   await Hive.openBox(HiveKeys.userEventsBox);
+  await Hive.openBox(HiveKeys.userTodosBox);
 
   // Initialize locale data for Telugu date formatting
   await initializeDateFormatting('te', null);
@@ -52,6 +54,7 @@ Future<void> main() async {
   // no Activity exists before runApp; permissions are requested post-frame).
   await NotificationService.instance.init();
   await _rescheduleAllNotifications();
+  await _rescheduleTodoNotifications();
 
   runApp(
     const ProviderScope(
@@ -99,6 +102,32 @@ Future<void> _rescheduleAllNotifications() async {
           .scheduleForEvent(event, occurrences, lat, lng);
     } catch (_) {
       // Never let a bad stored event crash startup
+    }
+  }
+}
+
+/// Re-schedule notifications for active, incomplete To-Dos with future target dates.
+Future<void> _rescheduleTodoNotifications() async {
+  final todosBox = Hive.box(HiveKeys.userTodosBox);
+  final now = DateTime.now();
+  for (final key in todosBox.keys) {
+    try {
+      final raw = todosBox.get(key) as String?;
+      if (raw == null) continue;
+      final todo = UserTodo.fromMap(jsonDecode(raw) as Map<String, dynamic>);
+      if (!todo.isActive || todo.isCompleted || todo.reminderHour == null) continue;
+      if (todo.targetDate.isBefore(now)) continue;
+      await NotificationService.instance.scheduleForTodo(
+        id: todo.id,
+        title: todo.title,
+        body: todo.notes,
+        targetDate: todo.targetDate,
+        reminderHour: todo.reminderHour!,
+        reminderMinute: todo.reminderMinute,
+        isAlarm: todo.reminderType.name == 'alarm',
+      );
+    } catch (_) {
+      // Never crash startup on bad stored data
     }
   }
 }
