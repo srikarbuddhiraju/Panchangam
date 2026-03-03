@@ -34,6 +34,30 @@ Updated after every user correction per CLAUDE.md Self-Improvement Loop.
 - **Correct reference**: Mar 3 2026 eclipse — Sringeri says Pa|| 3.20 (15:20 IST) Sparsha, Sa|| 6.47 (18:47 IST) Moksha
 - **Rule**: Always use Sringeri Panchangam as primary reference. Ask Srikar for the specific values. Never rely on memory of eclipse UTC times.
 
+### Sutak display bug — spanning midnight shows identical HH:mm
+- **Bug**: `_SutakRow` formats start and end as `HH:mm` only. When sutakStart is
+  evening of day N and moksha is same clock-time of day N+1, both show identically
+  (e.g. "22:30 – 22:30"). Root cause: no date shown, times equal across midnight.
+- **Fix**: Check if `start.day != end.day`; if so, prepend `d/M ` to end time.
+- **Rule**: Any time range that can span midnight MUST include a date component,
+  not just HH:mm. Test every eclipse manually for sutaka cross-midnight cases.
+
+### Solar eclipse timing is still the old fallback (720 min) — FIXED Session 10
+- The Session 8 shadow geometry fix was for LUNAR eclipses only.
+  Solar eclipses still use `_findSolarSparsha/Moksha` with node-distance threshold,
+  which always hits the fallback (±6h = 12h = 720 min duration).
+- **Fix**: New `_solarMiss()` (geocentric Moon–Sun angular separation) + Meeus
+  solar ecliptic limit 1.566° as contact threshold. Durations now 230–307 min.
+- **Rule**: After any eclipse timing fix, run `dart run bin/dump_eclipses.dart`
+  and verify Duration is NOT 720 min for any eclipse.
+
+### Solar eclipse isVisibleInIndia is daytime-only (ground track deferred)
+- Daytime check (max IST between 06:00–18:30) is a necessary but NOT sufficient
+  condition for India visibility. Feb 17 2026 annular (Antarctica path) passes
+  the daytime check (max at 17:43 IST) but is NOT visible from India.
+- **Rule**: For solar eclipses, full India visibility requires eclipse ground
+  track geometry. The daytime check is a placeholder until Session 11.
+
 ### Eclipse contact times used detection threshold, not shadow geometry
 - **Bug**: `sutakThreshold = 9.5°` (node-distance limit for eclipse to occur) was used as Sparsha/Moksha threshold → 31h durations
 - **Fix**: Shadow miss-distance = `√(delta_lon² + beta²)` where `delta_lon = moonSunDiff - 180°`, `beta = latitude`. Threshold = `umbralR + moonR = 1.0°`.

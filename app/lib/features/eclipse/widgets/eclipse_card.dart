@@ -57,6 +57,16 @@ class EclipseCard extends StatelessWidget {
                     backgroundColor: AppTheme.kAuspiciousGreen.withValues(alpha: 0.15),
                     side: const BorderSide(color: AppTheme.kAuspiciousGreen, width: 1.5),
                     padding: EdgeInsets.zero,
+                  )
+                else
+                  Chip(
+                    label: Text(
+                      isTelugu ? 'భారత్‌లో కనిపించదు' : 'Not visible in India',
+                      style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                    padding: EdgeInsets.zero,
                   ),
               ],
             ),
@@ -194,7 +204,10 @@ class _SutakRow extends StatelessWidget {
         ? DateFormat('HH:mm').format(dt)
         : DateFormat('h:mm a').format(dt);
 
-    final String timeRange = '${fmt(start)} – ${fmt(end)}';
+    final String endStr = end.day != start.day
+        ? '${end.day}/${end.month} ${fmt(end)}'
+        : fmt(end);
+    final String timeRange = '${fmt(start)} – $endStr';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
