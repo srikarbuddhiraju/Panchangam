@@ -307,7 +307,6 @@ class Eclipse {
       // Contact times using solar shadow geometry
       final DateTime sparsha = _findSolarSparsha(maxJD, _solarContact);
       final DateTime moksha  = _findSolarMoksha(maxJD, _solarContact);
-      final DateTime maxIST  = JulianDay.toIST(maxJD);
 
       return EclipseData(
         date: date,
@@ -316,7 +315,7 @@ class Eclipse {
         moksha: moksha,
         sutakStart: sparsha.subtract(const Duration(hours: 12)),
         sutakStartVulnerable: sparsha.subtract(const Duration(hours: 4)),
-        isVisibleInIndia: _solarVisibleFromIndia(maxIST),
+        isVisibleInIndia: _solarVisibleFromIndia(maxJD),
         moonSunDiff: Tithi.moonSunDiff(jd),
         nodeDistance: nodeDist,
       );
@@ -375,12 +374,49 @@ class Eclipse {
 
   // ── India visibility ──────────────────────────────────────────────────────
 
-  /// Solar eclipse: visible from India if the geocentric maximum falls during
-  /// IST daytime (06:00–18:30). India must be on the sunlit hemisphere.
-  /// NOTE: full ground-track geometry (for path-over-India check) is deferred.
-  static bool _solarVisibleFromIndia(DateTime maxIST) {
+  /// Solar eclipse: visible from India if
+  ///  1. Eclipse maximum is during IST daytime (06:00–18:30)
+  ///  2. Sub-lunar point is within 65° of India's centre (20°N, 78°E)
+  ///
+  /// Sub-lunar point = point on Earth directly below the Moon:
+  ///   lat = Moon's geocentric declination
+  ///   lon = Moon's RA − GMST  (geographic east longitude)
+  ///
+  /// 65° is the approximate angular radius of the penumbral shadow,
+  /// derived from the solar ecliptic limit geometry.
+  static bool _solarVisibleFromIndia(double maxJD) {
+    // 1. Daytime check
+    final DateTime maxIST = JulianDay.toIST(maxJD);
     final int minuteOfDay = maxIST.hour * 60 + maxIST.minute;
-    return minuteOfDay >= 360 && minuteOfDay <= 1110; // 06:00–18:30
+    if (minuteOfDay < 360 || minuteOfDay > 1110) return false; // 06:00–18:30
+
+    // 2. Moon's equatorial coords at maximum
+    final List<double> moonCoords = LunarPosition.equatorialCoords(maxJD);
+    final double moonRA  = moonCoords[0];
+    final double moonDec = moonCoords[1];
+
+    // GMST at the exact JD (degrees) — same formula as SunriseSunset
+    final double jd0  = maxJD.floorToDouble();
+    final double T0   = JulianDay.julianCentury(jd0);
+    final double gmst = JulianDay.normalize360(
+      100.4606184 + 36000.770053 * T0 + 0.000387933 * T0 * T0 +
+      (maxJD - jd0) * 360.98564724,
+    );
+
+    // Sub-lunar geographic longitude (east positive)
+    final double subLon = JulianDay.normalize360(moonRA - gmst);
+
+    // 3. Great-circle distance from sub-lunar point to India centre (20°N, 78°E)
+    const double indiaLat = 20.0;
+    const double indiaLon = 78.0;
+    final double lat1 = JulianDay.toRad(moonDec);
+    final double lat2 = JulianDay.toRad(indiaLat);
+    final double dLon = JulianDay.toRad(subLon - indiaLon);
+    final double cosC = math.sin(lat1) * math.sin(lat2) +
+                        math.cos(lat1) * math.cos(lat2) * math.cos(dLon);
+    final double angDeg = JulianDay.toDeg(math.acos(cosC.clamp(-1.0, 1.0)));
+
+    return angDeg <= 65.0;
   }
 
   /// Lunar eclipse: visible from India if any part of [sparsha, moksha]
