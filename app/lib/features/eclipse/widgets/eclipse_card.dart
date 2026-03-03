@@ -194,7 +194,10 @@ class _SutakRow extends StatelessWidget {
         ? DateFormat('HH:mm').format(dt)
         : DateFormat('h:mm a').format(dt);
 
-    final String timeRange = '${fmt(start)} – ${fmt(end)}';
+    final String endStr = end.day != start.day
+        ? '${end.day}/${end.month} ${fmt(end)}'
+        : fmt(end);
+    final String timeRange = '${fmt(start)} – $endStr';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
