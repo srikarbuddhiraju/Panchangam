@@ -36,6 +36,12 @@ class Eclipse {
   static const double _totalContact      = _umbralR - _moonR;   // 0.4550° — total begins/ends
   static const double _penumbralContact  = _penumbralR + _moonR; // 1.5411° — penumbral begins/ends
 
+  static const double _sunR         = 0.2650;                   // Sun apparent radius (°, mean)
+  // Geocentric partial contact limit for any observer on Earth.
+  // Accounts for sunR + moonR + lunar horizontal parallax (≈0.95°).
+  // Meeus Ch.54 empirical solar ecliptic limit: 1.566°.
+  static const double _solarContact = 1.566;
+
   // ── Node longitude (kept for detection pre-filter) ────────────────────────
 
   /// Sidereal longitude of Rahu (North Node) for a given JD.
@@ -68,6 +74,19 @@ class Eclipse {
   /// miss          = √(delta_lon² + beta²)   where beta = Moon's ecliptic latitude
   static double _shadowMiss(double jd) {
     double delta = Tithi.moonSunDiff(jd) - 180.0;
+    // Normalise to (−180, 180]
+    delta = ((delta + 180.0) % 360.0) - 180.0;
+    final double beta = LunarPosition.latitude(jd);
+    return math.sqrt(delta * delta + beta * beta);
+  }
+
+  /// Angular distance (°) between Moon's centre and Sun's centre.
+  ///
+  /// At new moon moonSunDiff ≈ 0° (or 360°).  Normalise to (−180, 180] so
+  /// the value stays near 0° regardless of the 0/360 wrap.
+  /// miss = √(delta_lon² + beta²)   where beta = Moon's ecliptic latitude
+  static double _solarMiss(double jd) {
+    double delta = Tithi.moonSunDiff(jd);
     // Normalise to (−180, 180]
     delta = ((delta + 180.0) % 360.0) - 180.0;
     final double beta = LunarPosition.latitude(jd);
@@ -111,25 +130,39 @@ class Eclipse {
     return fineJD;
   }
 
-  /// Existing node-distance maximum finder — kept for solar eclipses.
+  /// Find the JD of minimum Moon–Sun angular separation (= solar eclipse maximum).
+  /// Two-pass: hourly over ±36 h to bracket peak, then 1-min refinement.
   static double _findSolarMaximumJD(DateTime date) {
-    double minDist = double.infinity;
-    double maxJD = JulianDay.fromDateTime(
+    // Pass 1 — hourly
+    double minMiss = double.infinity;
+    double roughJD = JulianDay.fromDateTime(
         date.year, date.month, date.day, 12, 0, 0);
 
-    for (int h = -30; h <= 30; h++) {
-      final DateTime dt = DateTime.utc(
-              date.year, date.month, date.day, 12)
-          .add(Duration(hours: h));
+    for (int h = -36; h <= 36; h++) {
+      final DateTime dt =
+          DateTime.utc(date.year, date.month, date.day, 12)
+              .add(Duration(hours: h));
       final double jd = JulianDay.fromDateTime(
           dt.year, dt.month, dt.day, dt.hour, 0, 0);
-      final double dist = _nodeDist(jd);
-      if (dist < minDist) {
-        minDist = dist;
-        maxJD = jd;
+      final double miss = _solarMiss(jd);
+      if (miss < minMiss) {
+        minMiss = miss;
+        roughJD = jd;
       }
     }
-    return maxJD;
+
+    // Pass 2 — 1-min steps over ±60 min around rough peak
+    double fineJD = roughJD;
+    double fineMiss = minMiss;
+    for (int m = -60; m <= 60; m++) {
+      final double jd = roughJD + m / 1440.0;
+      final double miss = _solarMiss(jd);
+      if (miss < fineMiss) {
+        fineMiss = miss;
+        fineJD = jd;
+      }
+    }
+    return fineJD;
   }
 
   // ── Sparsha / Moksha (lunar) ──────────────────────────────────────────────
@@ -171,26 +204,43 @@ class Eclipse {
     return JulianDay.toIST(maxJD + 3.0 / 24.0); // fallback
   }
 
-  // ── Sparsha / Moksha (solar — node-distance approach, unchanged) ──────────
+  // ── Sparsha / Moksha (solar — shadow geometry) ────────────────────────────
 
+  /// Scan backward from [maxJD] at 1-min steps to find when Moon–Sun miss
+  /// first rises above [threshold] — this is Sparsha (first contact).
   static DateTime _findSolarSparsha(double maxJD, double threshold) {
-    for (int m = 5; m <= 1440; m += 5) {
+    for (int m = 1; m <= 1440; m++) {
       final double jd = maxJD - m / 1440.0;
-      if (_nodeDist(jd) >= threshold) {
-        return JulianDay.toIST(jd + 5.0 / 1440.0);
+      if (_solarMiss(jd) >= threshold) {
+        // Refine to nearest 10 seconds
+        for (int s = 0; s <= 60; s += 10) {
+          final double jd2 = jd + s / 86400.0;
+          if (_solarMiss(jd2) < threshold) {
+            return JulianDay.toIST(jd2);
+          }
+        }
+        return JulianDay.toIST(jd + 30.0 / 86400.0);
       }
     }
-    return JulianDay.toIST(maxJD - 6.0 / 24.0);
+    return JulianDay.toIST(maxJD - 3.0 / 24.0); // fallback
   }
 
+  /// Scan forward from [maxJD] at 1-min steps to find when Moon–Sun miss
+  /// rises above [threshold] — this is Moksha (last contact).
   static DateTime _findSolarMoksha(double maxJD, double threshold) {
-    for (int m = 5; m <= 1440; m += 5) {
+    for (int m = 1; m <= 1440; m++) {
       final double jd = maxJD + m / 1440.0;
-      if (_nodeDist(jd) >= threshold) {
-        return JulianDay.toIST(jd - 5.0 / 1440.0);
+      if (_solarMiss(jd) >= threshold) {
+        for (int s = 0; s <= 60; s += 10) {
+          final double jd2 = jd - s / 86400.0;
+          if (_solarMiss(jd2) < threshold) {
+            return JulianDay.toIST(jd2);
+          }
+        }
+        return JulianDay.toIST(jd - 30.0 / 86400.0);
       }
     }
-    return JulianDay.toIST(maxJD + 6.0 / 24.0);
+    return JulianDay.toIST(maxJD + 3.0 / 24.0); // fallback
   }
 
   // ── Find all eclipses in a year ───────────────────────────────────────────
@@ -240,6 +290,13 @@ class Eclipse {
     const double solarEclipseLimit = 17.0;
 
     if (distRahu <= solarEclipseLimit || distKetu <= solarEclipseLimit) {
+      // Find actual maximum using solar shadow geometry
+      final double maxJD = _findSolarMaximumJD(date);
+      final double minMiss = _solarMiss(maxJD);
+
+      // Confirm eclipse: Moon must actually overlap Sun's disk
+      if (minMiss >= _solarContact) return null;
+
       final double nodeDist = distRahu < distKetu ? distRahu : distKetu;
       final EclipseType type = nodeDist < 9
           ? EclipseType.solarTotal
@@ -247,9 +304,10 @@ class Eclipse {
               ? EclipseType.solarAnnular
               : EclipseType.solarPartial;
 
-      final double maxJD = _findSolarMaximumJD(date);
-      final DateTime sparsha = _findSolarSparsha(maxJD, solarEclipseLimit);
-      final DateTime moksha = _findSolarMoksha(maxJD, solarEclipseLimit);
+      // Contact times using solar shadow geometry
+      final DateTime sparsha = _findSolarSparsha(maxJD, _solarContact);
+      final DateTime moksha  = _findSolarMoksha(maxJD, _solarContact);
+      final DateTime maxIST  = JulianDay.toIST(maxJD);
 
       return EclipseData(
         date: date,
@@ -258,7 +316,7 @@ class Eclipse {
         moksha: moksha,
         sutakStart: sparsha.subtract(const Duration(hours: 12)),
         sutakStartVulnerable: sparsha.subtract(const Duration(hours: 4)),
-        isVisibleInIndia: true,
+        isVisibleInIndia: _solarVisibleFromIndia(maxIST),
         moonSunDiff: Tithi.moonSunDiff(jd),
         nodeDistance: nodeDist,
       );
@@ -309,10 +367,30 @@ class Eclipse {
       moksha: moksha,
       sutakStart: sparsha.subtract(const Duration(hours: 9)),
       sutakStartVulnerable: sparsha.subtract(const Duration(hours: 3)),
-      isVisibleInIndia: true,
+      isVisibleInIndia: _lunarVisibleFromIndia(sparsha, moksha),
       moonSunDiff: Tithi.moonSunDiff(jd),
       nodeDistance: nodeDist,
     );
+  }
+
+  // ── India visibility ──────────────────────────────────────────────────────
+
+  /// Solar eclipse: visible from India if the geocentric maximum falls during
+  /// IST daytime (06:00–18:30). India must be on the sunlit hemisphere.
+  /// NOTE: full ground-track geometry (for path-over-India check) is deferred.
+  static bool _solarVisibleFromIndia(DateTime maxIST) {
+    final int minuteOfDay = maxIST.hour * 60 + maxIST.minute;
+    return minuteOfDay >= 360 && minuteOfDay <= 1110; // 06:00–18:30
+  }
+
+  /// Lunar eclipse: visible from India if any part of [sparsha, moksha]
+  /// overlaps with IST nighttime (18:00–06:00). At full moon the Moon is
+  /// above India's horizon from sunset to sunrise.
+  static bool _lunarVisibleFromIndia(DateTime sparsha, DateTime moksha) {
+    bool nightHour(int h) => h >= 18 || h < 6;
+    return nightHour(sparsha.hour) ||
+        nightHour(moksha.hour) ||
+        sparsha.day != moksha.day; // spans midnight → covers some nighttime
   }
 
   static double _angularDistance(double lon1, double lon2) {
