@@ -307,6 +307,7 @@ class Eclipse {
       // Contact times using solar shadow geometry
       final DateTime sparsha = _findSolarSparsha(maxJD, _solarContact);
       final DateTime moksha  = _findSolarMoksha(maxJD, _solarContact);
+      final DateTime maxIST  = JulianDay.toIST(maxJD);
 
       return EclipseData(
         date: date,
@@ -315,7 +316,7 @@ class Eclipse {
         moksha: moksha,
         sutakStart: sparsha.subtract(const Duration(hours: 12)),
         sutakStartVulnerable: sparsha.subtract(const Duration(hours: 4)),
-        isVisibleInIndia: true,
+        isVisibleInIndia: _solarVisibleFromIndia(maxIST),
         moonSunDiff: Tithi.moonSunDiff(jd),
         nodeDistance: nodeDist,
       );
@@ -366,10 +367,30 @@ class Eclipse {
       moksha: moksha,
       sutakStart: sparsha.subtract(const Duration(hours: 9)),
       sutakStartVulnerable: sparsha.subtract(const Duration(hours: 3)),
-      isVisibleInIndia: true,
+      isVisibleInIndia: _lunarVisibleFromIndia(sparsha, moksha),
       moonSunDiff: Tithi.moonSunDiff(jd),
       nodeDistance: nodeDist,
     );
+  }
+
+  // ── India visibility ──────────────────────────────────────────────────────
+
+  /// Solar eclipse: visible from India if the geocentric maximum falls during
+  /// IST daytime (06:00–18:30). India must be on the sunlit hemisphere.
+  /// NOTE: full ground-track geometry (for path-over-India check) is deferred.
+  static bool _solarVisibleFromIndia(DateTime maxIST) {
+    final int minuteOfDay = maxIST.hour * 60 + maxIST.minute;
+    return minuteOfDay >= 360 && minuteOfDay <= 1110; // 06:00–18:30
+  }
+
+  /// Lunar eclipse: visible from India if any part of [sparsha, moksha]
+  /// overlaps with IST nighttime (18:00–06:00). At full moon the Moon is
+  /// above India's horizon from sunset to sunrise.
+  static bool _lunarVisibleFromIndia(DateTime sparsha, DateTime moksha) {
+    bool nightHour(int h) => h >= 18 || h < 6;
+    return nightHour(sparsha.hour) ||
+        nightHour(moksha.hour) ||
+        sparsha.day != moksha.day; // spans midnight → covers some nighttime
   }
 
   static double _angularDistance(double lon1, double lon2) {
