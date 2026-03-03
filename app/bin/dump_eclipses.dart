@@ -17,6 +17,7 @@ void main() {
       print('  SutakStart:      ${fmt(e.sutakStart)}');
       print('  SutakVulnerable: ${fmt(e.sutakStartVulnerable)}');
       print('  Duration:        ${e.moksha.difference(e.sparsha).inMinutes} min');
+      print('  VisibleInIndia:  ${e.isVisibleInIndia}');
       print('');
     }
   }
