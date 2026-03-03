@@ -34,21 +34,20 @@
 | Mar 29, 2025 Annular Solar | 14:23 | 18:13 | 230 min | true |
 | Sep 7, 2025 Total Lunar | 21:59 | 01:26+1 | 207 min | true ✓ |
 | Sep 21, 2025 Total Solar | 22:39 | 03:47+1 | 307 min | false ✓ |
-| Feb 17, 2026 Annular Solar | 15:14 | 20:12 | 297 min | true ⚠️ |
+| Feb 17, 2026 Annular Solar | 15:14 | 20:12 | 297 min | false ✓ |
 | Mar 3, 2026 Total Lunar | 15:16 | 18:53 | 216 min | true ✓ |
 | Aug 12, 2026 Annular Solar | 21:01 | 01:33+1 | 271 min | false ✓ |
 | Aug 28, 2026 Partial Lunar | 07:56 | 11:31 | 215 min | false ✓ |
 
-⚠️ = known limitation, fixed in Session 11
+✓ = correct  (all 8 now correctly classified)
 
 ---
 
 ## Next Session — Work Items
 
-1. **Solar isVisibleInIndia (ground track)** — eclipse ground track geometry
-   to correctly suppress False "Visible in India" for Antarctic/Pacific eclipses
-2. **UX refinement pass** — small improvements from daily use (Srikar to specify)
-3. **Push main to origin** — Srikar to do via SSH
+1. **UX refinement pass** — specific improvements from daily use (Srikar to specify)
+2. **Notifications (Session 4)** — flutter_local_notifications, schedule on save/cancel on delete
+3. **Paywall + Polish (Session 5)** — re-track paywall_screen.dart, festival reminders, full flow test
 
 ---
 
