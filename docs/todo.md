@@ -193,4 +193,4 @@ Branch: `feature/alarm-sound-channel` | Commits: `d9d08e0`, `395b528` | APK: 58.
 - [x] To-Do: swipe to delete ✓
 - [x] To-Do: edit → form pre-fills; tithi/month change → targetDate updates live ✓
 - [x] Events tab unaffected ✓
-- [ ] Notification fires at correct time (device test pending)
+- [x] Notification fires at correct time (confirmed by Srikar, Mar 2026)

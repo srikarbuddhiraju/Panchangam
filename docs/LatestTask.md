@@ -1,66 +1,66 @@
 # Latest Task — Session 10 Complete ✓ Device Verified
 
 **Last updated:** Mar 3, 2026
-**Branch:** `feature/eclipse-sutak-display-fix`
+**Branch:** main (all session branches merged)
 
 ---
 
-## Session 10 — Eclipse Fixes ✅ All Committed
+## What's Done (Sessions 1–10)
 
-### Bug 1 — Sutak display spanning midnight ✅
-- `_SutakRow`: if end.day ≠ start.day, prepend `d/M ` to end time
-- e.g. Aug 12, 2026 solar: "22:30 – 13/8 22:30" instead of "22:30 – 22:30"
-
-### Bug 2 — Solar eclipse timing (was always 720 min fallback) ✅
-- New `_solarMiss()`: geocentric Moon–Sun angular separation
-- New `_findSolarMaximumJD`: minimises `_solarMiss` (was `_nodeDist`)
-- Contact threshold: 1.566° (Meeus Ch.54 solar ecliptic limit, includes parallax)
-- False positive (Aug 23, 2025) correctly eliminated
-- Durations now 230–307 min (was: 720 min)
-
-### Bug 3 — isVisibleInIndia hardcoded true ✅
-- Lunar: visible if any part of sparsha→moksha overlaps IST nighttime (18:00–06:00)
-- Solar: visible if eclipse maximum falls in IST daytime (06:00–18:30)
-- Known limitation: Feb 17 2026 Antarctic annular shows `true` (max at 17:43 IST)
-  despite path over Antarctica — ground-track geometry deferred to Session 11
+| Session | Feature | Status |
+|---|---|---|
+| 1–3 | Pro data model, calendar integration, event UI | ✅ |
+| 4 | Notifications (flutter_local_notifications, schedule/cancel) | ✅ |
+| 5 | Google Sign-In + auth UX | ✅ |
+| 6 | Reminders redesign, notes, alarm type | ✅ |
+| 7 | Alarm sound channel, To-Do feature, festival markers | ✅ |
+| 8 | Lunar eclipse timing (shadow geometry) | ✅ |
+| 9 | Pro UI (paywall gate, splash logo, disclaimer) | ✅ |
+| 10 | Eclipse display fixes (sutak midnight, solar timing, visibility) | ✅ |
 
 ---
 
-## Final Eclipse Table (Session 10)
+## MVP Checklist (roadmap.md)
 
-| Eclipse | Sparsha | Moksha | Dur | Visible |
-|---|---|---|---|---|
-| Mar 14, 2025 Total Lunar | 10:27 | 14:32 | 245 min | false ✓ |
-| Mar 29, 2025 Annular Solar | 14:23 | 18:13 | 230 min | true |
-| Sep 7, 2025 Total Lunar | 21:59 | 01:26+1 | 207 min | true ✓ |
-| Sep 21, 2025 Total Solar | 22:39 | 03:47+1 | 307 min | false ✓ |
-| Feb 17, 2026 Annular Solar | 15:14 | 20:12 | 297 min | false ✓ |
-| Mar 3, 2026 Total Lunar | 15:16 | 18:53 | 216 min | true ✓ |
-| Aug 12, 2026 Annular Solar | 21:01 | 01:33+1 | 271 min | false ✓ |
-| Aug 28, 2026 Partial Lunar | 07:56 | 11:31 | 215 min | false ✓ |
-
-✓ = correct  (all 8 now correctly classified)
-
----
-
-## Next Session — Work Items
-
-1. **UX refinement pass** — specific improvements from daily use (Srikar to specify)
-2. **Notifications (Session 4)** — flutter_local_notifications, schedule on save/cancel on delete
-3. **Paywall + Polish (Session 5)** — re-track paywall_screen.dart, festival reminders, full flow test
+- [x] All 5 Panchangam limbs
+- [x] All daily timings + kalams
+- [x] Calendar grid + day detail view
+- [x] Festivals + festival markers on calendar
+- [x] Location picker
+- [x] Telugu + English
+- [x] App icon (deep navy, sun+moon)
+- [x] Splash screen (Session 9)
+- [x] Eclipse display (sutak, visibility chip)
+- [ ] Family tab — hide or "Coming Soon" (Srikar to decide)
+- [ ] Play Store listing (title, description, screenshots, privacy policy)
+- [ ] Internal testing pass (5+ users, varied devices)
 
 ---
 
-## Rebuild + Reinstall APK
+## Known Accuracy Gap
 
-```bash
-cd /home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
-flutter build apk --release
-/home/srikarbuddhiraju/Android/Sdk/platform-tools/adb -s 10BDAH07CM000MQ install -r build/app/outputs/flutter-apk/app-release.apk
-```
+- **Amruthakalam**: approximate (`horaOffsets` array in `muhurtha.dart:67`). Needs exact nakshatra→hora table. Flagged Feb 2026, deferred.
+
+---
+
+## Next Session — Options
+
+1. **Family tab decision** — hide entirely or show "Coming Soon"
+2. **Amruthakalam fix** — exact hora table (flagged for pre-release)
+3. **UX refinements** — Srikar to specify from daily use
+4. **Play Store prep** — store listing, screenshots, privacy policy (Srikar-led)
+
+---
 
 ## Diagnostic script
 ```bash
 cd /home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
 dart run bin/dump_eclipses.dart
+```
+
+## Rebuild + Reinstall APK
+```bash
+cd /home/srikarbuddhiraju/Srikar/Repo/Panchangam/app
+flutter build apk --release
+/home/srikarbuddhiraju/Android/Sdk/platform-tools/adb -s 10BDAH07CM000MQ install -r build/app/outputs/flutter-apk/app-release.apk
 ```
