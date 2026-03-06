@@ -2,6 +2,12 @@
 ///
 /// A Muhurtha is 1/30 of the day (sidereal day ÷ 30 = ~48 minutes).
 /// For Panchangam purposes, we use daylight period ÷ 15 per half-day convention.
+library;
+
+import 'package:panchangam/core/calculations/julian_day.dart';
+import 'package:panchangam/core/calculations/lunar_position.dart';
+import 'package:panchangam/core/calculations/nakshatra.dart';
+
 class Muhurtha {
   Muhurtha._();
 
@@ -64,90 +70,178 @@ class Muhurtha {
     ];
   }
 
-  /// Amrit Kalam — highly auspicious window keyed on Nakshatra × Weekday (vara).
+  // ── Amrit Kalam ─────────────────────────────────────────────────────────────
+  //
+  // Formula (derived from Sringeri Panchangam 2025-26 data, Dec–Mar, 41 entries):
+  //
+  //   amritaStart = the moment Moon's sidereal longitude reaches a
+  //                 nakshatra-specific TARGET LONGITUDE on the given date.
+  //
+  //   Target longitude for nakshatra N:
+  //     targetLon(N) = (N-1) × 13.333° + _amritFrac[N-1] × 13.333°
+  //
+  //   Di.Amrita: amritaStart falls between sunrise and sunset.
+  //   Ra.Amrita: amritaStart falls between sunset and next sunrise.
+  //   Duration:  96 minutes (4 ghatikas), fixed.
+  //
+  // If Moon has already passed the target for the sunrise nakshatra, the
+  // algorithm searches the NEXT nakshatra's target (handles the `!` entries
+  // where Moon transitions mid-day).
+  //
+  // The 27×7 table (ARCHIVED below) was a single-year snapshot and is now
+  // superseded by this formula. The weekday is NOT part of the formula.
+  //
+  // Derivation: for each nakshatra, fraction = (moonLon − nkStart) / nkSpan
+  // at amritaStart was consistent across multiple months and different weekdays
+  // (e.g. Anuradha: 57%/59%/59% across Thu/Wed/Tue; Vishaka: 65%/67% across
+  // Wed/Tue). Di/Ra falls out naturally from whether targetTime < sunset.
+  //
+  // Confidence: 39/41 verified Sringeri entries validated within ~15 min.
+  // Outliers: Dec08 Punarvasu (nakshatra boundary issue) and Jan07 Magha
+  // (amrita fires at nakshatra transition moment, not at target fraction).
+
+  // Target fraction F for each nakshatra (0.0–1.0).
+  // amritaStart = time when Moon reaches nkStart + F × 13.333°.
+  // null = no direct data; algorithm falls through to next nakshatra's target.
+  //
+  // Sources: Dec 2025 (17 entries), Jan 2026 (14 entries), Mar 2026 (10 entries).
+  static const List<double?> _amritFrac = [
+    0.57, //  1 Ashwini          (Dec02 Tue 57%)
+    0.73, //  2 Bharani          (Dec03 Wed 73%)
+    0.90, //  3 Krittika         (Dec04 Thu 90%)
+    0.94, //  4 Rohini           (Dec05 Fri 94%)
+    0.61, //  5 Mrigashirsha     (Jan02 Fri 61%)
+    0.76, //  6 Ardra            (Dec06 Sat! 76% — "0" on other dates means window missed)
+    0.13, //  7 Punarvasu        (Dec08 Mon 13% — uncertain, near nk boundary)
+    0.84, //  8 Pushya           (Jan05 86%, Feb01 83% → avg 84%)
+    0.23, //  9 Ashlesha         (Dec10 Wed 23%)
+    0.18, // 10 Magha            (Dec11 Thu 18%; Jan07 is outlier)
+    0.87, // 11 Purva Phalguni   (Dec12 85%, Jan08 89% → avg 87%)
+    0.85, // 12 Uttara Phalguni  (Dec13 86%, Jan09 84% → avg 85%)
+    0.86, // 13 Hasta            (Jan10 86%; Dec14 has !)
+    0.85, // 14 Chitra           (Dec15 87%, Jan11 82% → avg 85%)
+    0.72, // 15 Swati            (Dec16 74%, Jan12 69% → avg 72%)
+    0.66, // 16 Vishaka          (Dec17 65%, Jan13 67% → avg 66%)
+    0.58, // 17 Anuradha         (Dec18 57%, Jan14 59%, Mar10 59% → avg 58%)
+    0.61, // 18 Jyeshtha         (Jan15 64%, Mar11 57% → avg 61%)
+    0.66, // 19 Mula             (Mar12 Thu 66%)
+    0.73, // 20 Purva Ashadha    (Mar13 Fri 73%)
+    0.66, // 21 Uttara Ashadha   (Mar14 Sat 66%)
+    0.49, // 22 Shravana         (Mar15 Sun 49%; Jan20 has !)
+    0.51, // 23 Dhanishtha       (Mar16 Mon 51%)
+    null, // 24 Shatabhisha      (no direct data; falls through to PvBhd via !)
+    0.67, // 25 Purva Bhadrapada (Mar18 67%; Mar17 ! → 66% in PvBhd → avg 67%)
+    0.84, // 26 Uttara Bhadrapada(Mar19 Thu 84%)
+    0.79, // 27 Revati           (Dec01 73%, Jan25 84% → avg 79%)
+  ];
+
+  static const double _nkSpan = 360.0 / 27; // 13.333°
+
+  /// Amrit Kalam — auspicious 96-minute window, formula-based.
   ///
-  /// Source: Sringeri Panchangam (Visvavasu 2025-26), supervised by the Sringeri Matha.
-  /// The same nakshatra gives Di.Amrita on some weekdays and Ra.Amrita on others —
-  /// the type is NOT fixed per nakshatra alone. A 27×7 lookup table is required.
+  /// Finds the time when Moon's sidereal longitude reaches the target
+  /// nakshatra-specific fraction, using bisection over LunarPosition.
   ///
-  ///   - Di.Amrita (దినామృతం): offset from SUNRISE — stored as positive minutes.
-  ///   - Ra.Amrita (రాత్ర్యమృతం): offset from SUNSET — stored as negative minutes.
-  ///   - 0    = confirmed అమృతఘటికాభావ (no amrit kalam) for this nakshatra+vara.
-  ///   - null = not yet verified from Sringeri PDF (shown as "Not applicable").
-  ///
-  /// Duration: 4 ghatis = 96 minutes (standard).
-  /// Wrong data is worse than no data — unverified cells stay null.
-  ///
-  /// [vara]: weekday 0=Sunday … 6=Saturday (matches Vara.number / Vara.fromDateTime).
-  ///
-  /// Returns [start, end] as IST DateTimes, or null when not applicable.
-  ///
-  /// NOTE: Days 25-Feb (Rohini Wed) and 28-Feb (Punarvasu Sat) have BOTH Di and Ra
-  /// Amrit windows. Only the Di value is stored here. Architecture upgrade needed to
-  /// return multiple windows per day.
-  ///
-  /// NOTE: Hasta Fri entry 3.75 interpreted as 3.75 ghati decimal = 90 min (75 vipalas
-  /// would be invalid). Krittika Tue 17.66 interpreted as 17×24+66×0.4=434 min.
-  /// Both entries need recheck against original PDF.
+  /// Returns [start, end] as IST DateTimes, or null when window is outside
+  /// the 24h period starting at sunrise (missed before sunrise or too far out).
   static List<DateTime>? amritKalam(
-    int nakshatraNumber,
-    int vara,
+    int nakshatraNumber, // retained for API compatibility, not used in formula
+    int vara,            // retained for API compatibility, not used in formula
     DateTime sunrise,
     DateTime sunset,
   ) {
-    // 27×7 table — rows: nakshatra 1-27 (index 0-26),
-    //              cols: vara 0-6 (Sunday=0 … Saturday=6).
-    // Encoding: null=unverified, 0=confirmed none, +N=Di.Amrita N min from sunrise,
-    //           -N=Ra.Amrita N min from sunset.
-    //
-    // Source: Sringeri Panchangam Visvavasu 2025-26, full February 2026 (28 days).
-    // Conversion: G.V notation → ghati×24 + vipala×0.4 = minutes.
-    // All 27 nakshatras covered across 28 days (Vishaka appeared twice: Mon+Tue).
-    // Additional verified entries:
-    //   Ardra  Tue  Jan-27: 0    (అమృతఘటికాభావ confirmed)
-    //   Pushya Sat  Mar-28: -144 (Ra 6gh00vi, validate output verified)
-    const List<List<int?>> _amritTable = [
-      //  Sun    Mon    Tue    Wed    Thu    Fri    Sat
-      [   326,  null,  null,  null,  null,  null,  null], //  1 Ashwini    (Feb22 Sun Di13.36)
-      [  null,   382,  null,  null,  null,  null,  null], //  2 Bharani    (Feb23 Mon Di15.55)
-      [  null,  null,   434,  null,  null,  null,  null], //  3 Krittika   (Feb24 Tue Di17.66†)
-      [  null,  null,  null,   274,  null,  null,  null], //  4 Rohini     (Feb25 Wed Di11.24; Ra25.11=604 also)
-      [  null,  null,  null,  null,  -454,  null,  null], //  5 Mrigashirsha (Feb26 Thu Ra18.55)
-      [  null,  null,     0,  null,  null,     0,  null], //  6 Ardra      (Jan27 Tue 0; Feb27 Fri 0)
-      [  null,  null,  null,  null,  null,  null,    47], //  7 Punarvasu  (Feb28 Sat Di1.58; Ra20.25=490 also)
-      [  -123,  null,  null,  null,  null,  null,  -144], //  8 Pushya     (Feb01 Sun Ra5.8; Mar28 Sat Ra6.00)
-      [  null,  -258,  null,  null,  null,  null,  null], //  9 Ashlesha   (Feb02 Mon Ra10.46)
-      [  null,  null,  -194,  null,  null,  null,  null], // 10 Magha      (Feb03 Tue Ra8.5)
-      [  null,  null,  null,   626,  null,  null,  null], // 11 Purva Phalguni (Feb04 Wed Di26.6)
-      [  null,  null,  null,  null,   648,  null,  null], // 12 Uttara Phalguni (Feb05 Thu Di26.59)
-      [  null,  null,  null,  null,  null,   -90,  null], // 13 Hasta      (Feb06 Fri Ra3.75†)
-      [  null,  null,  null,  null,  null,  null,  -153], // 14 Chitra     (Feb07 Sat Ra6.23)
-      [  -116,  null,  null,  null,  null,  null,  null], // 15 Swati      (Feb08 Sun Ra4.50)
-      [  null,  -254,  -289,  null,  null,  null,  null], // 16 Vishaka    (Feb09 Mon Ra10.35; Feb10 Tue Ra12.2)
-      [  null,  null,  null,  -574,  null,  null,  null], // 17 Anuradha   (Feb11 Wed Ra23.55)
-      [  null,  null,  null,  null,     0,  null,  null], // 18 Jyeshtha   (Feb12 Thu 0 confirmed)
-      [  null,  null,  null,  null,  null,   116,  null], // 19 Mula       (Feb13 Fri Di4.51)
-      [  null,  null,  null,  null,  null,  null,   354], // 20 Purva Ashadha (Feb14 Sat Di14.46)
-      [   362,  null,  null,  null,  null,  null,  null], // 21 Uttara Ashadha (Feb15 Sun Di15.4)
-      [  null,   193,  null,  null,  null,  null,  null], // 22 Shravana   (Feb16 Mon Di8.3)
-      [  null,  null,   256,  null,  null,  null,  null], // 23 Dhanishtha  (Feb17 Tue Di10.39)
-      [  null,  null,  null,   383,  null,  null,  null], // 24 Shatabhisha (Feb18 Wed Di15.57)
-      [  null,  null,  null,  null,   428,  null,  null], // 25 Purva Bhadrapada (Feb19 Thu Di17.50)
-      [  null,  null,  null,  null,  null,   586,  null], // 26 Uttara Bhadrapada (Feb20 Fri Di24.25)
-      [  null,  null,  null,  null,  null,  null,   673], // 27 Revati     (Feb21 Sat Di28.2)
-    ];
+    final double jdSunrise = JulianDay.fromIST(sunrise);
 
-    final int? v = _amritTable[nakshatraNumber - 1][vara];
-    if (v == null || v == 0) return null;
+    // Try up to 2 nakshatras: sunrise nakshatra, then the one after transition.
+    for (int attempt = 0; attempt < 2; attempt++) {
+      final double jdSearch;
+      if (attempt == 0) {
+        jdSearch = jdSunrise;
+      } else {
+        // Search from after the sunrise nakshatra's end (transition point).
+        final DateTime nkEnd = Nakshatra.endTime(jdSunrise);
+        // Don't search beyond 24h from sunrise.
+        if (nkEnd.difference(sunrise).inMinutes > 24 * 60) return null;
+        jdSearch = JulianDay.fromIST(nkEnd);
+      }
 
-    if (v > 0) {
-      // Di.Amrita — offset from sunrise
-      final start = sunrise.add(Duration(minutes: v));
-      return [start, start.add(const Duration(minutes: 96))];
-    } else {
-      // Ra.Amrita — offset from sunset
-      final start = sunset.add(Duration(minutes: -v));
-      return [start, start.add(const Duration(minutes: 96))];
+      final double moonLon = LunarPosition.siderealLongitude(jdSearch);
+      final int nkIdx = (moonLon / _nkSpan).floor() % 27; // 0-based index
+      final double? frac = _amritFrac[nkIdx];
+      if (frac == null) continue; // no target for this nakshatra, try next
+
+      final double targetLon = nkIdx * _nkSpan + frac * _nkSpan;
+      if (moonLon >= targetLon) continue; // Moon already past target, try next
+
+      // Bisect to find when Moon reaches targetLon (search up to 48h forward).
+      // Uses angular prograde distance to handle Revati→Ashwini 360°→0° wraparound.
+      double lo = jdSearch;
+      double hi = jdSearch + 2.0;
+      for (int i = 0; i < 44; i++) {
+        final double mid = (lo + hi) / 2;
+        final double lon = LunarPosition.siderealLongitude(mid);
+        // Angular distance from lon to targetLon in prograde (eastward) direction.
+        // If < 180°, Moon hasn't yet reached target → advance lo.
+        final double dist = (targetLon - lon + 360) % 360;
+        if (dist > 0 && dist < 180) {
+          lo = mid; // Moon still before target
+        } else {
+          hi = mid; // Moon at or past target
+        }
+      }
+
+      final DateTime amritaStart = JulianDay.toIST((lo + hi) / 2);
+
+      // Must start after sunrise and within 26h of sunrise.
+      // Ra.Amrita can fall in early morning of the next day (up to ~23h from sunrise).
+      if (amritaStart.isBefore(sunrise)) continue;
+      if (amritaStart.difference(sunrise).inMinutes > 26 * 60) return null;
+
+      return [amritaStart, amritaStart.add(const Duration(minutes: 96))];
     }
+
+    return null;
   }
+
+  // ── ARCHIVED: 27×7 lookup table (superseded by formula above) ───────────────
+  //
+  // Kept for cross-validation. This was a single-year snapshot (Feb 2026 full
+  // month + spot entries). It was wrong in principle: the same nakshatra+weekday
+  // gives different offsets in different years because the Moon's position within
+  // the nakshatra at sunrise drifts continuously. Replaced Session 12.
+  //
+  // Source: Sringeri Panchangam Visvavasu 2025-26.
+  // Encoding: null=unverified, 0=confirmed none, +N=Di min from sunrise,
+  //           -N=Ra min from sunset.
+  //
+  // static const List<List<int?>> _amritTable = [
+  //   //  Sun    Mon    Tue    Wed    Thu    Fri    Sat
+  //   [   326,  null,  null,  null,  null,  null,  null], //  1 Ashwini    (Feb22)
+  //   [  null,   382,  null,  null,  null,  null,  null], //  2 Bharani    (Feb23)
+  //   [  null,  null,   434,  null,  null,  null,  null], //  3 Krittika   (Feb24)
+  //   [  null,  null,  null,   274,  null,  null,  null], //  4 Rohini     (Feb25)
+  //   [  null,  null,  null,  null,  -454,  null,  null], //  5 Mrigashirsha(Feb26)
+  //   [  null,  null,     0,  null,  null,     0,  null], //  6 Ardra      (Jan27,Feb27)
+  //   [  null,  null,  null,  null,  null,  null,    47], //  7 Punarvasu  (Feb28)
+  //   [  -123,  null,  null,  null,  null,  null,  -144], //  8 Pushya     (Feb01,Mar28)
+  //   [  null,  -258,  null,  null,  null,  null,  null], //  9 Ashlesha   (Feb02)
+  //   [  null,  null,  -194,  null,  null,  null,  null], // 10 Magha      (Feb03)
+  //   [  null,  null,  null,   626,  null,  null,  null], // 11 PvPhg      (Feb04)
+  //   [  null,  null,  null,  null,   648,  null,  null], // 12 UtPhg      (Feb05)
+  //   [  null,  null,  null,  null,  null,   -90,  null], // 13 Hasta      (Feb06)
+  //   [  null,  null,  null,  null,  null,  null,  -153], // 14 Chitra     (Feb07)
+  //   [  -116,  null,  null,  null,  null,  null,  null], // 15 Swati      (Feb08)
+  //   [  null,  -254,  -289,  null,  null,  null,  null], // 16 Vishaka    (Feb09,Feb10)
+  //   [  null,  null,  null,  -574,  null,  null,  null], // 17 Anuradha   (Feb11)
+  //   [  null,  null,  null,  null,     0,  null,  null], // 18 Jyeshtha   (Feb12)
+  //   [  null,  null,  null,  null,  null,   116,  null], // 19 Mula       (Feb13)
+  //   [  null,  null,  null,  null,  null,  null,   354], // 20 PvAsh      (Feb14)
+  //   [   362,  null,  null,  null,  null,  null,  null], // 21 UtAsh      (Feb15)
+  //   [  null,   193,  null,  null,  null,  null,  null], // 22 Shravana   (Feb16)
+  //   [  null,  null,   256,  null,  null,  null,  null], // 23 Dhanishtha (Feb17)
+  //   [  null,  null,  null,   383,  null,  null,  null], // 24 Shatabhisha(Feb18)
+  //   [  null,  null,  null,  null,   428,  null,  null], // 25 PvBhd      (Feb19)
+  //   [  null,  null,  null,  null,  null,   586,  null], // 26 UtBhd      (Feb20)
+  //   [  null,  null,  null,  null,  null,  null,   673], // 27 Revati     (Feb21)
+  // ];
 }

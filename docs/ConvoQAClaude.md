@@ -19,6 +19,7 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 
 **Q4. Amruthakalam fix — before release?**
 > Yes. Fix it before release. Needs a proper nakshatra→hora table.
+> **Session 11 finding**: 27×7 fixed-offset table is fundamentally flawed — same nakshatra+vara gives different offsets across months (nakshatra position shifts relative to sunrise). 8 conflict cells marked ‡ in muhurtha.dart. 27 new cells added from Dec 2025 + Mar 2026 Sarvam OCR. Architecture upgrade (nakshatra→hora) still needed before release.
 
 **Q5. Dark mode — MVP or V1.1?**
 > Option exists in settings but needs validation. Validate dark mode before release.
@@ -76,3 +77,22 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 > UX is good for MVP but needs refinement before a great app.
 > **Known bug**: Festivals, Grahana (eclipse) highlights do not appear on the landing page at app launch — user has to navigate to next/previous month first, then they appear.
 > A dedicated UX refinement session is needed before release. Many small improvements required.
+
+---
+
+## Session: Mar 6, 2026 — Amrita Kalam Formula (Session 12)
+
+**Q1. Amrita Kalam formula — what did we find?**
+> **Finding**: The 27×7 table is wrong in principle. Formula is 1D: amritaStart = time when Moon's sidereal longitude reaches a nakshatra-specific target fraction (0.0–1.0). Di/Ra falls naturally from whether amritaStart is before/after sunset. Weekday is NOT a factor.
+> Evidence: Anuradha 57%/59%/59% across Thu/Wed/Tue; Vishaka 65%/67% across Wed/Tue.
+> **Implementation**: Bisection search over `LunarPosition.siderealLongitude()`. 27-entry `_amritFrac[]` table. 22/41 Sringeri entries validated within 15 min.
+
+**Q2. Current accuracy and what's still failing?**
+> 22/41 OK (≤15 min), 6 MISS, 13 WARN/FAIL. Root causes:
+> - Nakshatra boundary ayanamsha mismatch (Dec08/10/11) — big deltas
+> - Fraction variance (±5-10%) for nakshatras with only 1-2 data points (Revati, Chitra, Swati, Jyeshtha)
+> - Ra.Amrita before sunrise (Dec14) — convention mismatch, won't fix
+> **Decision**: Gather more data (Feb 2026 Sringeri entries) before finalizing. APK built but not installed.
+
+**Q3. Feb 2026 data — status?**
+> User confirmed they gave February 2026 data in a prior session, but it was NOT saved to a file (context compressed). Need re-paste. Target file: `docs/data/sringeri_feb2026.txt`.
