@@ -9,6 +9,12 @@ Updated after every user correction per CLAUDE.md Self-Improvement Loop.
 
 ## Calculation Accuracy
 
+### Never implement a calculation change without first validating the theory against Sringeri data
+- **Mistake**: Implemented Chaldean planetary hora system to replace the 27×7 table. Hora was theoretically motivated but NEVER spot-checked against even one Sringeri data point before writing code. Results were 65–714 minutes wrong.
+- **What should have happened**: Pick 2-3 known Sringeri entries → compute what the formula gives → if they match within ~5 min → implement. This takes 5 minutes and catches wrong theories instantly.
+- **Rule**: For ANY calculation architecture change: validate theory against ground truth FIRST. No exceptions. The "Accurate" design principle means ground truth wins over theory.
+- **Rule**: A plan being in plan mode and "approved" does NOT mean the theory is correct. Re-verify the empirical premise before implementing, especially for core calculation changes.
+
 ### Samvatsara anchor was wrong
 - **Fix**: Anchor = Visvavasu = Shaka 1947 index 38
 - **Rule**: Always anchor samvatsara to a known verified reference, not derived math
@@ -152,3 +158,31 @@ Updated after every user correction per CLAUDE.md Self-Improvement Loop.
 
 ### Screenshot naming must match content
 - **Rule**: Verify screenshot content before naming. Filename must accurately describe what's on screen.
+
+---
+
+## Sarvam OCR API (Session 13)
+
+### API v2 format (verified working)
+- Header: `api-subscription-key: <key>` (NOT `Authorization: Bearer`)
+- Create job: `{"job_parameters": {"language": "te-IN", "output_format": "md"}}`
+- Upload files: `{"job_id": "...", "files": ["page.pdf"]}` (strings, not objects)
+- Upload URL: `upload_resp['upload_urls']['page.pdf']['file_url']`
+- Download URL: `list(dl_resp['download_urls'].values())[0]['file_url']`
+- Rate limit: 429 after ~3 concurrent requests — run sequentially with 10s inter-page delay + 60s backoff retry
+
+### PDF Page Offsets (Sringeri Panchangams)
+- **2025-26**: `pdf_page = printed_page + 2` (PDF 69 = printed 67, April 2025 Chaitra)
+- **2026-27**: `pdf_page = printed_page + 3` (PDF 58 = printed 55, March 2026 Ugadi)
+- Always confirm offset from first page content before running batch
+
+### Panchangam Format Differences
+- **2025-26**: per-day HTML table, `ది.అమృత <frac> <period>॥<H>.<MM>మొ॥`
+- **2026-27**: bi-weekly compact, `అ:<period>.<H>.<MM>-<period>.<H>.<MM>`, Gregorian date in col 2
+
+### Telugu Period-to-24h Conversion (CRITICAL)
+- ఉ॥ (udayam/morning): keep as-is (5-12 AM)
+- ప॥ (pagalu/daytime): h 1-6 → +12 (PM), h 7-11 → keep (AM morning)
+- సా॥ (saayam/evening): h < 12 → +12 (17-20 PM)
+- రా॥ (raatri/night): h=12 → 0 (midnight!), h 7-11 → +12 (19-23), h 0-6 → keep (early AM)
+- తె॥ (pre-dawn): keep as-is
