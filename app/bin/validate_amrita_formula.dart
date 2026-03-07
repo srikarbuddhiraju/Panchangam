@@ -11,8 +11,8 @@ import 'package:panchangam/core/calculations/nakshatra.dart';
 import 'package:panchangam/core/calculations/julian_day.dart';
 import 'package:panchangam/core/calculations/vara.dart';
 
-const double lat = 17.3850;
-const double lng = 78.4867;
+const double lat = 12.9716; // Bengaluru
+const double lng = 77.5946;
 
 class E {
   final String lbl;
@@ -117,6 +117,8 @@ void main() {
     final times = SunriseSunset.computeNOAA(e.date, lat, lng);
     final sunrise = times[0];
     final sunset  = times[1];
+    final DateTime yesterday = e.date.subtract(const Duration(days: 1));
+    final DateTime previousSunset = SunriseSunset.computeNOAA(yesterday, lat, lng)[1];
 
     // Sringeri reference time
     final DateTime sringeri = e.off >= 0
@@ -130,7 +132,7 @@ void main() {
 
     // New formula
     final List<DateTime>? result =
-        Muhurtha.amritKalam(nkNum, vara, sunrise, sunset);
+        Muhurtha.amritKalam(nkNum, vara, sunrise, sunset, previousSunset);
 
     if (result == null) {
       print('${e.lbl.padRight(22)} ${fmt(sringeri)}    --:--   ----  MISS (null)');
