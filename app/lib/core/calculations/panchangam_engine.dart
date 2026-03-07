@@ -78,8 +78,11 @@ class PanchangamEngine {
         Muhurtha.abhijit(varaNum, sunrise, sunset);
     final List<List<DateTime>> durTimes =
         Muhurtha.durMuhurta(varaNum, sunrise, sunset);
+    final DateTime yesterday = date.subtract(const Duration(days: 1));
+    final DateTime previousSunset =
+        SunriseSunset.computeNOAA(yesterday, lat, lng)[1];
     final List<DateTime>? amritTimes =
-        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset);
+        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset, previousSunset);
 
     // ── Calendar Context ──────────────────────────────────────────────────
     final int rashiNum = Rashi.number(jdSunrise);

@@ -27,13 +27,15 @@ void main() {
     final times = SunriseSunset.computeNOAA(date, lat, lng);
     final sunrise = times[0];
     final sunset = times[1];
+    final DateTime yesterday = date.subtract(const Duration(days: 1));
+    final DateTime previousSunset = SunriseSunset.computeNOAA(yesterday, lat, lng)[1];
     final jd = JulianDay.fromIST(sunrise);
     final nNum = Nakshatra.number(jd);
     final vara = Vara.fromDateTime(date);
     final key = nNum * 10 + vara;
 
     if (!found.containsKey(key)) {
-      final amrit = Muhurtha.amritKalam(nNum, vara, sunrise, sunset);
+      final amrit = Muhurtha.amritKalam(nNum, vara, sunrise, sunset, previousSunset);
       found[key] = _Row(date, nNum, Nakshatra.namesTe[nNum - 1], vara, sunrise, sunset, amrit);
     }
   }
