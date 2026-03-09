@@ -82,7 +82,7 @@ class PanchangamEngine {
     final DateTime previousSunset =
         SunriseSunset.computeNOAA(yesterday, lat, lng)[1];
     final List<DateTime>? amritTimes =
-        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset, previousSunset);
+        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset, previousSunset, lng: lng);
 
     // ── Calendar Context ──────────────────────────────────────────────────
     final int rashiNum = Rashi.number(jdSunrise);

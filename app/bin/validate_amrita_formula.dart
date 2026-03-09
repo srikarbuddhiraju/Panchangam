@@ -99,6 +99,64 @@ final entries = [
   E('Mar17 Tue Shtbsh  Ra', DateTime(2026, 3,17), 24, 2, -218),
   E('Mar18 Wed PvBhd   Ra', DateTime(2026, 3,18), 25, 3, -194),
   E('Mar19 Thu UtBhd   Ra', DateTime(2026, 3,19), 26, 4, -358),
+  // ── April 2025 ────────────────────────────────────────────────────────────
+  // date = date of the SUNSET that starts the Ra.Amrita night
+  E('Apr01 Tue Bharni Di', DateTime(2025, 4, 1),  2, 2,  266),
+  E('Apr02 Wed Krttka Di', DateTime(2025, 4, 2),  3, 3,  306),
+  E('Apr03 Thu Rohini Di', DateTime(2025, 4, 3),  4, 4,  176),
+  E('Apr03 Thu Mrgshr Ra', DateTime(2025, 4, 3),  5, 4, -488), // 2:39 AM Apr4; SS=18:31
+  E('Apr04 Fri Mrgshr Ra', DateTime(2025, 4, 4),  5, 5, -362), // 0:33 AM Apr5 [NK boundary]
+  E('Apr06 Sun Pnrvsu Di', DateTime(2025, 4, 6),  7, 0,   71), // [NK boundary: Sringeri NK7]
+  E('Apr06 Sun Pushya Ra', DateTime(2025, 4, 6),  8, 0, -530), // 3:21 AM Apr7; SS=18:31
+  E('Apr08 Tue Ashlsh Di', DateTime(2025, 4, 8),  9, 2,  144),
+  E('Apr09 Wed Magha  Di', DateTime(2025, 4, 9), 10, 3,  152),
+  E('Apr09 Wed Magha  Ra', DateTime(2025, 4, 9), 10, 3, -682), // 5:53 AM Apr10
+  E('Apr11 Fri UtPhg  Di', DateTime(2025, 4,11), 12, 5,   40),
+  E('Apr12 Sat Hasta  Di', DateTime(2025, 4,12), 13, 6,  250),
+  E('Apr13 Sun Chitra Di', DateTime(2025, 4,13), 14, 0,  371),
+  E('Apr14 Mon Swati  Di', DateTime(2025, 4,14), 15, 1,  368),
+  E('Apr15 Tue Vishka Di', DateTime(2025, 4,15), 16, 2,  523),
+  E('Apr17 Thu Jystha Ra', DateTime(2025, 4,17), 18, 4,  -46), // 19:18 same evening
+  E('Apr18 Fri Jystha Ra', DateTime(2025, 4,18), 18, 5, -300), // 23:32 same night
+  E('Apr19 Sat Mula   Ra', DateTime(2025, 4,19), 19, 6, -468), // 2:20 AM Apr20
+  E('Apr20 Sun PvAsh  Ra', DateTime(2025, 4,20), 20, 0, -407), // 1:19 AM Apr21
+  E('Apr21 Mon UtAsh  Ra', DateTime(2025, 4,21), 21, 1, -175), // 21:28 same night
+  E('Apr22 Tue Shrvan Ra', DateTime(2025, 4,22), 22, 2, -161), // 21:14 same night
+  E('Apr23 Wed Dhnsth Ra', DateTime(2025, 4,23), 23, 3, -309), // 23:42 same night
+  E('Apr24 Thu Shtbsh Ra', DateTime(2025, 4,24), 24, 4, -202), // 21:55 same night
+  E('Apr25 Fri PvBhd  Ra', DateTime(2025, 4,25), 25, 5, -304), // 23:37 same night
+  E('Apr26 Sat UtBhd  Ra', DateTime(2025, 4,26), 26, 6, -346), // 0:19 AM Apr27
+  E('Apr27 Sun Ashwni Di', DateTime(2025, 4,27),  1, 0,  733), // 18:13; SS=18:33 → Di
+  E('Apr28 Mon Bharni Ra', DateTime(2025, 4,28),  2, 1,  -12), // 18:46; SS=18:34
+  E('Apr29 Tue Krttka Ra', DateTime(2025, 4,29),  3, 2,  -50), // 19:24; SS=18:34
+  E('Apr30 Wed Rohini Di', DateTime(2025, 4,30),  4, 3,  673), // 17:12; SR=05:59
+  // ── August 2025 ───────────────────────────────────────────────────────────
+  E('Aug01 Fri Swati  Di', DateTime(2025, 8, 1), 15, 5,  677),
+  E('Aug02 Sat Vishka Di', DateTime(2025, 8, 2), 16, 6,  314),
+  E('Aug03 Sun Vishka Ra', DateTime(2025, 8, 3), 16, 0, -121), // 20:46 same evening
+  E('Aug04 Mon Anrdha Ra', DateTime(2025, 8, 3), 17, 0, -371), // 0:54 AM Aug4; date=Aug03
+  E('Aug05 Tue Jystha Ra', DateTime(2025, 8, 4), 18, 1, -649), // 5:32 AM Aug5; date=Aug04
+  E('Aug06 Wed Mula   Di', DateTime(2025, 8, 6), 19, 3,  272),
+  E('Aug07 Thu PvAsh  Ra', DateTime(2025, 8, 6), 20, 3, -483), // 2:39 AM Aug7; date=Aug06
+  E('Aug08 Fri UtAsh  Di', DateTime(2025, 8, 8), 21, 5,  127),
+  E('Aug09 Sat Shrvan Ra', DateTime(2025, 8, 8), 22, 5, -613), // 4:56 AM Aug9; date=Aug08
+  E('Aug11 Mon Shtbsh Di', DateTime(2025, 8,11), 24, 1,  103),
+  E('Aug12 Tue PvBhd  Ra', DateTime(2025, 8,12), 25, 2, -270), // 23:12 same night
+  E('Aug14 Thu Revati Di', DateTime(2025, 8,14), 27, 4,  187),
+  E('Aug15 Fri Ashwni Ra', DateTime(2025, 8,14),  1, 4, -546), // 3:48 AM Aug15; date=Aug14
+  E('Aug16 Sat Krttka Di', DateTime(2025, 8,16),  3, 6,  167),
+  E('Aug17 Sun Rohini Ra', DateTime(2025, 8,16),  4, 6, -441), // 2:01 AM Aug17; date=Aug16
+  E('Aug18 Mon Mrgshr Ra', DateTime(2025, 8,18),  5, 1,  -39), // 19:18 same evening
+  E('Aug19 Tue Ardra  Di', DateTime(2025, 8,19),  6, 2,  646),
+  E('Aug20 Wed Pnrvsu Ra', DateTime(2025, 8,20),  7, 3, -275), // 23:12 same night
+  E('Aug21 Thu Pushya Ra', DateTime(2025, 8,21),  8, 4,   -8), // 18:45; SS=18:37
+  E('Aug22 Fri Ashlsh Ra', DateTime(2025, 8,22),  9, 5, -285), // 23:21 same night
+  E('Aug23 Sat Magha  Ra', DateTime(2025, 8,23), 10, 6, -259), // 22:55 same night
+  E('Aug24 Sun PvPhg  Ra', DateTime(2025, 8,24), 11, 0,  -61), // 19:36 same evening
+  E('Aug25 Mon UtPhg  Ra', DateTime(2025, 8,25), 12, 1, -303), // 23:37 same night
+  E('Aug26 Tue Hasta  Di', DateTime(2025, 8,26), 13, 2,  552),
+  E('Aug27 Wed Chitra Ra', DateTime(2025, 8,26), 14, 2, -370), // 0:43 AM Aug27; date=Aug26
+  E('Aug28 Thu Chitra Ra', DateTime(2025, 8,28), 14, 4,  -13), // 18:46; SS=18:33
 ];
 
 String fmt(DateTime dt) =>

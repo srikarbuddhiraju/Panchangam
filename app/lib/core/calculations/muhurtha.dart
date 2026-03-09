@@ -7,6 +7,7 @@ library;
 import 'package:panchangam/core/calculations/julian_day.dart';
 import 'package:panchangam/core/calculations/lunar_position.dart';
 import 'package:panchangam/core/calculations/nakshatra.dart';
+import 'package:panchangam/core/data/amrita_lookup.dart';
 
 class Muhurtha {
   Muhurtha._();
@@ -152,8 +153,32 @@ class Muhurtha {
     int vara,            // retained for API compatibility, not used in formula
     DateTime sunrise,
     DateTime sunset,
-    DateTime previousSunset,
-  ) {
+    DateTime previousSunset, {
+    double lng = 80.5, // longitude for deshantar correction; default = Kondavidu
+  }) {
+    // ── Sringeri 2026-27 lookup (highest accuracy) ────────────────────────────
+    // Lookup times are from Sringeri Panchangam calculated for Kondavidu (80.5°E).
+    // Apply deshantar (regional) correction: (lng − 80.5) × 4 minutes.
+    // Source: దేశాంతర సంస్కార నిర్ణయము table, Sringeri Panchangam p.66.
+    final DateTime dateOnly = DateTime(sunrise.year, sunrise.month, sunrise.day);
+    if (!dateOnly.isBefore(AmritaLookup.rangeStart) &&
+        !dateOnly.isAfter(AmritaLookup.rangeEnd)) {
+      final (int, int)? entry = AmritaLookup.lookup(dateOnly);
+      if (entry != null) {
+        // Exact Sringeri time found — apply deshantar correction and return.
+        final (int h, int m) = entry;
+        final int correctionMinutes = ((lng - 80.5) * 4).round();
+        final DateTime amritStart =
+            DateTime(sunrise.year, sunrise.month, sunrise.day, h, m)
+                .add(Duration(minutes: correctionMinutes));
+        return [amritStart, amritStart.add(const Duration(minutes: 96))];
+      }
+      // Date is within our data range but not in the table.
+      // This can mean either "no amrita that day" (confirmed by Sringeri) or
+      // "data gap" (OCR not available for this period). Fall through to formula.
+    }
+
+    // ── Formula fallback for out-of-range dates ───────────────────────────────
     final double jdSunrise = JulianDay.fromIST(sunrise);
 
     // Try up to 2 nakshatras: sunrise nakshatra, then the one after transition.
