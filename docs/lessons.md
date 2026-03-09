@@ -161,6 +161,20 @@ Updated after every user correction per CLAUDE.md Self-Improvement Loop.
 
 ---
 
+## Amrita Kalam Calibration (Sessions 18–19)
+
+### Sringeri uses Drik Moon, not Surya Siddhanta Moon
+- **Mistake**: Session 18 concluded Sringeri uses SS Moon because PDF title says "Surya Siddhanta Panchangam"
+- **Correction**: SS Moon is ~25° behind Drik Moon. Sringeri's nakshatra labels match Drik Moon in ~111/116 entries. SS Moon matches only ~5.
+- **Rule**: "Surya Siddhanta Panchangam" = *tradition*, not the ephemeris. Always verify empirically against published nakshatra labels.
+
+### Sringeri amrita formula cannot be derived from 124 data points with simple models
+- Tested: constant offset (0–3°), fixed fraction per (nk, vara), fixed minutes, fixed duration from nk entry, ghatika scaling — ALL failed.
+- Fraction spread for same (nk, vara) across months: 91–1400 min regardless of Moon model.
+- **Rule**: Stop trying new analytical approaches with the same data. Need: (a) actual formula text, or (b) full-year OCR lookup table.
+
+---
+
 ## Sarvam OCR API (Session 13)
 
 ### API v2 format (verified working)
