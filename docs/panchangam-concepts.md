@@ -1,4 +1,9 @@
-# Panchangam — Complete Reference & Calculation Guide
+# Panchangam — Complete Reference Guide
+
+## Primary Sources
+- *Panchangam Calculations* — archive.org/details/PanchangamCalculations (reference book with formulae)
+- *Astronomical Algorithms* — Jean Meeus, 2nd ed. (Sun/Moon position algorithms)
+- Sringeri Suvarnamukhya Panchangam (ground truth for Amrita Kalam, eclipse times)
 
 Panchangam (పంచాంగం) = "Pancha" (five) + "Anga" (limb).
 Five elements calculated for every single day, specific to a geographic location.
@@ -133,7 +138,8 @@ Pada (quarter) = floor((Moon longitude mod 13.3333°) / 3.3333°) + 1
 ```
 Each Nakshatra has 4 Padas (quarters) of 3°20' each = 108 Padas total (sacred number).
 
-#### The 27 Nakshatras
+#### The 27 Nakshatras — Properties
+
 | # | Telugu | Sanskrit | Star(s) | Ruling Planet | Deity | Quality |
 |---|--------|----------|---------|---------------|-------|---------|
 | 1 | అశ్వని | Ashwini | β Arietis | Ketu | Ashwini Kumaras | Auspicious |
@@ -164,6 +170,62 @@ Each Nakshatra has 4 Padas (quarters) of 3°20' each = 108 Padas total (sacred n
 | 26 | ఉత్తరాభాద్ర | Uttarabhadra | γ Pegasi | Shani | Ahir Budhnya | Auspicious |
 | 27 | రేవతి | Revati | ζ Piscium | Budha | Pushan | Auspicious |
 
+#### Nakshatra Absolute Zodiac Spans
+
+Source: *Panchangam Calculations* (archive.org/details/PanchangamCalculations), p.25+
+
+Each Nakshatra spans exactly 13°20' of the sidereal zodiac. Nine Nakshatras straddle two Rasis.
+Format: degrees°-minutes' in the sidereal (Nirayana) frame.
+
+| # | Name | Rasi | Span in Rasi | Absolute Span |
+|---|------|------|-------------|---------------|
+| 1 | Ashwini | Mesham | 00-00 → 13-20 | **000-00 → 013-20** |
+| 2 | Bharani | Mesham | 13-20 → 26-40 | **013-20 → 026-40** |
+| 3 | Krittika | Mesham/Vrishabham | 26-40→30-00 / 00-00→10-00 | **026-40 → 040-00** |
+| 4 | Rohini | Vrishabham | 10-00 → 23-20 | **040-00 → 053-20** |
+| 5 | Mrigasira | Vrishabham/Mithunam | 23-20→30-00 / 00-00→06-40 | **053-20 → 066-40** |
+| 6 | Ardra | Mithunam | 06-40 → 20-00 | **066-40 → 080-00** |
+| 7 | Punarvasu | Mithunam/Karkatakam | 20-00→30-00 / 00-00→03-20 | **080-00 → 093-20** |
+| 8 | Pushyami | Karkatakam | 03-20 → 16-40 | **093-20 → 106-40** |
+| 9 | Ashlesha | Karkatakam | 16-40 → 30-00 | **106-40 → 120-00** |
+| 10 | Makha | Simham | 00-00 → 13-20 | **120-00 → 133-20** |
+| 11 | Pubba | Simham | 13-20 → 26-40 | **133-20 → 146-40** |
+| 12 | Uttara | Simham/Kanya | 26-40→30-00 / 00-00→10-00 | **146-40 → 160-00** |
+| 13 | Hasta | Kanya | 10-00 → 23-20 | **160-00 → 173-20** |
+| 14 | Chitra | Kanya/Thula | 23-20→30-00 / 00-00→06-40 | **173-20 → 186-40** |
+| 15 | Swati | Thula | 06-40 → 20-00 | **186-40 → 200-00** |
+| 16 | Vishakha | Thula/Vrischikam | 20-00→30-00 / 00-00→03-20 | **200-00 → 213-20** |
+| 17 | Anuradha | Vrischikam | 03-20 → 16-40 | **213-20 → 226-40** |
+| 18 | Jyeshtha | Vrischikam | 16-40 → 30-00 | **226-40 → 240-00** |
+| 19 | Moola | Dhanus | 00-00 → 13-20 | **240-00 → 253-20** |
+| 20 | Purvashadha | Dhanus | 13-20 → 26-40 | **253-20 → 266-40** |
+| 21 | Uttarashadha | Dhanus/Makaram | 26-40→30-00 / 00-00→10-00 | **266-40 → 280-00** |
+| 22 | Shravana | Makaram | 10-00 → 23-20 | **280-00 → 293-20** |
+| 23 | Dhanishtha | Makaram/Kumbham | 23-20→30-00 / 00-00→06-40 | **293-20 → 306-40** |
+| 24 | Shatabhisha | Kumbham | 06-40 → 20-00 | **306-40 → 320-00** |
+| 25 | Purvabhadra | Kumbham/Meenam | 20-00→30-00 / 00-00→03-20 | **320-00 → 333-20** |
+| 26 | Uttarabhadra | Meenam | 03-20 → 16-40 | **333-20 → 346-40** |
+| 27 | Revati | Meenam | 16-40 → 30-00 | **346-40 → 360-00** |
+
+#### Nakshatra Ending Time Formula
+
+```
+RD  = Remaining Degrees = nakshatra_end_longitude − moon_current_longitude
+DMC = Daily Motion of Chandra (degrees/day, ~13.17° average)
+
+Hours until nakshatra ends = (RD / DMC) × 24
+```
+
+**Example**: Moon at 353°41'52'' (Revati ends at 360°).
+RD = 6°18'8'' = 6.302°, DMC = 13°9' = 13.15°/day → ends in 11.50 hours.
+
+**Critical note on Ayanamsa**:
+- Nirayana (sidereal) Moon longitude = Sayana (tropical) longitude − Ayanamsa
+- Different Ayanamsa values → different Nirayana Moon positions → different ending times
+- **Nakshatra and Yoga ending times depend on the Ayanamsa used**
+- **Tithi ending times do NOT depend on Ayanamsa** (Tithi = relative Moon−Sun distance; absolute positions cancel)
+- Our app uses **Lahiri Ayanamsa** (official Government of India standard)
+
 #### Nakshatra Gana (Nature)
 - **Deva Gana** (Divine): Ashwini, Mrigashira, Punarvasu, Pushyami, Hasta, Swati, Anuradha, Shravana, Revati
 - **Manushya Gana** (Human): Bharani, Rohini, Ardra, Pubba, Uttara, Purvashadha, Uttarashadha, Purvabhadra, Uttarabhadra
@@ -185,9 +247,19 @@ It measures the combined daily motion of both planets.
 
 #### Calculation
 ```
-Yoga number = floor((Sun longitude + Moon longitude) mod 360 / 13.3333°) + 1
+// Step 1: sum longitudes
+sum = (Sun sidereal longitude + Moon sidereal longitude) mod 360
+// Step 2: if sum > 360, subtract 360 (already handled by mod)
+// Step 3: divide by 13°20' (= 13.333...)
+Yoga number = floor(sum / 13.3333°) + 1
+
+// Ending time (same formula as Nakshatra):
+RD  = yoga_end_longitude − sum_current
+DMC = daily motion of (Sun + Moon) combined
+Hours until yoga ends = (RD / DMC) × 24
 ```
 Like Nakshatra, there are 27 Yogas of 13°20' each.
+**Yoga ending time also depends on Ayanamsa used** (same reason as Nakshatra — absolute positions involved).
 
 #### The 27 Yogas
 | # | Name | Telugu | Nature |
@@ -387,11 +459,26 @@ Exact timings vary by weekday based on traditional calculations.
 
 ---
 
-### AMRIT KALAM (అమృత కాలం)
+### AMRIT KALAM (అమృత కాలం) / AMRITA GADIYAS
 
 Auspicious window derived from the Nakshatra of the day.
 "Amrit" = nectar — anything started now is considered to flourish.
-Duration and timing varies; calculated from the Nakshatra's start time.
+
+**Formula** (Karanam Ramakumar, *Panchangam Calculations*):
+```
+amrita_start    = nkStartTime + (X / 24) × nkDuration
+amrita_duration = nkDuration / 15        // same as nkDuration × 1.6/24
+```
+Where `nkStartTime` = when Moon enters the Nakshatra; `nkDuration` = total Nakshatra duration;
+`X` = Nakshatra-specific constant (see `calculation-methods.md` for full X table).
+
+Duration is proportional to Nakshatra duration (~76–104 min, averaging ~96 min).
+
+### VARJYAM (వర్జ్యం / త్యాజ్యం)
+
+The inauspicious counterpart to Amrit Kalam, calculated the same way with a different X value.
+Same duration as Amrit Kalam. Activities should be avoided during Varjyam.
+Both Amrit Kalam and Varjyam X values are in the table in `calculation-methods.md`.
 
 ---
 
@@ -660,7 +747,6 @@ Return the date(s) for the user's location (sunrise-to-sunrise)
 | — Engineeru Bathukamma | ఇంజనీరు బతుకమ్మ | Bhadrapada Krishna Ashtami | First day |
 | — Saddula Bathukamma | సద్దుల బతుకమ్మ | Ashvayuja Shukla Navami | Final grand day — immersion in tanks/lakes |
 | **Sammakka Saralamma Jatara** | సమ్మక్క సారలమ్మ జాతర | Magha Shukla Purnima (biennial — once every 2 years) | World's largest tribal fair. Medaram, Jayashankar Bhupalpally. Lakhs of devotees. Goddess Sammakka and Saralamma worshipped. |
-| **Peerla Panduga** | పీర్ల పండుగ | Muharram (Islamic calendar) | Unique Telangana tradition — Hindus and Muslims celebrate together. Shows syncretic culture. |
 
 ---
 
