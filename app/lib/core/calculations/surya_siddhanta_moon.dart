@@ -1,15 +1,13 @@
 import 'dart:math' as math;
 import 'julian_day.dart';
-import 'ayanamsa.dart';
 
 /// Moon position using Surya Siddhanta planetary constants.
 ///
-/// The Surya Siddhanta is the classical Indian astronomical text used by
-/// traditional Panchangam makers (including Sringeri "Surya Siddhanta
-/// Panchangam"). Its Moon position differs from the modern Drik (Meeus/VSOP87)
-/// primarily because it uses a smaller equation-of-center (~5.02° max vs
-/// Drik ~6.29° max), causing Moon longitudes that lag Drik by ~1–2° in the
-/// current era.
+/// Surya Siddhanta is the classical Indian astronomical text used by
+/// traditional Panchangam makers including Sringeri. It computes
+/// directly in the sidereal (nirayana) frame — 0° Aries is fixed to
+/// stellar positions, not the vernal equinox. NO ayanamsha subtraction
+/// is needed: the output is already nirayana by construction.
 ///
 /// Constants (Surya Siddhanta, Chapter 1 — Revolutions of Planets):
 ///   Epoch:    Kali Yuga start, JD 588465.5 (Feb 17, 3102 BCE, proleptic Julian)
@@ -17,11 +15,9 @@ import 'ayanamsa.dart';
 ///   Moon revolutions per Mahayuga:        57,753,336
 ///   Moon apogee (mandocca) revolutions:      488,219
 ///
-/// Equation of center (Manda correction, Chapter 2):
-///   Epicycle radius: 31.5 parts (varies 31–32; mean 31.5 out of 360)
-///   correction = arcsin(31.5 / 360 × sin(anomaly))  [in degrees]
-///
-/// Ayanamsha: Lahiri (same as used elsewhere in the app).
+/// Manda correction (Chapter 2):
+///   Epicycle radius: 31.5 parts out of 360
+///   correction = arcsin(31.5 / 360 × sin(anomaly))  → max ~5.05°
 class SuryaSiddhantaMoon {
   SuryaSiddhantaMoon._();
 
@@ -57,13 +53,17 @@ class SuryaSiddhantaMoon {
 
   /// Moon's sidereal longitude in degrees for a given Julian Day (UT).
   ///
+  /// Surya Siddhanta computes directly in sidereal (nirayana) frame —
+  /// 0° Aries is fixed to stellar background, NOT the vernal equinox.
+  /// No ayanamsha subtraction is needed or correct here.
+  ///
   /// Drop-in replacement for [LunarPosition.siderealLongitude].
   static double siderealLongitude(double jd) {
-    return Ayanamsa.toSidereal(tropicalLongitude(jd), jd);
+    return _trueLongitude(jd);
   }
 
-  /// Moon's tropical longitude in degrees (Surya Siddhanta, before ayanamsha).
-  static double tropicalLongitude(double jd) {
+  /// Moon's true longitude in SS nirayana frame (mean + manda correction).
+  static double _trueLongitude(double jd) {
     final double elapsed = jd - _epochJD; // Kali days from epoch
 
     // Mean Moon longitude

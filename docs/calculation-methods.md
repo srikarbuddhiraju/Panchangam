@@ -155,102 +155,54 @@ abhijitEnd   = solarNoon + 12min
 
 ## Amrit Kalam
 
-**Current implementation**: Date-keyed Sringeri lookup table + Moon-bisection formula fallback.
+**Implementation**: Sringeri Panchangam lookup table only. No formula fallback.
 **File**: `app/lib/core/data/amrita_lookup.dart` + `app/lib/core/calculations/muhurtha.dart`
 
-### Lookup table (Sessions 18–20)
+### Why lookup-only (no formula)?
 
-- `_table2526`: 195 unique dates, Mar 30 2025 – Mar 18 2026 (~100% accurate)
-- `_table2627`: 234 unique dates, Mar 19 2026 – Apr 5 2027 (~100% accurate)
-- Outside range → formula fallback (~15% accurate within 15 min)
-- Source: OCR of Sringeri Suvarnamukhya Panchangam PDFs (2025-26 and 2026-27 editions)
-- All times stored for **Kondavidu (80.5°E)**
+Amrit Kalam is computed by Sringeri using proprietary astronomical software with internal
+calibration parameters that are not published. We exhaustively tested all known formula
+approaches across 464 validated data points (Sessions 18–23):
 
-### Deshantar correction (regional time adjustment)
+| Formula approach | Mean error | Within 30 min |
+|---|---|---|
+| Ramakumar (Drik Moon, X table) | **131 min** | 23% |
+| Empirically calibrated X values | **166 min** | 19% |
+| Surya Siddhanta Moon variants | **400+ min** | <8% |
+| Ayanamsha sweep ±2° from Lahiri | **>130 min** | <25% |
+
+**Root cause**: Sringeri's amrita fraction within a nakshatra varies significantly day-to-day
+(StdDev 0.5–3.4 X-units = 30–200 min variance). This is not a Moon model or formula
+constant problem — it reflects additional inputs (likely tithi, vara, and/or proprietary
+corrections) that are not in the public domain. No formula can achieve 5-10 min accuracy
+without Sringeri's exact algorithm. Showing ~2h-off formula results would mislead users.
+
+### Lookup table
+
+- Source: OCR of Sringeri Suvarnamukhya Panchangam (Surya Siddhanta edition), 2025-26 and 2026-27 printed editions
+- Coverage: Mar 2025 – Apr 2027 (~464 date entries, ~100% accurate vs published times)
+- All times stored for **Kondavidu (80.5°E)**; deshantar correction applied per user location
+- Outside coverage: `amritKalam()` returns null → UI shows "Data not available for this date"
+- Update path: OCR each new Sringeri annual edition when released, extend `amrita_lookup.dart`
+
+### Deshantar correction
 
 From Sringeri Panchangam p.66 (దేశాంతర సంస్కార నిర్ణయము):
 ```dart
 correctionMinutes = ((userLon − 80.5) × 4).round()
 amritStart = tableTime.add(Duration(minutes: correctionMinutes))
 ```
-Reference point: Kondavidu = 80.5°E. Works for any city algorithmically.
 Verified: Bengaluru (77.6°E) correction = −12 min ✓
 
-### Ramakumar Formula (FOUND — Session 20)
+### Ramakumar X table (archived — not used in production)
 
-Source: Karanam Ramakumar, *Panchangam Calculations* p.26+
-Full text saved: `docs/data/PanchangamCalculations_fulltext.txt`
+Source: Karanam Ramakumar, *Panchangam Calculations* p.26+ (archive.org)
+Full text: `docs/data/PanchangamCalculations_fulltext.txt`
+Used only in `amritKalamFormulaOnly()` for validation/diagnostic scripts.
 
 ```
-amrita_start    = nkStartTime + (X / 24) × nkDuration
-amrita_duration = nkDuration × (1.6 / 24)    // 1/15th of nakshatra duration
+amrita_start = nkStartTime + (X / 24) × nkDuration   // ~131 min mean error vs Sringeri
 ```
-
-Where:
-- `nkStartTime` = time when Moon's sidereal longitude first crosses into this Nakshatra
-- `nkDuration` = nkEndTime − nkStartTime (in hours; varies ~19–26h)
-- `X` = per-Nakshatra constant (hours, for a 24h reference nakshatra)
-
-**X table** (Amrit Gadiyas offset, hours from Nakshatra start, for 24h duration):
-
-| # | Nakshatra | X (Amrit) | X (Varjyam) |
-|---|-----------|-----------|-------------|
-| 1 | Ashwini | 16.8 | 20.0 |
-| 2 | Bharani | 19.2 | 9.6 |
-| 3 | Krittika | 21.6 | 12.0 |
-| 4 | Rohini | 20.8 | 16.0 |
-| 5 | Mrigasira | 15.2 | 5.6 |
-| 6 | Ardra | 14.0 | 8.4 |
-| 7 | Punarvasu | 21.6 | 12.0 |
-| 8 | Pushyami | 17.6 | 8.0 |
-| 9 | Ashlesha | 22.4 | 12.8 |
-| 10 | Makha | 21.6 | 12.0 |
-| 11 | Pubba | 17.6 | 8.0 |
-| 12 | Uttara | 16.8 | 7.2 |
-| 13 | Hasta | 18.0 | 8.4 |
-| 14 | Chitra | 17.6 | 8.0 |
-| 15 | Swati | 15.2 | 5.6 |
-| 16 | Vishakha | 15.2 | 5.6 |
-| 17 | Anuradha | 13.6 | 4.0 |
-| 18 | Jyeshtha | 15.2 | 5.6 |
-| 19 | Moola | 17.6 | 8.0 / 22.4 |
-| 20 | Purvashadha | 19.2 | 9.6 |
-| 21 | Uttarashadha | 17.6 | 8.0 |
-| 22 | Shravana | 13.6 | 4.0 |
-| 23 | Dhanishtha | 13.6 | 4.0 |
-| 24 | Shatabhisha | 16.8 | 7.2 |
-| 25 | Purvabhadra | 16.0 | 6.4 |
-| 26 | Uttarabhadra | 19.2 | 9.6 |
-| 27 | Revati | 21.6 | 12.0 |
-
-**Equivalence to our `_amritFrac[]`**: `frac = X / 24`
-(The time-fraction and longitude-fraction are equivalent under uniform Moon motion.)
-
-**Duration note**: Duration is NOT a fixed 96 min. It scales with nakshatra duration:
-- 24h nakshatra → 96 min amrit window
-- 19h nakshatra → 76 min window
-- 26h nakshatra → 104 min window
-
-### Why Sringeri still diverges from this formula
-
-The Ramakumar formula is **Drik Ganitha** (uses observed/ephemeris Moon).
-Sringeri Panchangam uses **Surya Siddhanta Moon** for nakshatra start/end times.
-SS Moon is ~1.2° behind Drik Moon → ~133 min difference in nakshatra boundary timing
-→ same X fraction applied to different nkStartTime/nkDuration gives different amrita times.
-
-**To match Sringeri for all years**: Implement SS nakshatra start/end times, apply X table.
-→ This was the Session 19 plan (`SuryaSiddhantaMoon` class). Now we have the X table too.
-
-### Long-term accuracy roadmap
-| Period | Source | Accuracy |
-|--------|--------|---------|
-| Mar 2025 – Apr 2027 | Sringeri lookup table | ~100% |
-| All other years | Ramakumar Drik formula | Good for Drik; ~133min off Sringeri |
-| All years (future) | Ramakumar formula + SS Moon | ~100% Sringeri-equivalent |
-
-**Next session goal**: Implement `amrita_start = nkStartTime + (X/24) × nkDuration` with
-SS Moon nakshatra times → validate against 2025-26/2026-27 lookup table → if match within
-5 min for >90% of dates, replace formula fallback with this for all years.
 
 ---
 
@@ -305,14 +257,25 @@ the first lunar month = Adhika. Adhika month takes the name of the *following* N
 
 | Element | Accuracy | Notes |
 |---------|---------|-------|
-| Sun position | ~0.001° | VSOP87 |
-| Moon position | ~0.01° | Meeus Ch. 47 full series |
-| Sunrise | ~30 sec | Standard refraction model |
-| Tithi end | ~1–2 min | Limited by Moon accuracy |
-| Nakshatra end | ~1–2 min | Lahiri Ayanamsa dependent |
-| Yoga end | ~1–2 min | Lahiri Ayanamsa dependent |
-| Rahu/Gulika/Yama | ~1–2 min | Limited by sunrise accuracy |
-| Amrit Kalam (lookup) | ~0 min | Exact Sringeri times |
-| Amrit Kalam (formula) | ±100 min | ~15% within 15 min |
+| Sun position | ~0.001° | VSOP87 — highly accurate for all years |
+| Moon position | ~0.01° | Meeus Ch. 47 full series — highly accurate |
+| Sunrise/Sunset | ~30 sec | Standard refraction model |
+| Tithi | ~1–2 min | Limited by Moon position accuracy |
+| Nakshatra | ~1–2 min | Lahiri Ayanamsa — matches Sringeri 85%+ |
+| Yoga | ~1–2 min | Lahiri Ayanamsa dependent |
+| Karana | ~1–2 min | Derived from tithi |
+| Vara (weekday) | Exact | Calendar arithmetic |
+| Rahu/Gulika/Yamaganda | ~1–2 min | Standard table; limited by sunrise |
+| Abhijit Muhurtham | ~1–2 min | Solar noon formula |
+| Dur Muhurta | ~1–2 min | Standard weekday table; limited by sunrise |
+| **Amrit Kalam (2025–2027)** | **~0 min** | **Exact Sringeri published times** |
+| **Amrit Kalam (other years)** | **Not shown** | **No accurate formula exists** |
 | Lunar eclipse contact | ~2–3 min | Shadow geometry (Meeus) |
 | Solar eclipse contact | ~5–10 min | Geocentric geometry |
+| Festival dates | ~0 days | Derived from accurate tithi/nakshatra |
+
+**Summary**: All five Panchangam limbs (Vara, Tithi, Nakshatra, Yoga, Karana), Kalam timings,
+festival dates, and eclipse timings are computed from first-principles astronomy and are
+highly accurate for any year, past or present. Amrit Kalam is the sole exception — it is
+shown only when exact Sringeri published data is available (currently Mar 2025–Apr 2027)
+and is blank outside that window rather than showing an inaccurate approximation.

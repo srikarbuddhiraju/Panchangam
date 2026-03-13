@@ -18,6 +18,12 @@ class AmritaLookup {
   /// Latest date covered by any lookup table.
   static final DateTime rangeEnd = DateTime(2027, 4, 5);
 
+  /// All entries from both lookup tables merged.
+  /// Key: 'YYYY-MM-DD', Value: (hour, minute) IST for Kondavidu.
+  /// Used by validation scripts to compare formula vs ground truth.
+  static Map<String, (int, int)> get allEntries =>
+      {..._table2526, ..._table2627};
+
   /// Returns (hour, minute) in IST for the amrit kalam start on [date],
   /// or null if no amrita kalam that day per Sringeri Panchangam.
   ///

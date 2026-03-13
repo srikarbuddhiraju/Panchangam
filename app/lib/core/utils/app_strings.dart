@@ -78,4 +78,21 @@ class S {
   static String get today => isTelugu ? 'నేడు' : 'Today';
   static String get notAvailable => isTelugu ? 'లేదు' : 'N/A';
   static String get notApplicable => isTelugu ? 'వర్తించదు' : 'Not applicable';
+
+  // ── Data source / accuracy notes ─────────────────────────────────────────
+  static String get amritKalamSource =>
+      isTelugu ? 'శ్రృంగేరి పంచాంగం' : 'Sringeri Panchangam';
+  static String get amritKalamUnavailable =>
+      isTelugu ? 'ఈ తేదీకి అందుబాటులో లేదు' : 'Not available for this date';
+  static String get amritKalamWhyUnavailable => isTelugu
+      ? 'అమృత కాలం లెక్కింపుకు శ్రృంగేరి పంచాంగం నుండి వార్షిక డేటా అవసరం. '
+        'అనేక సూత్రాలు (రామకుమార్, సూర్య సిద్ధాంత చంద్రుడు, అనుభవ విలువలు) పరీక్షించాము — '
+        'అన్నీ సగటున ~2 గంటలు తప్పు వచ్చాయి. '
+        'తప్పుడు సమయాలు చూపించడం కంటే ఖాళీగా ఉంచడమే మేలు.'
+      : 'Amrit Kalam requires the annual Sringeri Panchangam data for this date. '
+        'We tested multiple formulas (Ramakumar, Surya Siddhanta Moon, empirical calibration) — '
+        'all were ~2 hours off from published times on average. '
+        'We prefer an honest gap over showing inaccurate readings.';
+  static String get amritKalamCoverage =>
+      isTelugu ? 'మార్చి 2025 – ఏప్రిల్ 2027' : 'Mar 2025 – Apr 2027';
 }
