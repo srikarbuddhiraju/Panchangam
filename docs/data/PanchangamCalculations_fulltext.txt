@@ -1,0 +1,1924 @@
+Panchangam Calculations
+Karanam Ramakumar
+Ancient sages have established the relationship between planetary
+movements in the sky and the way they have influenced the destiny of life on
+earth, besides predicting auspicious and inauspicious times that are used to
+perform various activities in daily life. The calendar that contains all these
+times is called Panchangam, which, in literal sense means five limbs. The five
+limbs of astrological significance are (1) Tithi, (2) Vaaram, (3) Karanam, (4)
+Nakshatram, and (5) Yogam. According to our Hindu Panchangam the day is
+always reckoned from sunrise on a day to next day’s sunrise whereas the
+Tithi, Nakshatram change at anytime during the 24 hours. In contrast to this,
+in the Gregorian calendar, which starts on 1st Jan and finishes on 31st Dec.,
+the day and the date changes at midnight every day.
+Usually the prevailing Nakshatram, Tithi, Karanam and Yogam on any
+day are calculated at the sunrise time of the day. Further, the ending times
+of Nakshatram, Tithi, Yogam and Karanam are also given. For calculating
+Nakshatram, Tithi, Karanam and Yogam, the exact longitudes (ecliptic
+positions) of Ravi and Chandra are needed. In addition, their daily motions
+are needed. We need precise positions of Ravi and Chandra. These are
+available from ephemeris (table of astronomical calculations). Indian
+ephemeris is published every year by Indian astronomical ephemeris.
+The Panchangam calculation requires two important heavenly bodies –
+Ravi (Sun) and Chandra (moon). Different approaches are adopted to
+calculate the positions of Ravi and Chandra in the zodiac.
+(1)
+The Vakyam is an ancient system where planetary motions are
+described in simple sentences (hence the vakya). Vakya
+Panchangam is computed based on Slokas or Vakyas handed down
+to the practitioners of this school. In addition to the Slokas, there
+are also Sutras, which help to make simple additions and
+subtractions. The Slokas and Sutras together provide the formulae
+required for the preparation of the Vakya Panchangam. Vakya
+Panchangam is Shastra based and accordingly has provisions to
+decide a ritual according to shastraas. Thus, to check on Sankashti,
+Ekadasi, Dwadasi or Pradosham and such other things for
+Anushtanam, Vakya Panchangam is sufficient. Astrologers who
+need to have as precise knowledge of planetary positions of day for
+astrological predictions, Vakya Panchangam may not be sufficient
+as there can be significant deviations between the positions of
+
+(2)
+
+(3)
+
+planets as computed by Vakya Panchangam and those calculated
+from astronomical calculations.
+Another Panchangam based on Surya Siddhantham mentions that
+one should observe the sky and make necessary corrections to
+planetary formulae (Bija Samskar) in order to make an accurate
+Panchangam. Surya Siddhantham in the older days gave more
+accurate planetary positions but subsequent users did not know
+how to apply Bija Samskar and adjust for natural changes through
+the millennium resulting in calculated planetary positions deviating
+from the actual planetary positions in the sky.
+The modern astronomical method of Drik Ganitham or Drik
+Siddhantham allows validation of the calculated planetary positions
+using rigorous mathematical equations resulting in quite precise
+positions of the planets.
+
+The longitudes of planets thus calculated are known as Sayana or
+tropical longitudes. In Hindu astrology, we use sidereal or Nirayana
+longitudes. To arrive at sidereal or Nirayana longitudes we need to have a
+knowledge of “Ayanamsa”.
+Ayanamsa
+The Earth revolves anti-clockwise around the Sun in an elliptical orbit,
+and the plane of orbit is called the plane of the ecliptic. The Earth also rotates
+anti-clockwise on its own axis. The revolution of the Earth around the Sun
+causes the succession of years while the rotation of the Earth causes the
+continuous cycles of night and day. The Earth’s axis is inclined to the pole of
+the plane of the ecliptic at 23.5°, and this is reflected in the ecliptic being
+inclined to the celestial equator (the projection of the Earth’s equator on the
+celestial sphere) at the same angle. This inclination of earth is responsible for
+change of seasons. The March and September equinoxes (when duration of
+day equals that of night) are the points where the ecliptic intersects the
+celestial equator from south to north and north to south respectively. It may
+be mentioned that along the path of ecliptic are situated all the 12 zodiac
+signs from Mesham (Aries) to Meenam (Pisces). The March equinox occurs on
+or about 21 March while the September equinox occurs on or about 23
+September every year. In ancient times, the March equinox used to coincide
+with Mesham 00 on the ecliptic. It is normal to expect that the equinoxes
+occur exactly at the same point of intersection of ecliptic and the celestial
+equator. This would be true as long as the earth has only the two types of
+motion as mentioned above (revolving around the sun and rotating on its
+
+own axis). This however is not true. It has been observed that the earth not
+only rotates but also wobbles on its axis. Due to this, the axis of the earth
+describes a conical clockwise motion and the pole describes a circle, which
+roughly takes 26000 years to complete. Due to this wobbling, the March
+equinox gets receded westward by about 50.2 seconds every year and no
+longer coincides with Mesham 00 on the ecliptic. The ancient astronomers
+were able to discern this small difference when they compared the position of
+the March equinox and 00 of Mesham against a distant star in the stellar
+background (“Sidereal” position). This phenomenon is called precession of
+the equinoxes. This westward drift is cumulative and the extent of deviation
+from the original point of time in the past when the March equinox exactly
+coincided with the 00 of Mesham in the celestial zodiac to the current time is
+termed “Ayanamsa”. Ayanamsa is a variable entity and is increasing every
+year by about 50.2 seconds.
+The precession of equinoxes results in gradual shifting of seasons over
+the years from their expected dates of arrival. For example, the March
+equinox, which is also called spring equinox indicating the onset of spring
+season, would no longer coincide with Mesham 00.
+One school of astrology namely tropical astrology addresses this by
+simply “moving” the zodiac every year by about 50.2 seconds so that the
+March equinox and Mesham 00 coincide each other. The longitudes thus
+obtained are called Tropical or “Sayana” longitudes. “Sayana” means “Sa +
+Ayana” meaning with Ayanamsa included. This is widely prevalent in West.
+Some Indian Astrologers too follow this school of Astrology.
+The Hindu Astrology is based on the fact that celestial zodiac is fixed in
+space and should not be tampered with only to suit one’s requirements.
+Instead of “moving” the zodiac, a correction to the extent of Ayanamsa is
+effected to the longitudinal positions of celestial bodies to arrive at the
+sidereal or “Nirayana” longitudes. “Nirayana” means “Ni + Ayana” meaning
+without Ayana (Ayanamsa not included).
+Thus the Astrology system that considers the fixed zodiac is called the
+Nirayana (without Ayana!) system, while the one that considers the movable
+zodiac is called the Sayana (with Ayana!) system. The Hindu system of
+astrology is known as Nirayana System because this system uses the fixed
+zodiac as reference. The Nirayana values of planetary longitudes can be
+obtained by subtracting the Ayanamsa for a given time from the Sayana
+longitudes. But unfortunately it is not known at which point of time in the
+past these two zodiacs were exactly coinciding. Due to this uncertainty there
+are many Ayanamsas being used by different practitioners of Nirayana
+astrology.
+
+In this Notes we use the following formulae to calculate Ayanamsa for
+a given date (do not get scared by the formulae!! They are easy to use):
+For the beginning of the year:
+year
+year
+year
+A =-6.92416 + 16.90709 x
+- 0.757371 x
+x
+1000
+1000 1000
+For any other date and month add the following also to get the correct
+Ayanamsa.
+date  1.1574074
+
+B=  Month-1+
+x
+30 
+1000
+
+Ayanamsa = A + B
+Let us calculate the Ayanamsa for 15-7-2009 (15th July 2009)
+We have year = 2009, month = 7 (July = 7), date = 15
+First we will calculate the value of ‘A’
+A =-6.92416 + 16.90709 x
+
+2009
+2009 2009
+- 0.757371 x
+x
+1000
+1000 1000
+
+A = -6. 92416 + 16.90709 x 2.009 – 0.757371 x 2.009 x 2.009
+A = -6.92416 + 33.96634381 – 3.056810703
+A = 23.9853731
+Now we calculate the values of ‘B’
+15  1.1574074
+
+B=  7-1+
+x
+30 
+1000
+
+B = 6.5 x 1.1574074/1000
+
+B= ( 6+0.5) x
+
+1.1574074
+1000
+
+= 7.5231481/1000
+
+B = 0.0075231481
+Ayanamsa = A + B = 23.9853731 + 0.0075231481 = 23.9928962
+We get the value of Ayanamsa in degrees. Converting it into degrees,
+minutes and seconds we get
+23.9972165= 23 degrees + 0.9928962 x 60 minutes
+That is 23 degrees and 59.57377 minutes
+That is 23 degrees, 59 minutes and 0.57377 x 60 seconds
+That is 23 degrees, 59 minutes and 34 seconds.
+It is represented as 230-59’-34’’ or simply 23-59-34
+
+This Ayanamsa value is very close to Lahiri Ayanamsa or Chtrapaksha
+Ayanamsa. The Government of India Calendar’s reform committee
+recommends Chitrapaksha Ayanamsa.
+(Subtracting 6 minutes from Chitrapaksha Ayanamsa we get KP
+Krishnamurthy Ayanamsa (KP Ayanamsa). So KP Ayanamsa = 23 – 53 – 34)
+Please note that if we use Indian Astronomical ephemeris to get the
+longitudinal positions of Ravi and Chandra at 5:30 AM IST, there is no need
+to use Ayanamsa. The positions are already corrected for Ayanamsa. The
+Ayanamsa subtracted longitudes are called Nirayana or sidereal longitudes.
+We always use Nirayana longitudes in our Panchangam.
+But if we use Swiss ephemeris to get the longitudinal positions of Ravi
+and Chandra at 0-0 hours Universal Time (UT) which corresponds to 5:30
+AM IST, we have to subtract Ayanamsa for the day to get the Nirayana or
+sidereal longitudes of Ravi and Chandra. Let us compare the two ephemeris
+and calculate the Nirayana longitudes of Ravi and Chandra.
+Nirayana Longitude of Sun and Moon at 5h 29m IST
+
+Date
+
+Julian Date
+
+1-7-2009
+2-7-2009
+3-7-2009
+4-7-2009
+5-7-2009
+6-7-2009
+7-7-2009
+8-7-2009
+9-7-2009
+10-7-2009
+11-7-2009
+12-7-2009
+13-7-2009
+14-7-2009
+15-7-2009
+16-7-2009
+17-7-2009
+18-7-2009
+19-7-2009
+20-7-2009
+
+2455013.5
+2455014.5
+2455015.5
+2455016.5
+2455017.5
+2455018.5
+2455019.5
+2455020.5
+2455021.5
+2455022.5
+2455023.5
+2455024.5
+2455025.5
+2455026.5
+2455027.5
+2455028.5
+2455029.5
+2455030.5
+2455031.5
+2455032.5
+
+Longitude
+Sun
+Moon
+o
+o
+75 19' 1''.1744
+183 42' 13''.494
+76o 16' 13''.0621 196o 21' 33''.1112
+77o 13' 24''.6163 208o 45' 56''.3341
+78o 10' 35''.9018 220o 58' 13''.0836
+79o 7' 47''.0174
+233o 1' 1''.0454
+80o 4' 58''.011
+244 o 56' 44''.5314
+o
+81 2' 8''.9737
+256 o 47' 37''.8818
+81o 59' 19''.9913 268 o 35' 51''.8045
+82o 56' 31''.1381 280 o 23' 41''.1422
+83o 53' 42''.4868 292 o 13' 32''.2825
+84o 50' 54''.1305 304 o 8' 9''.3299
+85o 48' 6''.1239
+316 o 10' 37''.4465
+o
+86 45' 18''.5601 328 o 24' 22''.3351
+87o 42' 31''.5045 340 o 53' 4''.3885
+88o 39' 44''.991
+353 o 40' 26''.2796
+o
+89 36' 59''.0932 6 o 49' 52''.0513
+90o 34' 13''.8337 20 o 23' 57''.993
+91o 31' 29''.2568 34 o 23' 56''.2704
+92o 28' 45''.3746 48 o 48' 57''.3403
+93o 26' 2''.1527
+63 o 35' 41''.2694
+
+Indian Astronomical Ephemeris, Published by Positional Astronomy Centre,
+Plot 8, Block AQ, Sector 5, Salt Lake, Mahish Bathan, Kolkata 700 091
+WEB Source: http://www.packolkata.org/body.htm
+
+WEB Source
+http://www.astro.com/swisseph/ae/2000/ae_2009.pdf
+http://www.astro.com/swisseph/swepha_e.htm
+
+From Indian Astronomical ephemeris we straightaway get the Nirayana
+longitudes for Ravi and Chandra at 5:29 AM IST on 15-7-2009. The values
+are:
+Ravi = 880-39’-45’
+Chandra = 3530-40’-26”
+Now if we recall that each zodiac sign represents 300 of celestial
+ecliptic, Ravi is in Mithuna Rasi. In this rasi he already traveled 280.
+Chandra is in Meena Rasi. Meena Rasi starts at 3300. Chandra already
+traversed 230 in Meena rasi. In Meena rasi first 30-20’ we have Purvabhadra
+Nakshatram 4th padam. Next 130-20’ (that is 30-20’ to 160-40’) we have
+Uttarabhadra Nakshatram. Last 130-20’ are assigned to Revathi Nakshatram.
+So Chandra is in Meena rasi and Revathi Nakshatram.
+What does the Swiss ephemeris give?
+See the table given above. Also please note that the positions are given at
+00:00 UT corresponding to 5:30 AM IST. Follow the line corresponding to the
+date 15-7-2009. Under Ravi the position given is 220-39’-28’’. If we look at
+Ravi’s position on 1-7-2009, we can see that he is in Karkataka rasi. So the
+absolute longitude of Ravi from Aries 00 is 1120-39’-28” (Check!)
+Now remember that Swiss ephemeris give Sayana or tropical
+longitudes. We have to subtract Ayanamsa to get Nirayana or sidereal
+longitude. Subtracting Ayanamsa for 15-7-2009 from Tropical longitude of
+Ravi we get
+1120-39’-28”
+- 230-59’-34”
+-----------880-39’-54” which is same as that we obtained from Indian
+astronomical ephemeris.
+Chandra’s longitude is 170-41’ in Aries. Subtracting Ayanamsa we get
+3530-41’-26” very near to that we obtain from Indian ephemeris.
+
+Recap
+Normally in Panchangams, it is a normal practice to give the positions of
+planets at a particular time of the day. In India the time chosen is usually 5:30
+AM. Indian astronomical ephemeris also give the planets for 5:30 AM. And
+more important, Indian ephemeris gives Nirayana longitudes of the planets.
+Swiss ephemeris gives Sayana Longitudes at GMT 0:0 hrs (or universal time
+0:0 h). This corresponds to 5:30AM IST. If we use Swiss ephemeris, we have
+to deduct ayanamsa from the longitudes to get the nirayana longitudes.
+
+Notation used for depicting longitudes of planets
+There are mainly three ways of indicating a planet’s position in the zodiac.
+1. Absolute method: Starting from 00 of zodiac (Mesha rasi or Aries) we
+indicate the exact position of the Planet. For example, Ravi’s position is
+given above as 880- 40’-20’’. That is Ravi is posited a little over 880
+away from the starting point of zodiac (Mesha rasi or Aries 00). Let us
+recall that minimum longitude a planet can have is 00 (beginning of
+Mesha rasi) and the maximum longitude is 359.999999990 (Last of
+Meena rasi).
+2. Rasi-over method: In this method we indicate the number of zodiac
+signs which are already traversed by the planet and the degreecal
+position in the rasi in which he is posited. Taking again the above
+example of Ravi (880- 40’-20’’), we notice that for every 300, one sign
+is traversed. To reach 880, we need to traverse completely 2 signs (2 x
+300 = 600) and another 280 in the third sign that is Mithuna rasi. So we
+write Ravi’s position as 2s-280-40’-20’’ or simply 2-280-40’-20’’,
+indicating that 2 signs have already passed.
+3. In-Rasi method: In this method we indicate the Rasi in which the
+planet is posited and then give its degreecal position. Again taking the
+above example, we know that Ravi is in Mithuna Rasi, we indicate his
+position as 28♊-40-20.
+Let us see for Chandra’s position as given above. It is 3530-41’-52”. This
+is absolute longitude of Chandra. What is the notation based on other
+methods? Answers are given. It can be verified.
+Rasi-over method: 11s-230-41’-52’’or 11-230-41’-52’’
+In-Rasi method: 230♓-41’-52’’
+Addition and Subtraction of longitudes
+In astrological calculations it becomes necessary to either add or subtract
+one longitude from another. For example, to know the Yoga on a day we
+have to add longitudes of Chandra and Ravi. To know Tithi of a day we need
+to subtract longitude of Chandra from that of Ravi. Even though it is trivial,
+for completion sake we will explain how it is done.
+Addition is straightforward. If the sum of the longitudes of Chandra and Ravi
+comes more than 3600, subtract 3600 from the sum. Take the resultant value
+for finding out the Yoga.
+Example:
+Chandra’s longitude = 3530-41’-52’’
+Ravi’s longitude = 2840-40’-20’’
+
+3530-41’-52’’
+2840-40’-20’’
+(+) ------------6380-22’-12’’
+As the sum is more than 3600, subtract 3600
+6380-22’-12’’
+3600-00’-00’’
+-------------2780-22’-12’’
+For subtraction, if Chandra’s longitude is greater than that of Ravi, the
+calculation is straightforward. But if longitude of Chandra is less than that of
+Ravi, add 3600 to Chandra’s longitude and proceed with subtraction.
+Chandra’s longitude = 230-52’-33’’
+Ravi’s longitude = 3440-33’-15’’
+Note that Chandra’s longitude is less than that of Ravi. So add 3600 to
+Chandra’s longitude. That is 230-52’-33’’ + 3600 = 3830-52’-33’’ Now proceed
+to subtraction.
+3830-52’-33’’
+3440-33’-15’’
+-------------390-19’-18’’
+Let us take another example.
+Chandra’s longitude = 3s-290-15’-13’’
+Ravi’s longitude = 5s-140-10’-9’’
+Notice that the longitudes are given based on Rasi-over method. We have to
+take the number of signs already traversed. In Chandra’s case it is 3 signs
+and in Ravi’s case it is 5 signs. So actual longitudes of Chandra and Ravi are:
+Chandra = 3 x 300 + 290-15’-13’’ = 900 + 290-15’-13’’ = 1190-15’-13’’
+Ravi = 5 x 30 + 140-10’-9’’ = 1500 + 140-10’-9’’ = 1640-10’-9’’
+We can see that again Chandra’s longitude is less than that of Ravi.
+Chandra’s longitude = 90♎-15’-13’’
+Ravi’s longitude = 140♉-10’-9’’
+Which is greater? Chandra’s longitude? Or Ravi’s?
+Chandra’s longitude is greater than that of Ravi by 1450-5’-4’’. (Check!)
+
+Daily motion of Ravi and Chandra
+We have to look up in the ephemeris and note down the longitude of any
+planet for the day and next day. The difference between the two gives the
+daily motion of the planet. Let us find out the daily motion of Ravi and
+
+Chandra on July 15, 2009. Look up in the Swiss ephemeris. The required
+data is given below at 00-00 UT (5:30 IST):
+Date
+15-7-2009
+16-7-2009
+
+Ravi
+22♋39-28
+23♋36-42
+
+Chandra
+17♈41
+00♉50
+
+Strictly speaking we should consider the longitudes of the planets at
+sunrise time. But the error introduced by considering 5:30 IST is not
+significant. We see that Ravi is in Karkatakam on both the days while
+Chandra changed sign. He moved from Mesha Rasi to Vrishabha Rasi.
+Daily motion of Ravi on 15-7-2009 is
+(23♋36-42) – (22♋39-28) = 00-57-14 (57 minutes, 14 seconds)
+Daily motion of Chandra is
+(00♉50) – (17♈41) = (30-50) – (17-41) = 13-09-00 (13 degrees 9
+minutes).
+It may be mentioned that we have used Swiss ephemeris to compute daily
+motions. In fact even if we have used Indian astronomical ephemeris we
+would have obtained the same result.
+Normally the daily motion of Ravi is about 10 (about 60 minutes) and that of
+Chandra is about 120.
+Now that we have all information to compute the different limbs of
+Panchangam, let us go ahead and compute!
+
+Tithi
+Tithi is calculated from the distance between Chandra and Ravi. For every
+120 distance of Chandra from Ravi Tithi changes. Tithi starts from Sukla
+(Suddha) Padyami for the first 120 distance and continues further; next 120 is
+Sukla Vidiya and so on. Between 1680 and 1800 it is Poornima (Punnama).
+Afterwords Krishna (Bahula) Paksham starts from Krishna (Bahula) Padyami
+and so on. From 3480 to 3600 it is Amavaasya. Table of Tithis gives the
+relevant information.
+Let us find out the Tithi on July 15, 2009. We note from Swiss ephemeris that
+the longitudes of Chandra and Ravi, respectively are:
+Chandra = 17♈41 and Ravi = 22♋39-28
+Notice that Chandra is in Mesha Rasi and Ravi is in Karkatakam (in-Rasi
+notation!). The absolute longitudes are given below:
+Chandra = 17-41-00 and Ravi = 112-39-28 (how?)
+We should always subtract Ravi’s longitude from that of Chandra for
+computing Tithi.
+
+Chandra = 17-41-00 and Ravi = 112-39-28
+We see that Chandra’s longitude is less than that of Ravi. So add 3600 to
+Chandra’s value and proceed with subtraction.
+Chandra = 377-41-00
+Ravi =
+112-39-28
+------------265-01-32
+Look up the Table 1. It is seen that 2650 is covered in 23rd Tithi. It is more
+than 1800 and hence it is Krishna Paksham. From the Table it is seen that it
+is in fact Krishna (Bahula) Ashtami.
+We can also compute the Tithi from the distance between Chandra and
+Ravi. In the example given above the difference in the longitudes of Chandra
+and Ravi is 2650-01’-32’’. Converting minutes and seconds into degrees we
+have 265.05555555560. Divide this by 12.
+12)265.0255555556(22 (Quotient)
+264.0000000000
+-----------------------1.0255555556 (Remainder)
+The quotient is 22 and the remainder is 1.0255555560
+Quotient indicates number of Tithis elapsed.
+Prevailing Tithi is quotient + 1. That is 22 + 1 = 23. It is Bahula Ashtami.
+Please note that Bahula Ashtami starts when Chandra is exactly 2640 away
+from Ravi. In this case, Bahula Ashtami started and 1.02555555560 has
+already elapsed. On July 15, 2009 at 5:30 IST Tithi is Bahula Ashtami.
+
+To find out the ending time of Tithi
+From the Table of Tithis it is seen that Bahula Ashtami lasts from 2640 to
+2760. The difference in the longitudes of Chandra and Ravi is 265.025555560.
+So the remaining distance (RD) for Ashtami Tithi = 2760- 265.0255555560.
+That is for Ashtami to complete still 10.9744444440 have to be covered. To
+find out the time taken to complete this distance, we make use of the daily
+motion of Chandra and Ravi.
+As given previously, the daily motion of Chandra and Ravi on July 15, 2009 is
+Daily Motion of Chandra (DMC) = 13-09-00 (13 degrees 9 minutes) per 24
+hours
+Daily motion of Ravi (DMR) = 0-57-14 (57 minutes, 14 seconds) per 24
+hours.
+Time taken to cover 10.9744444440 is given by
+
+Table of Tithis
+Please note that starting point of Tithis is relative and depends on the
+positions of Chandra and Ravi. Starting point of first Tithi Sukla (Suddha)
+Padyami is always counted from the longitude of Ravi irrespective of where
+he is posited in the celestial zodiac.
+Distance between Chandra and Ravi
+(starting from longitude of Ravi)
+In degrees
+In minutes
+1
+Sukla (Suddha) Padyami
+00 to 12
+00 to 720
+2
+Sukla (Suddha) Vidiya
+12 to 24
+720 to 1440
+3
+Sukla (Suddha) Tadiya
+24 to 36
+1440 to 2160
+4
+Sukla (Suddha) Chavithi
+36 to 48
+2160 to 2880
+5
+Sukla (Suddha) Panchimi
+48 to 60
+2880 to 3600
+6
+Sukla (Suddha) Sashti
+60 to 72
+3600 to 4320
+7
+Sukla (Suddha) Saptami
+72 to 84
+4320 to 5040
+8
+Sukla (Suddha) Ashtami
+84 to 96
+5040 to 5760
+9
+Sukla (Suddha) Navami
+96 to 108
+5760 to 6480
+10
+Sukla (Suddha) Dasimi
+108 to 120
+6480 to 7200
+11
+Sukla (Suddha) Ekadasi
+120 to 132
+7200 to 7920
+12
+Sukla (Suddha) Dwadasi
+132 to 144
+7920 to 8640
+13
+Sukla (Suddha) Triodasi
+144 to 156
+8640 to 9360
+14
+Sukla (Suddha) Chaturdasi
+156 to 168
+9360 to 10080
+15
+Poornima (Punnama)
+168 to 180
+10080 to 10800
+16
+Krishna (Bahula) Padyami
+180 to 192
+10800 to 11520
+17
+Krishna (Bahula) Vidiya
+192 to 204
+11520 to 12240
+18
+Krishna (Bahula) Tadiya
+204 to 216
+12240 to 12960
+19
+Krishna (Bahula) Chavithi
+216 to 228
+12960 to 13680
+20
+Krishna (Bahula) Panchimi
+228 to 240
+13680 to 14400
+21
+Krishna (Bahula) Sashti
+240 to 252
+14400 to 15120
+22
+Krishna (Bahula) Saptami
+252 to 264
+15120 to 15840
+23
+Krishna (Bahula) Ashtami
+264 to 276
+15640 to 16560
+24
+Krishna (Bahula) Navami
+276 to 288
+16560 to 17280
+25
+Krishna (Bahula) Dasimi
+288 to 300
+17280 to 18000
+26
+Krishna (Bahula) Ekadasi
+300 to 312
+18000 to 18720
+27
+Krishna (Bahula) Dwadasi
+312 to 324
+18720 to 19440
+28
+Krishna (Bahula) Triodasi
+324 to 336
+19440 to 20160
+29
+Krishna (Bahula) Chaturdasi 336 to 348
+20160 to 20880
+30
+Amavaasya
+348 to 360
+20880 to 21600
+When Chandra is placed opposite to Ravi, we have Poornima (punnama).
+If they are conjunct in the same Rasi, we have Amavaasya.
+S.No. Tithi
+
+RD
+x24
+DMC − DMR
+10.9744444
+Time(hours) =
+x24
+(13 − 09 − 00) − (00 − 57 − 14)
+Time(hours) =
+
+Converting into minutes and solving we get
+658.4666664
+658.4666664
+Time(hours) =
+x24 Time(hours) =
+x 24
+(789) − (57.233333)
+731.7666667
+= 21.595954 hours (21-35-45)
+Thus ending time of Ashtami is 21-35-45 hours from 5:30 IST (why?)
+Ashtami will be over at 5-30-00 + 21-35-45 = 27-05-45 hrs (2-5-45 hours
+after midnight of 15-7-2009)
+Instead of using Swiss ephemeris, if we had used Indian astronomical
+ephemeris to compute Tithi, what result would we be obtaining?
+The difference between the two ephemeris is the Ayanamsa.
+Subtracting Ayanamsa from the Swiss ephemeris, which gives Sayana
+longitudes, we get Nirayana longitudes, which is what Indian astronomical
+ephemeris gives. As the Tithi is difference between two longitudes, we should
+get the same Tithi and its ending times whether Swiss ephemeris or Indian
+astronomical ephemeris is used. I leave to the readers to check this out.
+
+Karana
+We know that each Tithi lasts for 120 duration of distance of Chandra from
+Ravi. Each Tithi is divided into two halves of 60 duration. First half is ruled by
+one Karana and the second half up to the end of the Tithi is ruled by next
+Karana. Table of karanas given below lists all the Karanas and the
+corresponding Tithi. In the example given above the Tithi is Bahula Ashtami
+and first half of it is prevailing (Chandra’s longitude is between 2640 and
+2700). From the Table it is seen that the prevailing karana is Baalava, which
+will be followed by Kaulava karana.
+
+Table of Karanas
+Please note that there are two karanas per Tithi.
+As each Tithi lasts 120, first Karana lasts up to first 60 of Tithi and the second
+Karana lasts up to the end of Tithi (scond half).
+S.No. Tithi
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+
+Sukla (Suddha) Padyami
+Sukla (Suddha) Vidiya
+Sukla (Suddha) Tadiya
+Sukla (Suddha) Chavithi
+Sukla (Suddha) Panchimi
+Sukla (Suddha) Sashti
+Sukla (Suddha) Saptami
+Sukla (Suddha) Ashtami
+Sukla (Suddha) Navami
+Sukla (Suddha) Dasimi
+Sukla (Suddha) Ekadasi
+Sukla (Suddha) Dwadasi
+Sukla (Suddha) Triodasi
+Sukla (Suddha) Chaturdasi
+Poornima (Punnama)
+Krishna (Bahula) Padyami
+Krishna (Bahula) Vidiya
+Krishna (Bahula) Tadiya
+Krishna (Bahula) Chavithi
+Krishna (Bahula) Panchimi
+Krishna (Bahula) Sashti
+Krishna (Bahula) Saptami
+Krishna (Bahula) Ashtami
+Krishna (Bahula) Navami
+Krishna (Bahula) Dasimi
+Krishna (Bahula) Ekadasi
+Krishna (Bahula) Dwadasi
+Krishna (Bahula) Triodasi
+Krishna (Bahula) Chaturdasi
+Amavaasya
+
+Karana-1(First
+half of Tithi)
+Kimstugna
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Chatushpada
+
+Karana-2 (Second
+half of Tithi)
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Bava
+Kauvala
+Gara
+Vishti (Bhadra)
+Baalava
+Taitila
+Vanija
+Sakuna
+Naga
+
+Nakshatram
+Nakshatram prevailing on any day is obtained from the absolute
+longitude of Chandra. This is counted from 00 Mesha Rasi. Please remember
+that we need the absolute longitude of Chandra to compute Nakshatram. We
+should use sidereal or Nirayana longitudes and not Sayana or tropical
+longitudes. That is we should make use of Ayanamsa-corrected longitudes. If
+we use Swiss ephemeris we should subtract Ayanamsa from the longitude of
+Chandra. We can use Indian astronomical ephemeris directly as these are
+already corrected for Ayanamsa. Table of Nakshatrams given below gives the
+span of each Nakshatram.
+Nakshatram is an important concept in Hindu astrology. Most of the
+auspicious functions and marriage alliances are based on Nakshatram. If we
+know the Nakshatram of the day, in general we can know the Rasi in which
+Chandra is placed (except for Nakshatrams belonging to Ravi, Kuja, and Guru
+as these Nakshatrams span two adjacent Rasis). Further, each Nakshatram is
+ruled by a planet. The Dasha period at the time of birth of an individual is
+decided by Lord of Nakshatram of that day. Each Nakshatram is further
+divided into four Padams (quarters) another important concept in oriental
+astrology. Navamsa chart (a divisional chart) is constructed based on this.
+Nakshatrams and their Lords
+Nakshatras (each measures 13°-20′ arc)
+1. Aswini
+10. Makha
+19. Moola
+2. Bharani
+11. Pubba
+20. Purvashadha
+3. Krithika
+12. Uttara
+21. Uttarashadha
+4. Rohini
+13. Hasta
+22. Sravanam
+5. Mrigasira
+14. Chitta
+23. Dhanista
+6. Ardra
+15. Swathi
+24. Satabhisham
+7. Punarvasu
+16. Visakha
+25. Purvabhadra
+8. Pushyami
+17. Anuradha
+26. Uttarabhadra
+9. Aslesha
+18. Jyesta
+27. Revathi
+
+Lord
+KE (‚)
+SU (±)
+RA (¸)
+CH (»)
+KU (¡)
+RH (¨)
+GU (¥)
+SA (–)
+BU (¾)
+
+To know the Nakshatram prevailing on any day look up in the ephemeris and
+note down the longitude of Chandra. If it is Swiss ephemeris, subtract
+Ayanamsa. If it is Indian astronomical ephemeris, note down the longitude of
+Chandra. There is no need to subtract Ayanamsa. See the Table of
+Nakshatrams and find out the Nakshatram corresponding to this longitude.
+For the example given previously, the sidereal or Nirayana longitude of
+Chandra is 3530-41’-52’’. So at 5-30 IST on 15-7-2009, Revathi is the
+Nakshatram and Rasi is Meenam.
+
+Table of Nakshatrams
+Absolute span in
+Zodiac
+Rasi
+0
+0
+– ‘ to
+–‘
+1
+Aswini
+Mesham
+00-00 to 13-20
+00-00 to 13-20
+2
+Bharani
+Mesham
+13-20 to 26-40
+13-20 to 26-40
+3
+Krithika
+Mesham
+26-40 to 30-00
+26-40 to 30-00
+Vrishabham 00-00 to 10-00
+30-00 to 40-00
+4
+Rohini
+Vrishabham 10-00 to 23-20
+40-00 to 53-20
+5
+Mrigasira
+Vrishabham 23-20 to 30-00
+53-20 to 60-00
+Mithunam
+00-00 to 6-40
+60-00 to 66-40
+6
+Ardra
+Mithunam
+6-40 to 20-00
+66-40 to 80-00
+7
+Punarvasu
+Mithunam
+20-00 to 30-00
+80-00 to 90-00
+Karkatakam 00-00 to 3-20
+90-00 to 93-20
+8
+Pushyami
+Karkatakam 3-20 to 16-40
+93-20 to 106-40
+9
+Aslesha
+Karkatakam 16-40 to 30-00
+106-40 to 120-00
+10
+Makha
+Simham
+00-00 to 13-20
+120-00 to 133-20
+11
+Pubba
+Simham
+13-20 to 26-40
+133-20 to 146-40
+12
+Uttara
+Simham
+26-40 to 30-00
+146-40 to 150-00
+Kanya
+00-00 to 10-00
+150-00 to 160-00
+13
+Hasta
+Kanya
+10-00 to 23-20
+160-00 to 173-20
+14
+Chitta
+Kanya
+23-20 to 30-00
+173-20 to 180-00
+Thula
+00-00 to 6-40
+180-00 to 186-40
+15
+Swathi
+Thula
+6-40 to 20-00
+186-40 to 200-00
+16
+Visakha
+Thula
+20-00 to 30-00
+200-00 to 210-00
+Vrischikam
+00-00 to 3-20
+210-00 to 213-20
+17
+Anuradha
+Vrischikam
+3-20 to 16-40
+213-20 to 226-40
+18
+Jyesta
+Vrischikam
+16-40 to 30-00
+226-40 to 240-00
+19
+Moola
+Dhanus
+00-00 to 13-20
+240-00 to 253-20
+20
+Poorvashada
+Dhanus
+13-20 to 26-40
+253-20 to 266-40
+21
+Uttarashada
+Dhanus
+26-40 to 30-00
+266-40 to 270-00
+Makaram
+00-00 to 10-00
+270-00 to 280-00
+22
+Sravanam
+Makaram
+10-00 to 23-20
+280-00 to 293-20
+23
+Dhanista
+Makaram
+23-20 to 30-00
+293-20 to 300-00
+Kumbham
+00-00 to 6-40
+300-00 to 306-40
+24
+Satabhisham
+Kumbham
+6-40 to 20-00
+306-40 to 320-00
+25
+Poorvabhadra
+Kumbham
+20-00 to 30-00
+320-00 to 330-00
+Meenam
+00-00 to 3-20
+330-00 to 333-20
+26
+Uttarabhadra
+Meenam
+3-20 to 16-40
+333-20 to 346-40
+27
+Revathi
+Meenam
+16-40 to 30-00
+346-40 to 360-00
+Note that Krithika, Mrigasira, Punarvasu, Uttara, Chitta, Visakha,
+Uttarashada, Dhanista and Purvabhadra extend their span to two Rasis.
+Name of
+S.No.
+Nakshatram
+
+Span within Rasi
+0
+– ‘ to 0 – ‘
+
+Ending time of Nakshatram
+Let us again take the above example. Chandra’s longitude is 3530-41’-52’’
+and the Nakshatram is Revathi. From the Table it is seen that Revathi
+Nakshatram starts from 3450-40’ and lasts up to 3600. So at 5-30 IST on July
+15, 2009, already 70-1’-52’’ of Revathi elapsed. The remaining degrees (RD)
+are
+(3600-00’-00’’) – (3530-41’-52’’) = 60-18’-8’’.
+The daily motion of Chandra on 15-7-2009 as mentioned above is 130-9’-00’’
+RD
+60 -18'-8''
+x 24
+=
+x 24
+DMC
+130 -9'-00''
+Converting into minutes and solving we get
+378.133333
+Ending time of Nakshatram =
+x 24
+= 11.5022 hours
+789
+= 11-30-8 hours from 5-30 IST (why?)
+Revathi Nakshatram ends at
+5-30-00 + 11-30-8 =
+17-00-08
+on 15-7-2009.
+Ending time of Nakshatram =
+
+hours
+
+Important note
+Please note that the Nirayana longitude of Chandra is obtained by
+subtracting Ayanamsa from the Sayana longitude. Depending on the
+Ayanamsa value used, different Nirayana longitude is obtained. Even
+though Nakshatram may not change, the degreecal position may change.
+Hence there can be different ending times for the Nakshatram. This is
+because for Nakshatrams, we deal with the absolute longitudes. Ending
+times of Tithis remain the same irrespective of the Ayanamsa used, as
+Tithi is a relative distance between Chandra and Ravi.
+Yoga duration and ending time of Yoga also depends on the value of
+Ayanamsa used. (See below for Yoga computation).
+
+Yogas
+There are different types of Yogas in Panchangam as well as in birth chart.
+Birth chart Yogas depend on the placement of planets with respect to each
+other and also their relative placement in different zodiac Rasis. The Yogas
+we come across in Panchangam are again of different type. Yoga as defined
+by conventional Panchangam refers to one of its five limbs and can be
+computed from the longitudes of Chandra and Ravi. There are 27 Yogas and
+each Yoga’s span is 130-20’, making a total of 3600. To compute Yoga,
+1. Add the longitudes of Chandra and Ravi.
+2. If the sum is greater than 3600, subtract 3600 from the sum.
+3. Divide the resultant sum by 130-20’.
+
+4. Quotient gives the number of Yogas elapsed and quotient + 1 gives
+the current Yoga. Remainder gives the degrees elapsed in the current
+Yoga.
+Please note that we should take Nirayana longitudes (Ayanamsa-corrected)
+for computation. Let us find out the Yoga on July 15, 2009. The Nirayana
+longitudes of Chandra and Ravi are:
+Chandra = 353-41-26
+Ravi =
+88-39-54
+(+) -----------442-21-20
+(-) 360-00-00 (why subtraction?)
+---------------------82-21-20
+See the Table of Yogas. It is seen that 82-21-20 are covered
+in the span
+th
+of 80-00 to 93-20 corresponding to 7 Yoga namely Sukarma Yoga. You may
+also note that already 2-21-20 of Sukarma Yoga has lapsed. Still (93-20) –
+(82-21-20) = 10-58-40 have to be covered for the Yoga to be over.
+We can also compute Yoga mathematically. First convert minutes and
+seconds into degrees.
+82-21-20 = 82.3498160 Divide the sum obtained by 130-20’ (13.3333330)
+13.3333333)82.349816(6
+79.999998
+--------------2.349818
+Quotient indicates number of Yogas over. Quotient + 1 gives the current
+Yoga. Remainder gives number of degree already completed in the current
+Yoga.
+
+Ending time of Yoga
+From the Table of Yogas it is seen that Sukarma Yoga lasts from 800 to 93020’. The sum of the longitudes of Chandra and Ravi is 820-21’-20’’. So the
+remaining distance (RD) for Sukarma Yoga is given as:
+(930-20’) – (820-21’-20’’) = 100-58’-40’’ (10.97777780).
+That is for Sukarma Yoga to complete still 10.977777780 have to be covered.
+To find out the time taken to complete this distance, we make use of the
+daily motion of Chandra and Ravi.
+As given previously, the daily motion of Chandra and Ravi on July 15, 2009 is
+Daily Motion of Chandra (DMC) = 130-09’-00’’ (13 degrees 9 minutes) per 24
+hours
+
+Table of Yogas
+Please note that starting point of first Yoga (Vishkambha) is always 00
+Mesham (Aries). The other Yogas follow.
+S.No.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+
+Sum of the longitudes of Chandra +
+Ravi
+0
+– ‘ to 0 – ‘
+In minutes
+00-00 to 13-20
+000 to 800
+13-20 to 26-40
+800 to 1600
+26-40 to 40-00
+1600 to 2400
+40-00 to 53-20
+2400 to 3200
+53-20 to 66-40
+3200 to 4000
+66-40 to 80-00
+4000 to 4800
+80-00 to 93-20
+4800 to 5600
+93-20 to 106-40
+5600 to 6400
+106-40 to 120-00
+6400 to 7200
+120-00 to 133-20
+7200 to 8000
+133-20 to 146-40
+8000 to 8800
+146-40 to 160-00
+8800 to 9600
+160-00 to 173-20
+9600 to 10400
+173-20 to 186-40
+10400 to 11200
+186-40 to 200-00
+11200 to 12000
+200-00 to 213-20
+12000 to 12800
+213-20 to 226-40
+12800 to 13600
+226-40 to 240-00
+13600 to 14400
+240-00 to 253-20
+14400 to 15200
+253-20 to 266-40
+15200 to 16000
+266-40 to 280-00
+16000 to 16800
+280-00 to 293-20
+16800 to 17600
+293-20 to 306-40
+17600 to 18400
+306-40 to 320-00
+18400 to 19200
+320-00 to 333-20
+19200 to 20000
+333-20 to 346-40
+20000 to 20800
+346-40 to 360-00
+20800 to 21600
+
+Name of the Yoga
+
+Vishkambha
+Priti
+Ayushman
+Soubhagya
+Sobhana
+Atiganda
+Sukarma
+Dhrithi
+Soola
+Ganda
+Vriddhi
+Dhruva
+Vyaghata
+Harshana
+Vajra
+Siddhi
+Vyatipata
+Variyana
+Parigha
+Siva
+Siddha
+Sadhya
+Subha
+Sukla
+Brahma
+Eindra (Indra)
+Vaidhrthi
+
+Daily motion of Ravi (DMR) = 00-57’-14’’ (57 min, 14 sec) per 24 hours.
+Time taken to cover 10.977777780 is given by
+RD
+x24
+DMC + DMR
+10.977777780
+x24
+(13.150 ) + (0.95388890 )
+
+Time(hours) =
+
+=
+
+=
+=
+
+10.977777780
+x24
+(130 − 09 '− 00 '') + (000 − 57 '− 14 '')
+10.977777780
+x24
+14.10388890
+
+18.680436 hours from 5-30-00 IST (why?)
+
+That is Sukarma Yoga ends at (5-30-00) + (18-40-50) = 24-10-50 hours
+Thus Sukarma Yoga ends after midnight of July 15, 2009 at 00-10-50 hours
+on July 16, 2009.
+
+Amrita Gadiyas and Varjyam (Tyajyam)
+Amrita Gadiyas and Varjyam (also known as Tyajyam) depend on the
+Nakshatram of the day and its duration. Amrita gadiyas by name indicates
+auspicious time for initiating any activity. Varjyam indicates the time interval,
+which should be avoided for initiating any activity. Each of these lasts for
+1/15th duration of Nakshatram of the day and if the duration of Nakshatram
+is 24 hours, then each of them lasts for 1/15th of 24 hours that is 1 hour-36
+minutes. Depending on the duration of Nakshatram, the duration of these
+two changes proportionately. For a given Nakshatram, following formulae
+may be used to arrive at the starting times of Amrita gadiyas and Varjyam:
+x
+Starting time = Starting time of Nakshatram +
+(duration of Nakshatram)
+24
+where x is a number that depends on the Nakshatram of the day.
+1.6
+24
+See the Table of Amrita Gadiyas and Varjyam for the starting times for
+each Nakshatram. The Table lists the timings in hours. The Table lists the
+starting time of Amrita Gadiyas or Varjyam when the duration of Nakshatram
+is 24 hours. It should be understood that starting time (x) as given in the
+Table should be added to the starting time of Nakshatram to arrive at the
+starting time of Amrita Gadiyas or varjyam as the case may be.
+Duration = Duration of Nakshatram x
+
+For example, the value of ‘x’ for Aswini Nakshatram is 16.8 Hours for Amrita
+gadiyas and 20 Hours for Varjyam. That means Amrita Gadiyas start after
+16.8 Hours of starting of Aswini. Similarly Varjyam starts after 20 hours of
+starting of Aswini. Let us suppose that Aswini Nakshatram starts on a day at
+6:30 AM and ends at 8:00 AM next day. The duration of time Aswini lasts is
+25:30 hrs.
+16.8
+Amrita Gadiyas start at 6.5 +
+(25.5) = 6.5 + 17.85 = 24.35 hrs. As the
+24
+Nakshatra started at 6:30 AM, 24.35 hrs is 21 minutes past midnight. That is
+Amrita gadiyas start at early hours (0:21 AM) next day.
+Duration of Amrita Gadiyas = 25.5 x 1.6/24 = 1.7 hrs = 1h-42m
+
+20
+(25.5) = 6.5 + 21.25 = 27.75 hrs. That is 27:45
+24
+hrs. As the Nakshatra started at 6:30 AM, 27.75 hrs is 3.75 hrs past
+midnight. That is varjyam starts at early hours (3:45 AM) next day.
+Duration of Varjyam = 25.5 x 1.6/24 = 1.7 hrs = 1h-42m
+
+Varjyam starts at 6.5 +
+
+Table of Amrita Gadiyas and Varjyam starting timings for a 24 hour-day
+
+Nakshatram
+Aswini
+Bharani
+Krittika
+Rohini
+Mrigasira
+Aridra
+Punarvasu
+Pushya
+Aslesha
+Makha
+Pubba
+Uttara
+Hasta
+Chitta
+Swati
+Visakha
+Anuradha
+Jyeshta
+Moola
+Poorvashadha
+Uttarashadha
+Sravana
+Dhanishta
+Satabhisha
+Poorvabhadra
+Uttarabhadra
+Revati
+
+Amrita
+Gadiyas(X)
+(Hours)
+16.8
+19.2
+21.6
+20.8
+15.2.
+14
+21.6
+17.6
+22.4
+21.6
+17.6
+16.8
+18
+17.6
+15.2
+15.2
+13.6
+15.2
+17.6
+19.2
+17.6
+13.6
+13.6
+16.8
+16
+19.2
+21.6
+
+Varjyam (X)
+(Hours)
+20
+9.6
+12
+16
+5.6
+8.4
+12
+8
+12.8
+12
+8
+7.2
+8.4
+8
+5.6
+5.6
+4
+5.6
+8, 22.4
+9.6
+8
+4
+4
+7.2
+6.4
+9.6
+12
+
+Kalams and Durmuhurtham
+There are three more “kalams” which are normally indicated in
+Panchangams. These are Gulika, Yama Gandam, and Rahu Kalam. The
+starting times and duration of all these kalams depend on the day as well as
+duration of the day and night of that day. We must have seen in almost
+every Panchangam published in India invariably mentioning that these
+
+“Kalams” are given assuming that the sunrise is at 6:00 AM and sunset is at
+6:00 PM. This assumption may be true for places near the equator (e.g. in
+Sri Lanka and Tamil Nadu in India). In addition, Panchangams also indicate
+Durmuhurtham starting times.
+Table for Rahu Kalam, Gulika, Yama gandam and Durmuhurtham
+Day
+
+Sunday
+Monday
+
+Starting time
+of Rahu
+Kalam
+4:30 PM
+7:00 AM
+
+Starting time
+for Gulika
+Kalam
+3:00 PM
+1:30 PM
+
+Starting time
+for Yama
+Gandam
+12:00 Noon
+10:30 AM
+
+Tuesday
+
+3:00 PM
+
+12:00 Noon
+
+9:00 AM
+
+Wednesday
+Thursday
+
+12:00 Noon
+1:30 PM
+
+10:30 AM
+9:00 AM
+
+7:30 AM
+6:00 AM
+
+Friday
+
+10:30 AM
+
+7:30 AM
+
+3:00 PM
+
+Saturday
+
+9:00 AM
+
+6:00 AM
+
+1:30 PM
+
+Starting time
+for
+Durmuhurtham
+4:24 PM
+12:24 PM and
+2:48 PM
+8:24 AM and
+10:48 PM
+11:36 AM
+10:00 AM and
+2:48 PM
+8:24 AM and
+12:24 PM
+7:36 AM
+
+Please note that the above timings assume that the sunrise at 6: 00
+AM and sunset is at 6:00 PM. The duration of Rahu Kalam, Gulika Kalam and
+Yama Gandam is 1:30 hours. Durmuhurtham lasts for 48 minutes.
+For other sunrise times and durations of day and night, following
+formulae may be used:
+Rahu Kalam
+Day
+
+Starting time (Hrs)
+
+Sunday
+Monday
+
+Sunrise + duration of the day x 0.875
+Sunrise + duration of the day x 0.125
+
+Tuesday
+Wednesday
+
+Sunrise + duration of the day x 0.75
+Sunrise + duration of the day x 0.5
+
+Thursday
+Friday
+
+Sunrise + duration of the day x 0.625
+Sunrise + duration of the day x 0.375
+
+Saturday
+
+Sunrise + duration of the day x 0.25
+
+Duration (Hrs)
+
+Duration of the day x
+0.125
+
+Gulika Kalam
+Day
+Sunday
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+
+Starting time (Hrs)
+Sunrise + duration of the day x 0.75
+Sunrise + duration of the day x 0.625
+Sunrise + duration of the day x 0.5
+Sunrise + duration of the day x 0.375
+Sunrise + duration of the day x 0.25
+Sunrise + duration of the day x 0.125
+Sunrise
+
+Duration (Hrs)
+
+Duration of the day x
+0.125
+
+Yama Gandam
+Day
+Sunday
+
+Starting time (Hrs)
+Sunrise + duration of the day x 0.5
+
+Monday
+Tuesday
+
+Sunrise + duration of the day x 0.375
+Sunrise + duration of the day x 0.25
+
+Wednesday
+Thursday
+
+Sunrise + duration of the day x 0.125
+Sunrise
+
+Friday
+Saturday
+
+Sunrise + duration of the day x 0.75
+Sunrise + duration of the day x 0.625
+
+Duration (Hrs)
+
+Duration of the day x
+0.125
+
+Starting time and duration of Durmuhurthams
+Day
+
+Starting time (from sunrise)
+
+Duration
+
+Sunday
+Monday
+
+Duration of the day x 10.4/12
+1st. Duration of the day x 6.4/12
+2nd. Duration of the day x 8.8/12
+1st. Duration of the day x 2.4/12
+2nd. Duration of the night x
+4.8/12 (starting from sunset)
+Duration of the day x 5.6/12
+
+Duration of the day x
+0.8/12
+
+Tuesday
+
+Wednesday
+Thursday
+
+1st. Duration of the day x 4/12
+2nd. Duration of the day x 8.8/12
+
+Friday
+
+1st. Duration of the day x 2.4/12
+2nd. Duration of the day x 6.4/12
+
+Saturday
+
+Duration of the day x 1.6/12
+
+Let us find out the Panchangam for Sunday, 21-6-2009 four places Shillong,
+Rajahmundry, Cuddapah, and Mumbai; all in India.
+We will use Indian Astronomical ephemeris.
+
+The sunrise (SR) and sunset (SS) times are
+Date
+
+21-3-2009
+21-6-2009
+21-9-2009
+21-12-2009
+Date
+
+21-3-2009
+21-6-2009
+21-9-2009
+21-12-2009
+
+Shillong
+25N35 91E53
+SR
+SS
+5:25
+17:33
+4:32
+18:16
+5:10
+17:20
+6:04
+16:37
+
+Rajahmundry
+17N0 81E46
+SR
+SS
+6:6
+18:14
+5:31
+18:39
+5:52
+18:00
+6:27
+17:35
+
+Cuddapah
+14N30 78E47
+SR
+SS
+6:19
+18:26
+5:47
+18:46
+6:04
+18:12
+6:35
+17:51
+
+Mumbai
+19N1 72E51
+SR
+SS
+6:42
+18:50
+6:03
+19:19
+6:28
+18:36
+7:07
+18:07
+
+Shillong
+Day
+Night
+time
+time
+12:08 11:52
+13:44 10:15
+12:10 11:50
+10:33 13:27
+
+Rajahmundry
+Day
+Night
+time
+time
+12:08 11:52
+13:08 10:52
+12:08 11:52
+11:08 12:52
+
+Cuddapah
+Day
+Night
+time
+time
+12:07 11:53
+12:59 11:01
+12:08 11:52
+11:16 12:44
+
+Mumbai
+Day
+Night
+time
+time
+12:08 1:52
+13:19 10:41
+12:08 11:52
+11:00 13:00
+
+Nirayana Longitudes of Ravi and Chandra at 5:30 AM IST
+Date
+21-3-2009
+22-3-2009
+
+Sun Longitude
+Moon Longitude
+o
+o
+336 31' 3''
+270 59' 0''
+o
+337 30' 39''
+282o 56' 30''
+
+21-6-2009
+22-6-2009
+
+65o 46' 37''
+66o 43' 53''
+
+40o 17' 00''
+55o 11' 9''
+
+21-9-2009
+22-9-2009
+
+154o 9' 18''
+155o 8' 00''
+
+183o 13' 36''
+196o 42' 6''
+
+21-12-2009
+22-12-2009
+
+245o 14' 38''
+246o 15' 45''
+
+294o 20' 38''
+306o 8' 15''
+
+Date
+21-3-2009
+21-6-2009
+21-9-2009
+21-12-2009
+
+Ravi’s daily motion
+00-59-36
+00-57-16
+00-58-42
+01-01-07
+
+Chandra’s daily motion
+11-57-30
+14-54-09
+13-28-30
+11-47-37
+
+21-6-2009, Shillong
+Tithi = ((40-17-00) – (65-46-37))/12 = (334-31-23)/12 = 334.5230556/12
+= 27.876921 = 28th Tithi = Bahula Triodasi
+
+From the Table of Tithis it is seen that Bahula Triodasi ends when the
+distance between Chandra and Ravi is 3360. Hence the remaining degrees is
+(3360) – (334.52305560) = 1.4769440
+Ending time of the Tithi = 5-30-00 + 1.476944 x 24/((14-54-09)-(00-5716)) = 5-30-00 + 2.541333 = 5-30-00 + 2-32-29 = 8-02-29 AM IST
+Please note that we have not corrected for Ayanamsa. Why?
+It may be shown that irrespective of the place the Tithi and its ending times
+will remain the same. I leave to the readers to check this out.
+Karana = it is seen that the current Tithi longitude is in the second half and
+hence the Karana is Vanija.
+Nakshatram = the absolute longitude of Chandra on 21-6-2009 is 10♉17.
+Which notation is used to indicate the longitude? (It is in-Rasi method)
+The absolute longitude is 40-17-00.
+From the Table of Nakshatrams it is seen that this longitude belongs to 4th
+Nakshatram namely Rohini.
+Rohini Nakshatram spans between 400 and 530-20’
+The longitude is 40-17-00. Hence Rohini Nakshatram started a little earlier.
+Ending time of Rohini = For Rohini to over still 130-3’ have to be covered.
+Ending time of Rohini = 5-30-00 + (130-3’) x 24/(140-54’-09’’) = 21h-1m
+That is Rohini ends at 26-31 hours or 2-31 hours past midnight on 21-6-2009
+(that is early hours of 22-6-2009).
+It may be seen that at 5-30 IST, the Chandra’s longitude is 400-17’-00’’. Let
+us find out the time when Rohini started. Obviously it started before 5-30 IST
+as Chandra is already 17’ into Rohini’s span at 5-30 IST.
+Convert 17’ into degrees. It is 0.283333330.
+Starting time of Rohini = (5-30-00) – (0.283333330) x 24/(140-54’-09’’)
+(5-30-00) – 0.456299 Hrs = (5-30-00) – (00-27-23) = 5-02-37 IST.
+Rohini started at 5-02-37 IST on 21-6-2009.
+In Shillong, on 21-6-2009, sunrise time is 4-32 IST.
+So on 21-6-2009, at sunrise time in Shillong, the prevailing Nakshatram is
+Krittika and not Rohini.
+For the remaining three places (Rajahmundry, Cuddapah and Mumbai) at
+sunrise time on 21-6-2009 it is already Rohini Nakshatram.
+It is therefore desirable to have Panchangam computed for the place one is
+residing. Panchangam computed for other places, unless corrections to take
+care of local parameters are carried out, may not be used.
+
+Please note that Nakshatram ending times depend on the Ayanamsa used for
+arriving at the Nirayana longitude.
+Yoga: on 21-6-2009
+Ravi’s longitude = 65o 46' 37''
+Chandra’s longitude = 40o 17' 00''
+65o-46'-37''
+40o 17'-00''
+(+)
+------------1060-03’-37’’
+From the table of Yogas it seen that the above sum is covered in the span
+93-20 to 106-40 corrsponding to Dhrithi Yoga.
+Amrita gadiyas and varjyam
+Nakshatram
+
+Krittika
+Rohini
+
+Startimg time
+(X) for Amrita
+gadiyas
+21.6
+20.8
+
+Starting
+time (X) for
+varjyam
+12
+16
+
+Amrita Gadiyas: From the table of Amrita Gadiyas and Varjyam it is seen that
+for Rohini Nakshatram Amrita gadiyas start after 20.8 Hrs of starting and
+varjyam is after 16 hours. Even though at sunrise time in Shillong it is
+krittika, as Rohini comes within one hour of sunrise, we should consider
+Rohini fir computing Amrita gadiyas and varjyam.
+Duration of Rohini = (26-31) – (5-3) = 21-28 hrs. (Please note that the
+starting time of Rohini is 5-2-37. But it is rounded off to 5-3)
+Starting time of Amrita gadiyas: Duration of Nakshatram x 20.8/24
+=
+(5-3) + (21-28) x 20.8/24 = (5-3) + (18-36) = 23-39 Hrs.
+Duration of Amrita gadiyas = (21-28) x 1.6/24 = 1-26
+Amrita gadiyas start at 23-39 and end at 25 – 5 Hrs (1-05 on 22-6-2009)
+Starting time of Varjyam: Duration of Nakshatram x 16/24
+=
+(5-3) + (21-28) x 16/24 = (5-3) + (14-19) = 19-22 Hrs.
+Duration of Varjyam = (21-28) x 1.6/24 = 1-26
+Varjyam starts at 19-22 and ends at 20 –48 Hrs
+On 21-6-2009 it is Sunday.
+Rahu Kalam = sunrise time + duration of the day x 0.875
+= 4-32 + (13-44) x 0.875 = 4-35 + 12.01666667 = 16-37 Hrs.
+
+Duration of Rahu Kalam = duration of the day x 0.125 = (13-44) x 0.125 =
+1-43
+On 21-6-2009, in Shillong Rahu kalam starts at 16-37 and ends at 18-20
+Gulika Kalam = sunrise time + duration of the day x 0.75
+= 4-32 + (13-44) x 0.75 = 4-35 + 10.3 = 14-53 Hrs.
+Duration of Gulika Kalam = duration of the day x 0.125 = (13-44) x 0.125 =
+1-43
+On 21-6-2009, in Shillong Gulika Kalam starts at 14-53 and ends at 16-36
+Yama Gandam = sunrise time + duration of the day x 0.5
+= 4-32 + (13-44) x 0.5 = 4-35 + 6-52 = 11-27 Hrs.
+Duration of Yama Gandam = duration of the day x 0.125 = (13-44) x 0.125
+= 1-43
+On 21-6-2009, in Shillong Yama Gandam starts at 11-27 and ends at 13-10
+Durmuhurtham = sunrise time + Duration of the day x 10.4/12
+= 4-32 + (13-44) x 10.4/12 = 4-32 + 11-54 = 16-26
+Duration of Durmuhurtham = Duration of the day x 0.8/12 = 13-44 x 0.8/12
+= 0-55
+On 21-6-2009, in Shillong Durmuhurtham starts at 16-26 and ends at 17-21
+For other places also similar calculations may be carried out.
+
+

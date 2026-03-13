@@ -1,0 +1,139 @@
+Amrita Kalam Boundary Error Diagnosis
+Generated: 2026-03-07
+Script: app/bin/diagnose_boundary_errors.dart
+
+==========================================================================
+OVERVIEW
+==========================================================================
+5 dates (Dec 08, 10, 11, 15, 16) show 900-1348 min errors vs Sringeri.
+Hypothesis was: Moon past _amritFrac target at sunrise → attempt 2 fires
+~18-24h later. The actual picture is more complex — see per-date findings.
+
+==========================================================================
+PER-DATE FINDINGS
+==========================================================================
+
+--- Dec 08 Mon Punarvasu Di  (Sringeri: 07:04) ---
+Sunrise: 06:34
+Moon lon at sunrise: 94.74°
+Nakshatra at sunrise: Pushya (idx=7, Nakshatra.number=8)
+  WRONG — label says Punarvasu (idx=6), but Moon is in Pushya!
+_amritFrac for Pushya: 0.80
+Target lon: 104.00°
+Moon fraction through Pushya: 10.6%  → BEFORE target (should work)
+Pushya ends: 02:53 next day (1219 min after sunrise)
+At Pushya end, Moon lon: 106.67° → now in Ashlesha (idx=8)
+  Ashlesha target: 119.73°, still before target → formula searches forward
+  ~44h more → bisection converges to ~02:41 (2647 min out → null)
+
+ROOT CAUSE (Dec 08): Nakshatra MISLABEL in Sringeri vs our computation.
+  Sringeri says Punarvasu (idx=6), our code computes Pushya (idx=7).
+  This is an AYANAMSHA MISMATCH — our Moon lon is ~1.4° ahead of Sringeri's.
+  At 07:04 (Sringeri amrita), Moon in our calc is deep in Pushya,
+  not Punarvasu. The amrita fraction for Punarvasu (0.90) would have
+  a target lon of 93.33 + 0.90*13.33 = 105.33° — also not matching.
+  The real issue: our sidereal lon puts Moon ~1 nakshatra ahead of Sringeri.
+
+--- Dec 10 Wed Ashlesha Di  (Sringeri: 07:48) ---
+Sunrise: 06:35
+Moon lon at sunrise: 122.33°
+Nakshatra at sunrise: Magha (idx=9), but label says Ashlesha (idx=8)
+  AYANAMSHA MISMATCH again — Moon is ~1 nk ahead of Sringeri's calculation.
+_amritFrac for Magha: 0.96, target: 132.80°
+Moon fraction through Magha: 17.5% → BEFORE target
+Magha ends: 02:45 next day (1209 min)
+At Magha end: Moon at 133.33°, still in Magha at 100% → PAST target
+  attempt 2 also fails (past target at nkEnd) → null → MISS
+
+ROOT CAUSE (Dec 10): Same ayanamsha mismatch. Moon in our calc is in Magha,
+  Sringeri sees Ashlesha. Magha's target (96%) is nearly at nk boundary —
+  Moon barely crosses it before nk end, so attempt 2 also fails.
+
+--- Dec 11 Thu Magha Di  (Sringeri: 07:13) ---
+Sunrise: 06:36
+Moon lon at sunrise: 135.40°
+Nakshatra at sunrise: Purva Phalguni (idx=10), label says Magha (idx=9)
+  AYANAMSHA MISMATCH — same pattern, Moon 1 nk ahead.
+_amritFrac for PvPhg: 0.85, target: 144.67°
+Moon fraction through PvPhg: 15.5% → BEFORE target
+PvPhg ends: 03:56 next day (1280 min)
+At PvPhg end: Moon at 146.67°, 100% through → PAST target
+  attempt 2 also fails → null → MISS
+
+ROOT CAUSE (Dec 11): Same ayanamsha mismatch. Sringeri sees Magha,
+  we compute Purva Phalguni. PvPhg target at 85% — Moon crosses
+  it just before nk end, so attempt 2 also fails.
+
+--- Dec 15 Mon Chitra Di  (Sringeri: 07:35) ---
+Sunrise: 06:38
+Moon lon at sunrise: 184.43°
+Nakshatra at sunrise: Chitra (idx=13), label matches (Chitra)
+  NO ayanamsha mismatch this time — same nakshatra.
+_amritFrac for Chitra: 0.82, target: 184.27°
+Moon fraction through Chitra: 83.2% → *** PAST TARGET at sunrise ***
+  (184.43 > 184.27 — Moon JUST crossed the target before sunrise)
+Chitra ends: 11:09 (271 min after sunrise)
+attempt 2: Moon in Swati (idx=14), target 196.00°
+  → formula eventually converges to ~04:09 next day (1291 min) → error
+
+ROOT CAUSE (Dec 15): Moon crossed the Chitra amrita fraction (82%)
+  a few minutes BEFORE sunrise. Sringeri's Panchangam likely uses a
+  slightly different ayanamsha that puts the target crossing just AFTER
+  sunrise, so they show Di = 07:35. Our ayanamsha shifts Moon ~0.16°
+  ahead, causing the target to be crossed pre-sunrise.
+  Fix: Either lower Chitra's _amritFrac OR use Sringeri's ayanamsha.
+
+--- Dec 16 Tue Swati Di  (Sringeri: 07:31) ---
+Sunrise: 06:39
+Moon lon at sunrise: 196.29°
+Nakshatra at sunrise: Swati (idx=14), label matches (Swati)
+  NO ayanamsha mismatch — same nakshatra.
+_amritFrac for Swati: 0.70, target: 196.00°
+Moon fraction through Swati: 72.2% → *** PAST TARGET at sunrise ***
+  (196.29 > 196.00 — Moon JUST crossed the target before sunrise)
+Swati ends: 14:10 (451 min after sunrise)
+attempt 2: Moon still in Swati at 100% → PAST target → null → MISS
+
+ROOT CAUSE (Dec 16): Same as Dec 15. Swati target (70%) is crossed
+  ~17 min before our computed sunrise. Sringeri's ayanamsha puts it
+  just after sunrise → they show 07:31. Our Moon lon is ~0.29° ahead.
+  Fix: Lower Swati's _amritFrac slightly, OR ayanamsha calibration.
+
+==========================================================================
+SUMMARY OF ROOT CAUSES
+==========================================================================
+
+TWO distinct failure modes:
+
+1. AYANAMSHA MISMATCH (Dec 08, 10, 11):
+   Our sidereal Moon longitude is ~1.3-1.5° ahead of Sringeri's.
+   This shifts the Moon into the NEXT nakshatra entirely at sunrise.
+   The formula computes for the wrong nakshatra → completely wrong target.
+   These 3 dates are not fixable by _amritFrac tuning; require ayanamsha fix.
+
+2. PRE-SUNRISE TARGET CROSSING (Dec 15, 16):
+   Same nakshatra, but Moon crosses the amrit fraction ~15-30 min
+   BEFORE our computed sunrise. Our ayanamsha gives Moon lon ~0.16-0.29°
+   ahead of Sringeri's, causing the target crossing to shift earlier.
+   Fix options:
+   a) Lower _amritFrac for Chitra (0.82→~0.83+) and Swati (0.70→~0.72+)
+      to push the target crossing just past sunrise.
+   b) Apply ayanamsha correction globally (correct fix, separate branch).
+   c) Add a "pre-sunrise boundary" recovery: if Moon is within 1% of
+      the target at sunrise (just past it), and nkEnd is within 2h of
+      sunrise, return sunrise as the amrita start time.
+
+QUANTIFIED AYANAMSHA GAP:
+  Dec 15: Moon at 184.43° at 06:38 sunrise. Target = 184.27°.
+    Gap = 0.16° = ~17 min of Moon travel.
+  Dec 16: Moon at 196.29° at 06:39 sunrise. Target = 196.00°.
+    Gap = 0.29° = ~32 min of Moon travel.
+  Dec 08: Wrong nakshatra entirely — gap is ~full nk width (~1.4°).
+
+ACTION ITEMS:
+- Primary fix: Ayanamsha calibration (docs/ayanamsha.md, separate branch)
+- Quick workaround for Dec 15/16: slightly increase _amritFrac for
+  Chitra (0.82→0.84) and Swati (0.70→0.72) to push target past our
+  computed sunrise on these boundary days. Risk: may shift other dates.
+- Dec 08/10/11 require ayanamsha fix; _amritFrac tuning cannot help
+  when the whole nakshatra is wrong.
