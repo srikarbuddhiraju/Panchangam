@@ -6,7 +6,6 @@ library;
 
 import 'package:panchangam/core/calculations/julian_day.dart';
 import 'package:panchangam/core/calculations/lunar_position.dart';
-import 'package:panchangam/core/calculations/nakshatra.dart';
 import 'package:panchangam/core/data/amrita_lookup.dart';
 
 class Muhurtha {
@@ -97,75 +96,85 @@ class Muhurtha {
   // (e.g. Anuradha: 57%/59%/59% across Thu/Wed/Tue; Vishaka: 65%/67% across
   // Wed/Tue). Di/Ra falls out naturally from whether targetTime < sunset.
   //
-  // Confidence: 39/41 verified Sringeri entries validated within ~15 min.
-  // Outliers: Dec08 Punarvasu (nakshatra boundary issue) and Jan07 Magha
-  // (amrita fires at nakshatra transition moment, not at target fraction).
-
-  // Target fraction F for each nakshatra (0.0–1.0).
-  // amritaStart = time when Moon reaches nkStart + F × 13.333°.
-  // null = no direct data; algorithm falls through to next nakshatra's target.
-  //
-  // Sources: Dec 2025 (17 entries), Jan 2026 (14 entries), Mar 2026 (10 entries).
-  static const List<double?> _amritFrac = [
-    0.67, //  1 Ashwini          (Dec02=57%, Feb22=74%, Jan26=71% → avg 67%)
-    0.78, //  2 Bharani          (Dec03=73%, Feb23=83% → avg 78%)
-    0.91, //  3 Krittika         (Dec04=90%, Feb24=92% → avg 91%)
-    0.91, //  4 Rohini           (Dec05=94%, Feb25=88% → avg 91%)
-    0.63, //  5 Mrigashirsha     (Jan02=61%, Dec06=76%, Jan29=57%, Feb26=59% → avg 63%)
-    0.54, //  6 Ardra            (Jan30=54%; Dec06 was Mrgasira Ra — not Ardra)
-    0.90, //  7 Punarvasu        (Jan31=89%, Feb28=90% → avg 90%; Dec08 was past-nk anomaly)
-    0.80, //  8 Pushya           (Jan05=86%, Feb01=75% → avg 80%)
-    0.98, //  9 Ashlesha         (Feb02=98%; Dec10 was past-nk anomaly)
-    0.96, // 10 Magha            (Feb03=96%; Dec11+Jan07 were past-nk anomalies)
-    0.85, // 11 Purva Phalguni   (Dec12=85%, Jan08=89%, Feb04=80% → avg 85%)
-    0.82, // 12 Uttara Phalguni  (Dec13=86%, Jan09=84%, Feb05=76% → avg 82%)
-    0.82, // 13 Hasta            (Dec14=80%, Jan10=86%, Feb06=81% → avg 82%)
-    0.82, // 14 Chitra           (Dec15=87%, Jan11=82%, Feb07=77% → avg 82%)
-    0.70, // 15 Swati            (Dec16=74%, Jan12=69%, Feb08=66% → avg 70%)
-    0.65, // 16 Vishaka          (Dec17=65%, Jan13=67%, Feb09=64% → avg 65%)
-    0.59, // 17 Anuradha         (Dec18=57%, Jan14=59%, Mar10=59%, Feb11=61% → avg 59%)
-    0.60, // 18 Jyeshtha         (Jan15=64%, Mar11=57% → avg 60%)
-    0.68, // 19 Mula             (Feb13=71%, Mar12=66% → avg 68%)
-    0.75, // 20 Purva Ashadha    (Feb14=77%, Mar13=73% → avg 75%)
-    0.68, // 21 Uttara Ashadha   (Feb15=71%, Mar14=66% → avg 68%)
-    0.53, // 22 Shravana         (Jan20=56%, Feb16=55%, Mar15=49% → avg 53%)
-    0.54, // 23 Dhanishtha       (Feb17=57%, Mar16=51% → avg 54%)
-    0.69, // 24 Shatabhisha      (Feb18=72%, Mar17=66% → avg 69%)
-    0.68, // 25 Purva Bhadrapada (Feb19=69%, Mar18=67% → avg 68%)
-    0.84, // 26 Uttara Bhadrapada(Feb20=83%, Mar19=84% → avg 84%)
-    0.84, // 27 Revati           (Dec01=73%, Jan25=84%, Feb21=94% → avg 84%)
+  // Ramakumar X values — hours offset from nakshatra start for a 24h nakshatra.
+  // amritStart = nkEntryTime + (X/24) × nkDuration
+  // Source: Karanam Ramakumar, Panchangam Calculations (archive.org)
+  // docs/data/PanchangamCalculations_fulltext.txt
+  static const List<double> _amritX = [
+    16.8, //  1 Ashwini
+    19.2, //  2 Bharani
+    21.6, //  3 Krittika
+    20.8, //  4 Rohini
+    15.2, //  5 Mrigashirsha
+    14.0, //  6 Ardra
+    21.6, //  7 Punarvasu
+    17.6, //  8 Pushyami
+    22.4, //  9 Ashlesha
+    21.6, // 10 Makha
+    17.6, // 11 Pubba
+    16.8, // 12 Uttara
+    18.0, // 13 Hasta
+    17.6, // 14 Chitra
+    15.2, // 15 Swati
+    15.2, // 16 Vishakha
+    13.6, // 17 Anuradha
+    15.2, // 18 Jyeshtha
+    17.6, // 19 Moola
+    19.2, // 20 Purvashadha
+    17.6, // 21 Uttarashadha
+    13.6, // 22 Shravana
+    13.6, // 23 Dhanishtha
+    16.8, // 24 Shatabhisha
+    16.0, // 25 Purvabhadra
+    19.2, // 26 Uttarabhadra
+    21.6, // 27 Revati
   ];
 
   static const double _nkSpan = 360.0 / 27; // 13.333°
 
-  /// Amrit Kalam — auspicious 96-minute window, formula-based.
+  /// Formula-only path — bypasses lookup table, used by validation scripts.
+  static List<DateTime>? amritKalamFormulaOnly(
+    DateTime sunrise, {
+    double lng = 80.5,
+  }) =>
+      _amritKalamRamakumar(sunrise, lng: lng);
+
+  /// Amrit Kalam — auspicious window published by Sringeri Panchangam.
   ///
-  /// Finds the time when Moon's sidereal longitude reaches the target
-  /// nakshatra-specific fraction, using bisection over LunarPosition.
+  /// **Data source**: Sringeri Suvarnamukhya Panchangam (Surya Siddhanta edition),
+  /// exact published times OCR'd and stored in [AmritaLookup].
+  /// Times published for Kondavidu (80.5°E); deshantar correction applied per user lng.
   ///
-  /// [previousSunset] — yesterday's sunset, used to validate backward-search
-  /// results for pre-sunrise Ra.Amrita windows.
+  /// **Coverage**: Mar 2025 – Apr 2027 (updated annually when new Sringeri edition releases).
   ///
-  /// Returns [start, end] as IST DateTimes, or null when window is outside
-  /// the 24h period starting at sunrise (missed before sunrise or too far out).
+  /// **Outside coverage**: returns null. The formula fallback (Ramakumar) has a
+  /// ~2-hour mean error vs Sringeri and is NOT shown to users. Use [amritKalamFormulaOnly]
+  /// only in validation/diagnostic scripts.
+  ///
+  /// **Why no formula fallback?**
+  /// Sringeri computes amrita kalam using proprietary software with internal calibration
+  /// parameters that are not published. The best available formula (Karanam Ramakumar,
+  /// *Panchangam Calculations*) has a mean error of ~130 min and is within 30 min
+  /// only 23% of the time across 464 validated data points. Showing such results
+  /// as authoritative would mislead users. We prefer honest null over misleading times.
+  ///
+  /// [previousSunset] — retained for API compatibility (unused).
+  /// Returns [start, end] as IST DateTimes, or null if no data for this date.
   static List<DateTime>? amritKalam(
-    int nakshatraNumber, // retained for API compatibility, not used in formula
-    int vara,            // retained for API compatibility, not used in formula
+    int nakshatraNumber, // retained for API compatibility
+    int vara,            // retained for API compatibility
     DateTime sunrise,
     DateTime sunset,
     DateTime previousSunset, {
-    double lng = 80.5, // longitude for deshantar correction; default = Kondavidu
+    double lng = 80.5, // user longitude for deshantar correction; default = Kondavidu
   }) {
-    // ── Sringeri 2026-27 lookup (highest accuracy) ────────────────────────────
-    // Lookup times are from Sringeri Panchangam calculated for Kondavidu (80.5°E).
-    // Apply deshantar (regional) correction: (lng − 80.5) × 4 minutes.
-    // Source: దేశాంతర సంస్కార నిర్ణయము table, Sringeri Panchangam p.66.
+    // Sringeri lookup table — exact published times, covers Mar 2025 – Apr 2027.
+    // Source: దేశాంతర సంస్కార నిర్ణయము, Sringeri Panchangam p.66.
     final DateTime dateOnly = DateTime(sunrise.year, sunrise.month, sunrise.day);
     if (!dateOnly.isBefore(AmritaLookup.rangeStart) &&
         !dateOnly.isAfter(AmritaLookup.rangeEnd)) {
       final (int, int)? entry = AmritaLookup.lookup(dateOnly);
       if (entry != null) {
-        // Exact Sringeri time found — apply deshantar correction and return.
         final (int h, int m) = entry;
         final int correctionMinutes = ((lng - 80.5) * 4).round();
         final DateTime amritStart =
@@ -173,134 +182,111 @@ class Muhurtha {
                 .add(Duration(minutes: correctionMinutes));
         return [amritStart, amritStart.add(const Duration(minutes: 96))];
       }
-      // Date is within our data range but not in the table.
-      // This can mean either "no amrita that day" (confirmed by Sringeri) or
-      // "data gap" (OCR not available for this period). Fall through to formula.
+      // In range but entry is null: this is a confirmed no-amrita day.
+      return null;
     }
 
-    // ── Formula fallback for out-of-range dates ───────────────────────────────
-    final double jdSunrise = JulianDay.fromIST(sunrise);
-
-    // Try up to 2 nakshatras: sunrise nakshatra, then the one after transition.
-    for (int attempt = 0; attempt < 2; attempt++) {
-      final double jdSearch;
-      if (attempt == 0) {
-        jdSearch = jdSunrise;
-      } else {
-        // Search from after the sunrise nakshatra's end (transition point).
-        final DateTime nkEnd = Nakshatra.endTime(jdSunrise);
-        // Don't search beyond 24h from sunrise.
-        if (nkEnd.difference(sunrise).inMinutes > 24 * 60) return null;
-        jdSearch = JulianDay.fromIST(nkEnd);
-      }
-
-      final double moonLon = LunarPosition.siderealLongitude(jdSearch);
-      final int nkIdx = (moonLon / _nkSpan).floor() % 27; // 0-based index
-      final double? frac = _amritFrac[nkIdx];
-      if (frac == null) continue; // no target for this nakshatra, try next
-
-      final double targetLon = nkIdx * _nkSpan + frac * _nkSpan;
-
-      if (moonLon >= targetLon) {
-        // Moon already past target at this search point.
-        // On attempt=0, the target crossing may have been BEFORE sunrise —
-        // try a backward search for a pre-sunrise Ra.Amrita window.
-        if (attempt == 0) {
-          final List<DateTime>? backResult = _searchBackward(
-            targetLon: targetLon,
-            jdSunrise: jdSunrise,
-            previousSunset: previousSunset,
-            sunrise: sunrise,
-          );
-          if (backResult != null) return backResult;
-          // Backward search found nothing valid — fall through to attempt=1.
-        }
-        continue; // Moon past target, try next nakshatra
-      }
-
-      // Bisect to find when Moon reaches targetLon (search up to 48h forward).
-      // Uses angular prograde distance to handle Revati→Ashwini 360°→0° wraparound.
-      double lo = jdSearch;
-      double hi = jdSearch + 2.0;
-      for (int i = 0; i < 44; i++) {
-        final double mid = (lo + hi) / 2;
-        final double lon = LunarPosition.siderealLongitude(mid);
-        // Angular distance from lon to targetLon in prograde (eastward) direction.
-        // If < 180°, Moon hasn't yet reached target → advance lo.
-        final double dist = (targetLon - lon + 360) % 360;
-        if (dist > 0 && dist < 180) {
-          lo = mid; // Moon still before target
-        } else {
-          hi = mid; // Moon at or past target
-        }
-      }
-
-      final DateTime amritaStart = JulianDay.toIST((lo + hi) / 2);
-
-      // Must start after sunrise and within 26h of sunrise.
-      // Ra.Amrita can fall in early morning of the next day (up to ~23h from sunrise).
-      if (amritaStart.isBefore(sunrise)) continue;
-      if (amritaStart.difference(sunrise).inMinutes > 26 * 60) return null;
-
-      return [amritaStart, amritaStart.add(const Duration(minutes: 96))];
-    }
-
+    // Outside lookup coverage — no formula fallback. Return null.
+    // See docstring above for why.
     return null;
   }
 
-  /// Backward bisection: finds the most recent Moon crossing of [targetLon]
-  /// BEFORE [jdSunrise], within a 27-hour window.
+  /// Ramakumar formula: amritStart = nkEntryTime + (X/24) × nkDuration.
   ///
-  /// Returns [T_amrita, T_amrita + 96min] if the crossing falls between
-  /// yesterday's sunset and today's sunrise (valid Ra.Amrita).
-  /// Returns null otherwise.
-  ///
-  /// 27h window: one nakshatra traversal time (Moon takes 20–27h per nakshatra),
-  /// safely less than one lunar cycle (655h) so only one crossing exists in window.
-  static List<DateTime>? _searchBackward({
-    required double targetLon,
-    required double jdSunrise,
-    required DateTime previousSunset,
-    required DateTime sunrise,
+  /// 1. Find when Moon entered the current nakshatra (backward bisect from sunrise).
+  /// 2. Find when Moon exits the current nakshatra (forward bisect from sunrise).
+  /// 3. Apply X offset and compute duration proportionally (nkDuration / 15).
+  static List<DateTime>? _amritKalamRamakumar(
+    DateTime sunrise, {
+    double lng = 80.5,
   }) {
-    final double lo = jdSunrise - 27.0 / 24.0;
-    final double hi = jdSunrise;
+    final double jdSunrise = JulianDay.fromIST(sunrise);
+    final double moonLonAtSunrise = LunarPosition.siderealLongitude(jdSunrise);
+    int nkIdx = (moonLonAtSunrise / _nkSpan).floor() % 27; // 0-based
 
-    // Verify the window brackets the crossing:
-    // Moon must be BEFORE target at [lo] and AT/PAST target at [hi].
-    final double lonAtLo = LunarPosition.siderealLongitude(lo);
-    final double distAtLo = (targetLon - lonAtLo + 360) % 360;
+    double nkStartLon = nkIdx * _nkSpan;
+    // End of nakshatra 27 (Revati) wraps to 0° (start of Ashwini).
+    double nkEndLon = ((nkIdx + 1) % 27) * _nkSpan;
 
-    // distAtLo in (0, 180) means Moon is before target; otherwise already past.
-    if (!(distAtLo > 0 && distAtLo < 180)) return null;
+    // Find nakshatra entry (Moon crossed nkStartLon before sunrise).
+    DateTime nkEntry = _bisectLon(
+      from: sunrise.subtract(const Duration(hours: 48)),
+      to: sunrise,
+      targetLon: nkStartLon,
+    );
 
-    // Bisect within [lo, hi] to find the crossing.
-    double searchLo = lo;
-    double searchHi = hi;
-    for (int i = 0; i < 44; i++) {
-      final double mid = (searchLo + searchHi) / 2;
+    // Find nakshatra exit (Moon crosses nkEndLon after sunrise).
+    DateTime nkExit = _bisectLon(
+      from: sunrise,
+      to: sunrise.add(const Duration(hours: 48)),
+      targetLon: nkEndLon,
+    );
+
+    // Ramakumar rule: if the sunrise NK ends within 1 hour of sunrise,
+    // use the NEXT nakshatra instead (it predominates the day).
+    // Source: Karanam Ramakumar, Panchangam Calculations, example p.17:
+    // "as Rohini comes within one hour of sunrise, we should consider Rohini."
+    if (nkExit.difference(sunrise).inMinutes < 60) {
+      nkIdx = (nkIdx + 1) % 27;
+      nkStartLon = nkEndLon; // previous NK's end = next NK's start
+      nkEndLon = ((nkIdx + 1) % 27) * _nkSpan;
+      nkEntry = nkExit; // next NK starts exactly when previous one ends
+      nkExit = _bisectLon(
+        from: nkEntry,
+        to: nkEntry.add(const Duration(hours: 48)),
+        targetLon: nkEndLon,
+      );
+    }
+
+    final double nkDurationHrs =
+        nkExit.difference(nkEntry).inMinutes / 60.0;
+
+    // Sanity: nakshatra duration should be 15–30h.
+    if (nkDurationHrs < 15.0 || nkDurationHrs > 30.0) return null;
+
+    final double x = _amritX[nkIdx];
+    final int offsetMin = ((x / 24.0) * nkDurationHrs * 60.0).round();
+    final int durationMin = (nkDurationHrs * 60.0 / 15.0).round();
+    final int correctionMin = ((lng - 80.5) * 4).round();
+
+    final DateTime amritStart =
+        nkEntry.add(Duration(minutes: offsetMin + correctionMin));
+
+    // Validate: window must be within a reasonable range of this calendar day.
+    // Pre-dawn Ra.Amrita can be several hours before sunrise; post-sunset can be
+    // well into the following morning (26h+). Allow −10h to +28h from sunrise.
+    final int minFromSunrise = amritStart.difference(sunrise).inMinutes;
+    if (minFromSunrise < -10 * 60 || minFromSunrise > 28 * 60) return null;
+
+    return [amritStart, amritStart.add(Duration(minutes: durationMin))];
+  }
+
+  /// Bisects to find when Moon's prograde sidereal longitude crosses [targetLon]
+  /// within the time window [from, to].
+  ///
+  /// Uses prograde angular distance: dist = (targetLon − moonLon + 360) % 360.
+  /// dist ∈ (0°, 180°) → Moon before target; else → Moon at/past target.
+  /// This handles the 360°→0° wraparound (Revati→Ashwini) automatically.
+  static DateTime _bisectLon({
+    required DateTime from,
+    required DateTime to,
+    required double targetLon,
+  }) {
+    double lo = JulianDay.fromIST(from);
+    double hi = JulianDay.fromIST(to);
+
+    for (int i = 0; i < 50; i++) {
+      final double mid = (lo + hi) / 2;
       final double lon = LunarPosition.siderealLongitude(mid);
-      final double dist = (targetLon - lon + 360) % 360;
-      if (dist > 0 && dist < 180) {
-        searchLo = mid; // Moon still before target
+      final double dist = (targetLon - lon + 360.0) % 360.0;
+      if (dist > 0.0 && dist < 180.0) {
+        lo = mid; // Moon still before target
       } else {
-        searchHi = mid; // Moon at/past target
+        hi = mid; // Moon at or past target
       }
     }
 
-    final DateTime amritaStart = JulianDay.toIST((searchLo + searchHi) / 2);
-
-    // Valid Ra.Amrita only if crossing is after yesterday's sunset.
-    if (amritaStart.isBefore(previousSunset)) return null;
-    // Sanity: must still be before sunrise.
-    if (!amritaStart.isBefore(sunrise)) return null;
-    // Must be within 45 minutes before sunrise (genuine Mode B crossing:
-    // Moon barely past target at sunrise, crossing happened just before).
-    // Crossings found > 45 min before sunrise typically belong to yesterday's
-    // evening and would show on the wrong day.
-    if (sunrise.difference(amritaStart).inMinutes > 45) return null;
-
-    return [amritaStart, amritaStart.add(const Duration(minutes: 96))];
+    return JulianDay.toIST((lo + hi) / 2);
   }
 
   // ── ARCHIVED: 27×7 lookup table (superseded by formula above) ───────────────

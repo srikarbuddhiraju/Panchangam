@@ -1,0 +1,169 @@
+==========================================================================================
+AMRITA KALAM  —  lon_frac vs time_since_nk_entry_min  —  Statistical Analysis
+Data: docs/data/ml_features.csv   |   Total rows: 391
+==========================================================================================
+
+LEGEND
+  frac     = lon_frac   (fixed-fraction model: Moon is at X% of nakshatra span)
+  time_min = time_since_nk_entry_min  (time-offset model: X min after NK entry)
+  CV       = coefficient of variation = (std/mean)×100  — LOWER IS BETTER
+  r_spd_f  = Pearson(moon_speed, lon_frac)   — if high, speed predicts frac
+  r_spd_t  = Pearson(moon_speed, time_since_entry) — if high, speed predicts time
+
+──────────────────────────────────────────────────────────────────────────────────────────
+SECTION 1 — COMBINED (Di + Ra)
+──────────────────────────────────────────────────────────────────────────────────────────
+Nakshatra            N  frac_mean frac_std frac_CV%  time_mean time_std time_CV%  spd_mean r_spd_f r_spd_t  winner
+──────────────────────────────────────────────────────────────────────────────────────────
+Ashwini              7      0.62     0.15    24.18     869.6    190.2    21.88     0.574     0.44     0.27    TIME
+Bharani              8      0.87     0.10    11.88    1141.9    120.7    10.57     0.608     0.40     0.10    TIME
+Krttika             20      0.60     0.31    51.43     819.6    418.3    51.04     0.587    -0.03    -0.22     tie
+Rohini              14      0.62     0.32    51.51     862.9    430.8    49.92     0.568     0.20     0.03    TIME
+Mrgasira            15      0.65     0.18    28.21     911.7    251.5    27.59     0.573     0.20    -0.13     tie
+Ardra                9      0.51     0.32    63.07     762.0    509.5    66.86     0.550    -0.52    -0.61    FRAC
+Punarvasu           18      0.53     0.37    68.72     731.6    501.6    68.56     0.579     0.18     0.09     tie
+Pushya              21      0.65     0.28    43.67     908.4    377.9    41.60     0.560     0.48     0.33    TIME
+Magha                9      0.57     0.38    66.23     880.2    575.1    65.33     0.517     0.06     0.01     tie
+Hasta               14      0.61     0.29    46.98     942.0    446.2    47.37     0.516    -0.18    -0.26     tie
+Chitra              18      0.69     0.19    27.30    1058.2    291.1    27.51     0.518    -0.08    -0.24     tie
+Vishakha            19      0.57     0.17    30.24     889.2    247.8    27.87     0.511     0.36     0.13    TIME
+Anuradha            20      0.61     0.14    23.62     956.3    206.4    21.58     0.508     0.45     0.24    TIME
+Jyeshtha            18      0.59     0.17    29.04     932.9    274.1    29.38     0.505    -0.37    -0.47     tie
+Mula                12      0.62     0.16    26.07     990.8    258.7    26.11     0.501    -0.02    -0.08     tie
+Shravana            10      0.48     0.19    40.24     706.4    281.9    39.91     0.550    -0.20    -0.37     tie
+Dhanishtha          12      0.49     0.13    26.61     737.8    188.6    25.56     0.532     0.27     0.02    TIME
+Shatabhisha          8      0.45     0.23    51.88     694.0    356.7    51.40     0.519     0.72     0.69     tie
+Revati              18      0.65     0.29    45.34     909.7    402.0    44.20     0.569     0.50     0.36    TIME
+Ashlesha            16      0.47     0.37    78.66     693.8    543.3    78.30     0.554    -0.22    -0.32     tie
+PvAshadha           26      0.70     0.15    21.26    1096.6    249.4    22.74     0.517    -0.36    -0.56    FRAC
+PvBhadra            17      0.55     0.22    40.95     800.4    327.0    40.86     0.549     0.36     0.21     tie
+Swati               13      0.67     0.17    24.79    1050.6    241.0    22.94     0.509     0.51     0.37    TIME
+UtAshadha           28      0.53     0.18    34.45     801.9    276.5    34.48     0.529     0.16    -0.08     tie
+UtBhadra            21      0.60     0.21    35.13     861.7    304.8    35.38     0.556     0.34     0.20     tie
+──────────────────────────────────────────────────────────────────────────────────────────
+MEAN CV across nakshatras                frac_CV=39.66%   time_CV=39.16%
+
+  Nakshatras where TIME-offset wins (CV lower by >1%): 9
+  Nakshatras where FRAC wins         (CV lower by >1%): 2
+  Nakshatras tied (within 1%):                          14
+
+  >> CONCLUSION: TIME-OFFSET model has lower mean CV (39.16% vs 39.66%)
+     Hypothesis SUPPORTED: fixed-time-offset model is more consistent than fixed-fraction.
+
+──────────────────────────────────────────────────────────────────────────────────────────
+SECTION 2 — Di ONLY
+──────────────────────────────────────────────────────────────────────────────────────────
+Nakshatra            N  frac_mean frac_std frac_CV%  time_mean time_std time_CV%  spd_mean r_spd_f r_spd_t  winner
+──────────────────────────────────────────────────────────────────────────────────────────
+Ashwini              2      0.69     0.29    42.31     987.5    378.3    38.31     0.555   n/a     n/a      TIME
+Bharani              3      0.85     0.15    17.58    1107.3    172.3    15.56     0.611     0.95     0.93    TIME
+Krttika              8      0.65     0.32    48.95     866.6    411.6    47.50     0.599     0.37     0.22    TIME
+Rohini               6      0.46     0.33    71.37     676.0    481.2    71.18     0.557    -0.68    -0.72     tie
+Mrgasira             9      0.62     0.23    36.24     877.1    306.6    34.96     0.568     0.16    -0.10    TIME
+Ardra                7      0.42     0.30    71.01     598.3    436.5    72.96     0.566    -0.27    -0.36    FRAC
+Punarvasu            7      0.33     0.40   121.09     455.0    544.9   119.75     0.578     0.27     0.26    TIME
+Pushya              12      0.65     0.29    44.89     939.2    405.0    43.12     0.545     0.57     0.43    TIME
+Magha                4      0.53     0.40    76.09     826.8    626.6    75.79     0.512    -0.80    -0.81     tie
+Hasta               10      0.58     0.25    42.46     900.4    382.8    42.51     0.512     0.21     0.11     tie
+Chitra              11      0.65     0.23    35.78     985.8    354.8    35.99     0.526    -0.01    -0.14     tie
+Vishakha            10      0.57     0.09    15.58     905.4    142.1    15.70     0.503     0.01    -0.15     tie
+Anuradha            12      0.59     0.16    26.99     925.7    227.1    24.53     0.506     0.72     0.67    TIME
+Jyeshtha             9      0.51     0.15    29.34     808.9    246.4    30.46     0.512    -0.46    -0.60    FRAC
+Mula                 6      0.68     0.03     4.66    1087.5     55.4     5.09     0.502     0.02    -0.38     tie
+Shravana             4      0.48     0.10    21.06     720.2    140.2    19.47     0.540     0.38    -0.11    TIME
+Dhanishtha           5      0.41     0.06    13.56     645.6     97.9    15.17     0.516    -0.61    -0.70    FRAC
+Shatabhisha          3      0.46     0.24    53.02     716.3    374.6    52.29     0.515     0.68     0.64     tie
+Revati               9      0.66     0.35    53.65     917.1    482.0    52.56     0.567     0.62     0.47    TIME
+Ashlesha             6      0.56     0.38    68.76     800.5    532.6    66.54     0.550     0.30     0.19    TIME
+PvAshadha           12      0.69     0.15    21.67    1080.3    236.9    21.93     0.512    -0.16    -0.36     tie
+PvBhadra             9      0.45     0.25    55.17     651.0    352.2    54.10     0.550     0.63     0.54    TIME
+Swati                8      0.61     0.16    26.09     965.4    253.8    26.29     0.505    -0.03    -0.10     tie
+UtAshadha           13      0.59     0.15    26.23     875.5    218.2    24.93     0.540     0.27    -0.07    TIME
+UtBhadra            11      0.55     0.27    49.97     802.5    409.7    51.04     0.548     0.23     0.11    FRAC
+──────────────────────────────────────────────────────────────────────────────────────────
+MEAN CV — Di                             frac_CV=42.94%   time_CV=42.31%
+  TIME wins: 12  |  FRAC wins: 4  |  Ties: 9
+
+──────────────────────────────────────────────────────────────────────────────────────────
+SECTION 2b — Ra ONLY
+──────────────────────────────────────────────────────────────────────────────────────────
+Nakshatra            N  frac_mean frac_std frac_CV%  time_mean time_std time_CV%  spd_mean r_spd_f r_spd_t  winner
+──────────────────────────────────────────────────────────────────────────────────────────
+Ashwini              5      0.59     0.10    16.05     822.4     93.6    11.39     0.581     0.88     0.79    TIME
+Bharani              5      0.88     0.08     9.44    1162.6     95.9     8.25     0.606     0.49    -0.01    TIME
+Krttika             12      0.56     0.31    54.79     788.3    437.9    55.55     0.579    -0.27    -0.45     tie
+Rohini               8      0.73     0.27    36.93    1003.0    356.1    35.51     0.577     0.59     0.36    TIME
+Mrgasira             6      0.70     0.10    13.92     963.7    146.1    15.16     0.580     0.30    -0.37    FRAC
+Ardra                2      0.83     0.19    22.46    1335.0    298.4    22.35     0.496   n/a     n/a       tie
+Punarvasu           11      0.66     0.29    44.08     907.6    402.5    44.34     0.580     0.14    -0.02     tie
+Pushya               9      0.64     0.28    44.62     867.3    357.9    41.27     0.581     0.49     0.35    TIME
+Magha                5      0.61     0.41    66.28     923.0    601.5    65.17     0.520     0.52     0.47    TIME
+Hasta                4      0.68     0.40    59.57    1046.0    634.9    60.70     0.524    -0.81    -0.86    FRAC
+Chitra               7      0.74     0.06     7.44    1172.0     74.9     6.39     0.506     0.48    -0.08    TIME
+Vishakha             9      0.57     0.24    42.31     871.2    338.8    38.89     0.519     0.42     0.20    TIME
+Anuradha             8      0.64     0.12    18.87    1002.2    174.7    17.43     0.512     0.42     0.01    TIME
+Jyeshtha             9      0.66     0.16    24.81    1056.9    253.7    24.00     0.497     0.31     0.25     tie
+Mula                 6      0.56     0.22    39.01     894.2    348.9    39.02     0.501    -0.08    -0.12     tie
+Shravana             6      0.48     0.25    51.70     697.2    361.9    51.92     0.558    -0.43    -0.53     tie
+Dhanishtha           7      0.54     0.14    26.68     803.7    216.1    26.88     0.543     0.12    -0.15     tie
+Shatabhisha          5      0.44     0.26    57.67     680.6    389.8    57.27     0.521     0.79     0.76     tie
+Revati               9      0.64     0.24    37.86     902.2    333.2    36.93     0.570     0.17     0.04     tie
+Ashlesha            10      0.42     0.38    89.08     629.8    567.6    90.12     0.557    -0.48    -0.56    FRAC
+PvAshadha           14      0.71     0.15    21.57    1110.5    267.7    24.10     0.522    -0.51    -0.70    FRAC
+PvBhadra             8      0.66     0.14    20.79     968.5    204.3    21.09     0.548     0.08    -0.23     tie
+Swati                5      0.77     0.14    17.80    1187.0    154.0    12.98     0.515     0.95     0.91    TIME
+UtAshadha           15      0.48     0.19    40.48     738.1    311.9    42.25     0.520    -0.03    -0.20    FRAC
+UtBhadra            10      0.65     0.09    13.95     926.8    105.1    11.34     0.565     0.69     0.41    TIME
+──────────────────────────────────────────────────────────────────────────────────────────
+MEAN CV — Ra                             frac_CV=35.13%   time_CV=34.41%
+  TIME wins: 10  |  FRAC wins: 5  |  Ties: 10
+
+──────────────────────────────────────────────────────────────────────────────────────────
+SECTION 3 — MOON SPEED CORRELATION SUMMARY (combined Di+Ra)
+──────────────────────────────────────────────────────────────────────────────────────────
+  r(speed, lon_frac)           — if near ±1, speed determines where in NK Moon fires
+  r(speed, time_since_entry)   — if near ±1, slower Moon = more time to hit amrita
+
+  Ashwini             r(spd,frac)=    0.44   r(spd,time)=    0.27  n=7
+  Bharani             r(spd,frac)=    0.40   r(spd,time)=    0.10  n=8
+  Krttika             r(spd,frac)=   -0.03   r(spd,time)=   -0.22  n=20
+  Rohini              r(spd,frac)=    0.20   r(spd,time)=    0.03  n=14
+  Mrgasira            r(spd,frac)=    0.20   r(spd,time)=   -0.13  n=15
+  Ardra               r(spd,frac)=   -0.52   r(spd,time)=   -0.61  n=9
+  Punarvasu           r(spd,frac)=    0.18   r(spd,time)=    0.09  n=18
+  Pushya              r(spd,frac)=    0.48   r(spd,time)=    0.33  n=21
+  Magha               r(spd,frac)=    0.06   r(spd,time)=    0.01  n=9
+  Hasta               r(spd,frac)=   -0.18   r(spd,time)=   -0.26  n=14
+  Chitra              r(spd,frac)=   -0.08   r(spd,time)=   -0.24  n=18
+  Vishakha            r(spd,frac)=    0.36   r(spd,time)=    0.13  n=19
+  Anuradha            r(spd,frac)=    0.45   r(spd,time)=    0.24  n=20
+  Jyeshtha            r(spd,frac)=   -0.37   r(spd,time)=   -0.47  n=18
+  Mula                r(spd,frac)=   -0.02   r(spd,time)=   -0.08  n=12
+  Shravana            r(spd,frac)=   -0.20   r(spd,time)=   -0.37  n=10
+  Dhanishtha          r(spd,frac)=    0.27   r(spd,time)=    0.02  n=12
+  Shatabhisha         r(spd,frac)=    0.72   r(spd,time)=    0.69  n=8
+  Revati              r(spd,frac)=    0.50   r(spd,time)=    0.36  n=18
+  Ashlesha            r(spd,frac)=   -0.22   r(spd,time)=   -0.32  n=16
+  PvAshadha           r(spd,frac)=   -0.36   r(spd,time)=   -0.56  n=26
+  PvBhadra            r(spd,frac)=    0.36   r(spd,time)=    0.21  n=17
+  Swati               r(spd,frac)=    0.51   r(spd,time)=    0.37  n=13
+  UtAshadha           r(spd,frac)=    0.16   r(spd,time)=   -0.08  n=28
+  UtBhadra            r(spd,frac)=    0.34   r(spd,time)=    0.20  n=21
+
+  Mean |r(speed,frac)| across nakshatras : 0.305
+  Mean |r(speed,time)| across nakshatras : 0.256
+
+  >> Moon speed is moderately/strongly correlated with lon_frac.
+     Speed-adjusted fraction formula may further improve accuracy.
+
+==========================================================================================
+OVERALL RECOMMENDATION
+==========================================================================================
+  Combined mean CV  — lon_frac model     : 39.66%
+  Combined mean CV  — time-offset model  : 39.16%
+
+  Models are roughly equivalent (gap = 0.5%).
+  Consider checking Di vs Ra split — one type may favour a different model.
+
+Saved to: docs/data/time_offset_analysis.txt
+==========================================================================================

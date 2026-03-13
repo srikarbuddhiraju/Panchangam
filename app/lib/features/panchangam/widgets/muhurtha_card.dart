@@ -52,13 +52,18 @@ class MuhurthaCard extends StatelessWidget {
             ),
             const Divider(height: 16),
 
-            // Amrit Kalam
+            // Amrit Kalam — Sringeri Panchangam lookup (not a formula).
+            // Outside Mar 2025–Apr 2027: shows honest gap + explanation.
             _MuhurthaRow(
               label: S.amritKalam,
               start: data.amritKalamStart,
               end: data.amritKalamEnd,
               valid: data.amritKalamStart != null,
-              invalidMessage: S.notApplicable,
+              invalidMessage: S.amritKalamUnavailable,
+              invalidExplanation: data.amritKalamStart == null
+                  ? S.amritKalamWhyUnavailable
+                  : null,
+              sourceNote: data.amritKalamStart != null ? S.amritKalamSource : null,
               color: AppTheme.kAuspiciousGreen,
               icon: Icons.water_drop,
               use24h: use24h,
@@ -76,6 +81,10 @@ class _MuhurthaRow extends StatelessWidget {
   final DateTime? end;
   final bool valid;
   final String? invalidMessage;
+  /// Shown as a wrapped paragraph below the row when data is unavailable.
+  final String? invalidExplanation;
+  /// Small source label shown below the time when data is available.
+  final String? sourceNote;
   final Color color;
   final IconData icon;
   final bool use24h;
@@ -86,6 +95,8 @@ class _MuhurthaRow extends StatelessWidget {
     required this.end,
     required this.valid,
     this.invalidMessage,
+    this.invalidExplanation,
+    this.sourceNote,
     required this.color,
     required this.icon,
     required this.use24h,
@@ -96,27 +107,62 @@ class _MuhurthaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimColor = Theme.of(context).colorScheme.onSurfaceVariant;
     final String timeStr = !valid
         ? (invalidMessage ?? (S.isTelugu ? 'బుధవారం వర్తించదు' : 'Not valid on Wednesday'))
         : (start != null && end != null)
             ? '${_fmt(start!)} – ${_fmt(end!)}'
             : S.notAvailable;
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: color, size: 18),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(label,
-              style: const TextStyle(fontWeight: FontWeight.w500)),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(icon, color: color, size: 18),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(label,
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  timeStr,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: valid ? null : dimColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+                if (sourceNote != null)
+                  Text(
+                    sourceNote!,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: dimColor,
+                        ),
+                  ),
+              ],
+            ),
+          ],
         ),
-        Text(
-          timeStr,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: valid ? null : Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
-        ),
+        if (invalidExplanation != null) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 28),
+            child: Text(
+              invalidExplanation!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: dimColor,
+                    fontStyle: FontStyle.italic,
+                  ),
+            ),
+          ),
+        ],
       ],
     );
   }

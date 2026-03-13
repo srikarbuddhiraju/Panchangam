@@ -96,3 +96,25 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 
 **Q3. Feb 2026 data — status?**
 > User confirmed they gave February 2026 data in a prior session, but it was NOT saved to a file (context compressed). Need re-paste. Target file: `docs/data/sringeri_feb2026.txt`.
+
+---
+
+## Session: Mar 9, 2026 — Ramakumar Book Verification (Session 23)
+
+**Q1. "Looks like you are assuming things?" — what was wrong?**
+> Claude had concluded the ~121 min error is an "irreducible floor" without verifying
+> the Ramakumar book text. The book contains an explicit NK-selection rule we missed:
+> if the sunrise nakshatra ends within 1 hour of sunrise, use the NEXT nakshatra.
+> **Fix**: Implemented in `muhurtha.dart` — `_amritKalamRamakumar()` now advances to
+> the next NK if `nkExit.difference(sunrise).inMinutes < 60`.
+
+**Q2. Did reading the Ramakumar book show any other differences?**
+> - X values (16.8, 19.2, 21.6…) are CORRECT per the book (Krittika=21.6, Rohini=20.8 confirmed)
+> - Duration formula: book says `nkDuration × 1.6/24` = our `nkDuration / 15` (same thing)
+> - Formula `amritaStart = nkEntry + (X/24) × nkDuration` confirmed correct
+> - No other differences found
+
+**Q3. What remains before merge?**
+> - Release build (`flutter build apk --release`) — Rule #8
+> - Device spot-check on dates outside lookup range (Jan 15 2024, Oct 10 2028)
+> - Commit Session 23 changes, then merge feature/amrita-ramakumar-formula → main
