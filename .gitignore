@@ -137,3 +137,6 @@ logs/
 # LOGOS & ASSETS
 # ======================
 Logos & Assets
+
+# Screenshots (local only — not tracked in git)
+docs/screenshots/
