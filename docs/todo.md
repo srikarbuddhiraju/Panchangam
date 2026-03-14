@@ -1,7 +1,7 @@
 # Next Sessions — April Release
 
 **Target release:** First week of April 2026
-**Current branch:** `feature/playstore-prep` (pending merge)
+**Current branch:** `main` (merged)
 
 ---
 
@@ -15,7 +15,21 @@
 
 ---
 
-## Session 27 — Merge + Play Store Submit (next)
+## Pre-Launch Security — Before Automated Play Store Updates
+
+- [ ] **Move Pro email list out of source code** — `_proEmails` in `auth_service.dart` is
+  tracked in git (public repo). Anyone can see which emails bypass the paywall.
+  Fix: move Pro status to Firestore (`proUsers` collection keyed by email).
+  The APK queries Firestore on sign-in instead of checking a hardcoded list.
+  **Must fix before billing is wired or automated CI/CD push is set up.**
+
+- [ ] **Verify Masa Shivaratri (🔱) and Sankatahara Chaturthi (🐘) icons display correctly**
+  in the app. Icons are defined in `festival_data.dart` — confirm they render in
+  the calendar grid and day detail cards on device.
+
+---
+
+## Session 27 — Play Store Submit (next)
 
 - [ ] Merge `feature/playstore-prep` → `main`
 - [ ] Push to GitHub + enable GitHub Pages for privacy policy
