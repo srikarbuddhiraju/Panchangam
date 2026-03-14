@@ -15,18 +15,24 @@
 
 ---
 
-## Pre-Launch Security — Before Automated Play Store Updates
+## Security Findings — tracked in [docs/security-findings.md](security-findings.md)
 
-- [ ] **Move Pro email list out of source code** — `_proEmails` in `auth_service.dart` is
-  tracked in git (public repo). Anyone can see which emails bypass the paywall.
-  Fix: move Pro status to Firestore (`proUsers` collection keyed by email).
-  The APK queries Firestore on sign-in instead of checking a hardcoded list.
-  **Must fix before billing is wired or automated CI/CD push is set up.**
+| ID | Severity | Status | Blocker for |
+|----|----------|--------|-------------|
+| F1 | 🔴 HIGH | ❌ Open | Play Store submission (debug keystore) |
+| F2 | 🔴 HIGH | ❌ Open | Billing / v1.1 (client-side isPremium) |
+| F3 | 🟡 MEDIUM | ❌ Open | Expanding tester list (email whitelist in git) |
+| F4 | 🟡 MEDIUM | ❌ Open | Billing / v1.1 (no route guards) |
+
+**F1 is a hard launch blocker** — Play Store rejects debug-signed APKs.
+
+---
+
+## Polish — Icons
 
 - [ ] **Replace Masa Shivaratri and Sankatahara Chaturthi icons** — current emoji (🔱, 🐘)
   display but are not appropriate. Srikar to create custom icons and hand off.
-  Claude to swap them into `festival_data.dart` (the `icon` field, or switch to
-  image assets if custom PNGs are provided).
+  Claude to swap them into `festival_data.dart`.
 
 ---
 
