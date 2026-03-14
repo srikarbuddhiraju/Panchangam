@@ -22,6 +22,8 @@
 - [x] Eclipse timings (lunar + solar, contact times)
 - [x] Pro tab — replaces Family tab — theme-adaptive hub with events list (Session 25)
 - [ ] Play Store listing (title, description, screenshots, privacy policy) ← IN PROGRESS
+- [ ] **Release keystore** — replace debug signing key before Play Store submission (F1, hard blocker)
+- [ ] **Email whitelist out of git** — move `_proEmails` out of public repo (F3)
 - [ ] Internal testing pass (5+ users, varied devices)
 
 ### Family tab decision
@@ -65,7 +67,7 @@ Family sharing ships as v1.1 (target May/June 2026) — see below.
 
 | Issue | Priority | Status |
 |---|---|---|
-| Dec 10, 2025 amrit kalam: lookup=11:56, raw=~7:51 | Medium | Needs manual fix |
+| Dec 10, 2025 amrit kalam: lookup=11:56, raw=~7:51 | Medium | ✅ Fixed (Session 26) |
 | ~10-15 Apr-Nov 2025 non-standard (తే/శే.అమృత) entries unverified | Low | Spot-check next session |
 | 52 "Unknown" nakshatra entries in CSVs (time may still be correct) | Low | Monitor |
 
