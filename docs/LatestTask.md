@@ -1,71 +1,60 @@
-# Latest Task — Session 24 Complete, Session 25 Ready
+# Latest Task — Session 25 Complete
 
-**Last updated:** Mar 13, 2026
-**Branch:** `main` (amrita branch merged)
-**Next branch:** `feature/pro-tab-redesign`
+**Last updated:** Mar 14, 2026
+**Branch:** `feature/pro-tab-redesign` — ready to merge
+
+---
+
+## STATUS: Verified on device ✅ — ready to merge
+
+### All verification items checked
+- [x] Pro tab fits app theme (light + dark mode)
+- [x] Telugu strings throughout Pro tab
+- [x] "Personal Events" card → Events tab; "To-Dos" card → To-Dos tab
+- [x] Events preview list in Pro tab with Reminder/Alarm badges
+- [x] "My Events" title fully visible (SliverAppBar replaced with standard AppBar)
+- [x] Settings notifications row: test buttons removed, green checkmark shown
+- [x] Release APK 58.9 MB — installed and verified on device
+
+---
+
+## What was done Session 25
+
+1. ✅ Created `feature/pro-tab-redesign` branch
+2. ✅ Built `app/lib/features/pro/pro_screen.dart`
+   - Theme-based colors (no hardcoded navy) — works in light + dark mode
+   - Hero: user avatar, "Panchangam Pro", Pro/Free badge, display name
+   - Pro users: 2 feature cards (Events, To-Dos) + live events preview list
+   - Each event row: name, tithi+month, Reminder/Alarm badge with icon
+   - Free users: polished upgrade section with feature highlights
+   - Full Telugu/English bilingual strings via `S.isTelugu`
+3. ✅ `MyEventsScreen` overhauled
+   - Added `initialTab` param — Events card opens tab 0, To-Dos opens tab 1
+   - SliverAppBar replaced with standard AppBar (two-line: title + event count)
+   - Header styled with `primaryContainer` background
+4. ✅ Settings: removed "Test" + "Sched." notification buttons → green ✓ checkmark
+5. ✅ `routes.dart`: `/family` → `/pro`, added `/my-events?tab=N` push route
+6. ✅ `family_screen.dart` archived to `features/family/_archive/`
+7. ✅ `dart analyze` clean, release build 58.9 MB verified on device
 
 ---
 
 ## NEXT SESSION — START HERE
 
-### Goal: Pro Tab Redesign (replaces Family tab)
+### Goal: Merge + Play Store prep
 
-**Decision made Mar 13, 2026:**
-- Family tab → Pro tab (renamed + full redesign)
-- Family sharing deferred to v1.1 (May/June) — too complex for April launch
-- Release target: first week of April 2026
-
-### Step 1: Create branch
-```bash
-git checkout -b feature/pro-tab-redesign
-```
-
-### Step 2: Build the Pro tab UI
-Design direction — **premium/modern/dark**:
-- Hero section: avatar, name, "Pro" badge chip, plan status
-- Feature cards grid: Events, To-Dos, Reminders, Alarms — icon + title + 1-line desc
-- Non-pro users: polished paywall prompt (not a boring list)
-- Colors: deep navy (#0B1437) base, gold (#C9A84C) accents, subtle glassmorphism or gradient cards
-- Reference feel: Spotify Premium, Apple One, Google One subscription tabs
-- Avoid: flat white cards, basic settings-style list, anything that looks generic
-
-### Step 3: Cleanup
-- Archive/remove `FamilyScreen` placeholder
-- Update tab label from "Family"/"కుటుంబం" → "Pro"/"ప్రో"
-- Ensure bottom nav icon matches premium feel (maybe `workspace_premium` or `diamond`)
-
-### Step 4: Verify
-- `dart analyze` → no errors
-- `flutter build apk --release` → install → visual check on device
-- Confirm non-pro user sees paywall prompt, pro user sees feature cards
-
-### Step 5: Merge
-- Commit + merge `feature/pro-tab-redesign` → `main`
-
----
-
-## What was done Session 24
-1. ✅ Investigated PyJHora — dead end (Choghadiya, not nakshatra-based)
-2. ✅ True Chitra Paksha ayanamsha implemented (Lahiri + nutation, ±0.5 min impact)
-3. ✅ NK-filtered X calibration run — confirmed formula ceiling, no improvement possible
-4. ✅ Decision: lookup-only amrit kalam, no formula fallback
-5. ✅ UI: source attribution + honest "not available" explanation with reasoning
-6. ✅ Release build 58.9 MB, installed on device, verified
-7. ✅ Merged `feature/amrita-ramakumar-formula` → `main`
-8. ✅ OCR accuracy assessed: 2026-27 ~95%+, 2025-26 standard entries ~90%+, Dec 10 confirmed error
-
-## OCR Data Quality (carry forward)
-- Dec 10, 2025: lookup=11:56 is WRONG, raw OCR says dawn amrit ~7:51 → needs fix
-- ~10-15 Apr-Nov 2025 non-standard entries (తే/శే.అమృత) unverified
-- Fix in next available session by checking 2025-26 PDF directly
-
-## Decisions locked (Mar 13, 2026)
-- **App name**: `Panchangam` — clean, pan-India scalable, no regional qualifier
-- **Family tab**: replaced by Pro tab in v1.0; family sharing ships v1.1
-- **Release target**: First week of April 2026
+1. Merge `feature/pro-tab-redesign` → `main`
+2. Address OCR data quality (carry-forward):
+   - Dec 10 2025 lookup entry is wrong (11:56 → should be ~7:51) — fix in `amrita_lookup.dart`
+3. Play Store listing preparation:
+   - Screenshots (Calendar, Today, Pro tab, Day detail)
+   - Short description (80 chars)
+   - Full description
+   - Content rating questionnaire
+4. Set up Play Store internal testing track
 
 ## Key file locations
-- Pro tab (current placeholder): `app/lib/features/family/` → will become `app/lib/features/pro/`
-- Tab structure: `app/lib/app/` (router + bottom nav)
-- Theme colors: `app/lib/app/theme.dart` — `kSaffron`, `kGold`, `kNavyDark`
-- Amrita lookup: `app/lib/core/data/amrita_lookup.dart`
+- Pro tab: `app/lib/features/pro/pro_screen.dart`
+- My Events screen: `app/lib/features/events/my_events_screen.dart`
+- Routes: `app/lib/app/routes.dart`
+- Archived family screen: `app/lib/features/family/_archive/family_screen.dart.bak`
