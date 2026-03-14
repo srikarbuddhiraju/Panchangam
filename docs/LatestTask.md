@@ -1,60 +1,64 @@
-# Latest Task — Session 25 Complete
+# Latest Task — Session 26 Complete
 
 **Last updated:** Mar 14, 2026
-**Branch:** `feature/pro-tab-redesign` — ready to merge
+**Branch:** `feature/playstore-prep` — pending merge review
 
 ---
 
-## STATUS: Verified on device ✅ — ready to merge
+## STATUS: All dev tasks done — pending Srikar merge confirmation
 
-### All verification items checked
-- [x] Pro tab fits app theme (light + dark mode)
-- [x] Telugu strings throughout Pro tab
-- [x] "Personal Events" card → Events tab; "To-Dos" card → To-Dos tab
-- [x] Events preview list in Pro tab with Reminder/Alarm badges
-- [x] "My Events" title fully visible (SliverAppBar replaced with standard AppBar)
-- [x] Settings notifications row: test buttons removed, green checkmark shown
-- [x] Release APK 58.9 MB — installed and verified on device
+### Verification checklist
+- [x] Dec 10 2025 amrita entry corrected: (11,56) → (7,51) in `amrita_lookup.dart`
+- [x] Play Store listing draft written: `docs/play-store/listing.md`
+- [x] Privacy policy draft written: `docs/play-store/privacy-policy.md`
+- [x] Roadmap updated (Pro tab marked complete, Play Store ← IN PROGRESS)
+- [x] 7 device screenshots captured locally (not committed — in `docs/screenshots/`)
+- [x] Old screenshots (12 files, Feb 22 era) removed from git tracking
+- [x] `docs/screenshots/` added to `.gitignore` (fixed malformed entry)
+- [x] `dart analyze` clean, release APK verified on device (58.9 MB)
 
 ---
 
-## What was done Session 25
+## What was done Session 26
 
-1. ✅ Created `feature/pro-tab-redesign` branch
-2. ✅ Built `app/lib/features/pro/pro_screen.dart`
-   - Theme-based colors (no hardcoded navy) — works in light + dark mode
-   - Hero: user avatar, "Panchangam Pro", Pro/Free badge, display name
-   - Pro users: 2 feature cards (Events, To-Dos) + live events preview list
-   - Each event row: name, tithi+month, Reminder/Alarm badge with icon
-   - Free users: polished upgrade section with feature highlights
-   - Full Telugu/English bilingual strings via `S.isTelugu`
-3. ✅ `MyEventsScreen` overhauled
-   - Added `initialTab` param — Events card opens tab 0, To-Dos opens tab 1
-   - SliverAppBar replaced with standard AppBar (two-line: title + event count)
-   - Header styled with `primaryContainer` background
-4. ✅ Settings: removed "Test" + "Sched." notification buttons → green ✓ checkmark
-5. ✅ `routes.dart`: `/family` → `/pro`, added `/my-events?tab=N` push route
-6. ✅ `family_screen.dart` archived to `features/family/_archive/`
-7. ✅ `dart analyze` clean, release build 58.9 MB verified on device
+1. ✅ Fixed Dec 10 2025 amrita lookup — traced OCR raw (`తే.అమృత 7:51`) vs formula table artifact
+2. ✅ Created `docs/play-store/listing.md` — full Play Store copy ready to paste
+3. ✅ Created `docs/play-store/privacy-policy.md` — ready to host on GitHub Pages
+4. ✅ Updated `docs/roadmap.md` — Pro tab [x], Play Store listing ← IN PROGRESS
+5. ✅ Captured 7 Play Store screenshots via ADB (stored locally, NOT in git):
+   - `ps-01-calendar.png` — March 2026 calendar, Ugadi highlighted
+   - `ps-02-today-fivelibs.png` — 5 limbs, Mar 14
+   - `ps-03-today-kalams-amrit.png` — Kalams + Sringeri Amrit attribution
+   - `ps-04-pro-tab.png` — Pro tab hero + cards + empty events state
+   - `ps-05-today-ugadi-festival.png` — Today tab, Ugadi (Mar 19)
+   - `ps-06-today-ugadi-kalams-amrit.png` — Kalams + Amrit for Ugadi
+   - `ps-07-settings.png` — Settings with Pro badge + green notification checkmark
+6. ✅ Removed 12 old screenshots from git tracking (`git rm --cached`)
+7. ✅ Fixed malformed `.gitignore` (`Logos & Assetsdocs/screenshots/` → split correctly)
 
 ---
 
 ## NEXT SESSION — START HERE
 
-### Goal: Merge + Play Store prep
+### Goal: Merge → Play Store internal testing
 
-1. Merge `feature/pro-tab-redesign` → `main`
-2. Address OCR data quality (carry-forward):
-   - Dec 10 2025 lookup entry is wrong (11:56 → should be ~7:51) — fix in `amrita_lookup.dart`
-3. Play Store listing preparation:
-   - Screenshots (Calendar, Today, Pro tab, Day detail)
-   - Short description (80 chars)
-   - Full description
-   - Content rating questionnaire
-4. Set up Play Store internal testing track
+1. Merge `feature/playstore-prep` → `main`
+2. Push to GitHub + enable GitHub Pages for privacy policy
+   - URL: `https://srikarbuddhiraju.github.io/Panchangam/privacy-policy`
+3. Build release APK (`flutter build apk --release`) for upload
+4. Play Store Console: upload APK, add testers, submit listing
+5. Amrita data quality (deferred, low priority):
+   - Spot-check Dec 11, Dec 15, Dec 16 entries (suspected Shē.amṛta vs Dī.amṛta mismatch)
+   - Spot-check 10–15 Apr–Nov 2025 non-standard entries (తే/శే.అమృత) against PDF
+
+### Srikar's tasks (independent)
+- [ ] Google Play Developer account ($25 one-time) if not done
+- [ ] Feature graphic: 1024×500px (deep navy bg, centered icon, "Panchangam" in gold)
+- [ ] Enable GitHub Pages on repo → publish from `/docs` folder
+- [ ] Retake `ps-04-pro-tab.png` screenshot after adding some test events (current is empty state)
 
 ## Key file locations
-- Pro tab: `app/lib/features/pro/pro_screen.dart`
-- My Events screen: `app/lib/features/events/my_events_screen.dart`
-- Routes: `app/lib/app/routes.dart`
-- Archived family screen: `app/lib/features/family/_archive/family_screen.dart.bak`
+- Amrita lookup: `app/lib/core/data/amrita_lookup.dart`
+- Play Store listing: `docs/play-store/listing.md`
+- Privacy policy: `docs/play-store/privacy-policy.md`
+- Screenshots: `docs/screenshots/` (local only, gitignored)
