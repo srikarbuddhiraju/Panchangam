@@ -1,42 +1,71 @@
-# Latest Task — Session 24 Complete
+# Latest Task — Session 24 Complete, Session 25 Ready
 
 **Last updated:** Mar 13, 2026
-**Branch:** `feature/amrita-ramakumar-formula`
-**Branched from:** `feature/ayanamsha-calibration`
+**Branch:** `main` (amrita branch merged)
+**Next branch:** `feature/pro-tab-redesign`
 
 ---
 
 ## NEXT SESSION — START HERE
 
-### What was done this session
-1. ✅ Investigated PyJHora amrit_kaalam — uses Gauri Choghadiya (North Indian tradition), not nakshatra-based. Dead end.
-2. ✅ Implemented True Chitra Paksha ayanamsha (Lahiri + Meeus nutation). Impact: ±0.5 min on NK timing — negligible but astronomically correct.
-3. ✅ Ran NK-label-filtered X calibration (Di.Amrita only, NK-match only). Finding: empirical X values are ~4-7 units lower than Ramakumar across ALL nakshtras — systematic ~5-6h bias. Even with calibrated X: mean error 166 min (worse than raw Ramakumar 379 min on same subset). Root cause confirmed: high day-to-day variance in amrita fraction (StdDev 0.5–3.4 X-units). No formula can achieve 5-10 min accuracy.
-4. ✅ Decision: no formula fallback for Amrit Kalam. Lookup-only. Outside Mar 2025–Apr 2027, show null (honest gap, not wrong times).
-5. ✅ Updated muhurtha.dart — removed formula fallback, added clear docstring explaining why.
-6. ✅ Updated muhurtha_card.dart — source attribution ("Sringeri Panchangam") shown with times; "Data not available for this date" when outside range.
-7. ✅ Updated calculation-methods.md — honest accuracy table, full explanation of why no formula.
-8. ✅ Updated lessons.md — added amrit kalam formula ceiling rule.
-9. ✅ Updated memory + LatestTask.md.
+### Goal: Pro Tab Redesign (replaces Family tab)
 
-### What is accurate (for any year, any location)
-- Sunrise, sunset, moonrise, moonset
-- All five Panchangam limbs: Vara, Tithi, Nakshatra, Yoga, Karana (±1–2 min)
-- Kalam timings: Rahu, Gulika, Yamaganda (±1–2 min)
-- Muhurthas: Abhijit, Dur Muhurta (±1–2 min)
-- Festival dates, Samvatsara, Telugu month
-- Eclipse timings: contact times ±2–5 min
+**Decision made Mar 13, 2026:**
+- Family tab → Pro tab (renamed + full redesign)
+- Family sharing deferred to v1.1 (May/June) — too complex for April launch
+- Release target: first week of April 2026
 
-### What is NOT calculated (Sringeri data only)
-- **Amrit Kalam**: Mar 2025–Apr 2027 exact. Outside → null. No formula.
-- **Durmuhurtha**: Standard weekday table formula (not verified against Sringeri — but formula is well-established across all panchangam systems)
+### Step 1: Create branch
+```bash
+git checkout -b feature/pro-tab-redesign
+```
 
-### Remaining blockers before merge
+### Step 2: Build the Pro tab UI
+Design direction — **premium/modern/dark**:
+- Hero section: avatar, name, "Pro" badge chip, plan status
+- Feature cards grid: Events, To-Dos, Reminders, Alarms — icon + title + 1-line desc
+- Non-pro users: polished paywall prompt (not a boring list)
+- Colors: deep navy (#0B1437) base, gold (#C9A84C) accents, subtle glassmorphism or gradient cards
+- Reference feel: Spotify Premium, Apple One, Google One subscription tabs
+- Avoid: flat white cards, basic settings-style list, anything that looks generic
 
-- [ ] `flutter build apk --release` — required (Rule #8)
-- [ ] Device spot-check: amrit kalam shows correctly for today, shows "Data not available" for a date in 2024
-- [ ] Verify dart analyze passes
+### Step 3: Cleanup
+- Archive/remove `FamilyScreen` placeholder
+- Update tab label from "Family"/"కుటుంబం" → "Pro"/"ప్రో"
+- Ensure bottom nav icon matches premium feel (maybe `workspace_premium` or `diamond`)
 
-### After merge
-- Update `app/lib/core/data/amrita_lookup.dart` each year when new Sringeri edition is published
-- OCR pipeline: `.claude/skills/ocr/` + `docs/data/amrita_2526.csv` / `amrita_2627.csv`
+### Step 4: Verify
+- `dart analyze` → no errors
+- `flutter build apk --release` → install → visual check on device
+- Confirm non-pro user sees paywall prompt, pro user sees feature cards
+
+### Step 5: Merge
+- Commit + merge `feature/pro-tab-redesign` → `main`
+
+---
+
+## What was done Session 24
+1. ✅ Investigated PyJHora — dead end (Choghadiya, not nakshatra-based)
+2. ✅ True Chitra Paksha ayanamsha implemented (Lahiri + nutation, ±0.5 min impact)
+3. ✅ NK-filtered X calibration run — confirmed formula ceiling, no improvement possible
+4. ✅ Decision: lookup-only amrit kalam, no formula fallback
+5. ✅ UI: source attribution + honest "not available" explanation with reasoning
+6. ✅ Release build 58.9 MB, installed on device, verified
+7. ✅ Merged `feature/amrita-ramakumar-formula` → `main`
+8. ✅ OCR accuracy assessed: 2026-27 ~95%+, 2025-26 standard entries ~90%+, Dec 10 confirmed error
+
+## OCR Data Quality (carry forward)
+- Dec 10, 2025: lookup=11:56 is WRONG, raw OCR says dawn amrit ~7:51 → needs fix
+- ~10-15 Apr-Nov 2025 non-standard entries (తే/శే.అమృత) unverified
+- Fix in next available session by checking 2025-26 PDF directly
+
+## Decisions locked (Mar 13, 2026)
+- **App name**: `Panchangam` — clean, pan-India scalable, no regional qualifier
+- **Family tab**: replaced by Pro tab in v1.0; family sharing ships v1.1
+- **Release target**: First week of April 2026
+
+## Key file locations
+- Pro tab (current placeholder): `app/lib/features/family/` → will become `app/lib/features/pro/`
+- Tab structure: `app/lib/app/` (router + bottom nav)
+- Theme colors: `app/lib/app/theme.dart` — `kSaffron`, `kGold`, `kNavyDark`
+- Amrita lookup: `app/lib/core/data/amrita_lookup.dart`

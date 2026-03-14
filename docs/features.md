@@ -142,14 +142,20 @@ Premium unlocks:
 
 ---
 
-## Family / Group Sharing (PREMIUM)
-- [x] Family tab (placeholder screen, ready for future features)
-- [ ] Create or join a family group
-- [ ] Invite by phone number or email
-- [ ] Shared calendar view
+## Pro Tab (PREMIUM — v1.0, replacing Family tab)
+- [ ] Premium-looking Pro hub: hero section, feature cards, paywall prompt for free users
+- [ ] Design: dark gradient + gold accents, modern card layout (Spotify/Apple One feel)
+- [ ] Shows: Events, To-Dos, Reminders, Alarms access cards
+- [ ] Non-pro: polished sign-in / upgrade prompt
+
+## Family / Group Sharing (PREMIUM — v1.1, May/June 2026)
+- [ ] Create or join a family group (Firebase Firestore)
+- [ ] Invite by email
+- [ ] Shared calendar view (family members' events visible)
 - [ ] Shared: to-dos, reminders, alarms, events, occasions, festivals
 - [ ] Admin vs member roles
-- [ ] Up to 6 members on Family Plan
+- [ ] Up to 6 members on Family Plan (₹149/month or ₹1199/year)
+- **Excluded from v1.0** — too complex for April launch (5-7 sessions needed)
 
 ---
 
