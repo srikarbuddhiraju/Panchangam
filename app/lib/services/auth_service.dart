@@ -17,6 +17,7 @@ class AuthService {
   // Developer / tester accounts that get Pro for free.
   static const _proEmails = {
     '[REDACTED]',
+    '[REDACTED]',
   };
 
   /// The currently signed-in Firebase user, or null if signed out.
