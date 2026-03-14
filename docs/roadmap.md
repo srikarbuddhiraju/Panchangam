@@ -39,7 +39,7 @@ Family sharing ships as v1.1 (target May/June 2026) — see below.
 - [ ] Invite by email
 - [ ] Shared calendar: family members' events + occasions visible
 - [ ] Shared To-Dos + Reminders
-- [ ] Up to 6 members on Family Plan (₹149/month or ₹1199/year)
+- [ ] Up to 6 members on Family Plan (₹119/month)
 - [ ] Admin vs member roles
 - [ ] Amrit kalam data update: OCR Sringeri 2027-28 edition when released
 
