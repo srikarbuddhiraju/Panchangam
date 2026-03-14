@@ -161,9 +161,11 @@ class PanchangamApp extends ConsumerWidget {
           home: const LoginScreen(),
         ),
         data: (user) {
-          // Auto-set isPremium based on the signed-in email (no-op when signed out).
-          if (user != null) {
-            final isPro = AuthService.isProEmail(user.email);
+          // Sync isPremium with Firebase auth on every rebuild.
+          // Clears stale Hive value when signed out.
+          {
+            final isPro =
+                user != null && AuthService.isProEmail(user.email);
             final current = ref.read(settingsProvider).isPremium;
             if (current != isPro) {
               Future.microtask(

@@ -19,12 +19,25 @@
 
 | ID | Severity | Status | Blocker for |
 |----|----------|--------|-------------|
-| F1 | 🔴 HIGH | ❌ Open | Play Store submission (debug keystore) |
+| F1 | 🔴 HIGH | ✅ Fixed (Session 27) | Play Store submission (debug keystore) |
 | F2 | 🔴 HIGH | ❌ Open | Billing / v1.1 (client-side isPremium) |
 | F3 | 🟡 MEDIUM | ❌ Open | Expanding tester list (email whitelist in git) |
 | F4 | 🟡 MEDIUM | ❌ Open | Billing / v1.1 (no route guards) |
 
-**F1 is a hard launch blocker** — Play Store rejects debug-signed APKs.
+**F1 fixed** — release keystore wired. F3 still open (email whitelist in git).
+
+---
+
+## Pre-Launch Security — Secrets Manager (post-launch, before CI/CD)
+
+- [ ] **Migrate keystore credentials to a secrets manager** — currently in `key.properties`
+  (gitignored, local only). Before setting up any automated CI/CD pipeline (GitHub Actions,
+  Fastlane, etc.), move credentials to a proper secrets store:
+  - Option A: **GitHub Actions Secrets** — store `KEYSTORE_PASSWORD`, `KEY_ALIAS`,
+    `KEY_PASSWORD`, and base64-encoded `release.jks` as repo secrets. Inject at build time.
+  - Option B: **Google Cloud Secret Manager** — if a Cloud-based build pipeline is used.
+  - **Do NOT hardcode credentials in any workflow YAML file.**
+  - **Must complete before any automated push to Play Store is set up.**
 
 ---
 
