@@ -686,14 +686,18 @@ class _UpgradeSection extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           FilledButton.icon(
-            onPressed: null,
+            onPressed: () {
+              // TODO: launch in-app purchase flow (Play Console not yet set up)
+            },
             icon: const Icon(Icons.star_rounded),
-            label: Text(isTelugu ? 'సబ్‌స్క్రైబ్ — త్వరలో' : 'Subscribe — Coming Soon'),
+            label: Text(
+              isTelugu
+                  ? 'సబ్‌స్క్రైబ్ — ₹99/నెల'
+                  : 'Subscribe — ₹99/month',
+            ),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.kGold,
               foregroundColor: const Color(0xFF1A1200),
-              disabledBackgroundColor: AppTheme.kGold.withValues(alpha: 0.3),
-              disabledForegroundColor: cs.onSurface.withValues(alpha: 0.4),
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
