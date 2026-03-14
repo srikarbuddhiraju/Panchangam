@@ -17,7 +17,7 @@
 | Field | Detail |
 |-------|--------|
 | **Severity** | 🔴 HIGH |
-| **Status** | ❌ Open |
+| **Status** | ✅ Fixed (Session 27) — `key.properties` + release signingConfig wired |
 | **File** | `app/android/app/build.gradle.kts` lines 38–40 |
 | **Category** | Insecure signing |
 | **Confidence** | 10/10 |

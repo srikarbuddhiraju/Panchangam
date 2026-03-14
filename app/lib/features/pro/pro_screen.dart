@@ -138,7 +138,7 @@ class _UserAvatar extends StatelessWidget {
                   : cs.outline.withValues(alpha: 0.4),
               width: 2.5,
             ),
-            color: cs.surface,
+            color: user == null ? const Color(0xFF0B1437) : cs.surface,
           ),
           clipBehavior: Clip.antiAlias,
           child: photoUrl != null
@@ -147,7 +147,9 @@ class _UserAvatar extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (_, err, stack) => _InitialsAvatar(initials, cs),
                 )
-              : _InitialsAvatar(initials, cs),
+              : user == null
+                  ? Image.asset('assets/icon.png', fit: BoxFit.cover)
+                  : _InitialsAvatar(initials, cs),
         ),
         if (isPremium)
           Container(
@@ -705,9 +707,16 @@ class _UpgradeSection extends ConsumerWidget {
           if (user == null) ...[
             const SizedBox(height: 12),
             OutlinedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              ),
+              onPressed: () {
+                final nav = Navigator.of(context);
+                nav.push(
+                  MaterialPageRoute(
+                    builder: (_) => LoginScreen(
+                      onSuccess: nav.pop,
+                    ),
+                  ),
+                );
+              },
               icon: const Icon(Icons.login_rounded, size: 18),
               label: Text(isTelugu ? 'సైన్ ఇన్' : 'Sign In'),
               style: OutlinedButton.styleFrom(
