@@ -20,8 +20,8 @@
 - [x] Pro features: To-Dos, Reminders, Alarms, Events (tithi-based)
 - [x] Google Sign-In + Firebase Auth, Pro gate
 - [x] Eclipse timings (lunar + solar, contact times)
-- [ ] Pro tab — replaces Family tab — premium UI (sleek/modern/dark gradient + gold)
-- [ ] Play Store listing (title, description, screenshots, privacy policy)
+- [x] Pro tab — replaces Family tab — theme-adaptive hub with events list (Session 25)
+- [ ] Play Store listing (title, description, screenshots, privacy policy) ← IN PROGRESS
 - [ ] Internal testing pass (5+ users, varied devices)
 
 ### Family tab decision
