@@ -23,9 +23,10 @@
   The APK queries Firestore on sign-in instead of checking a hardcoded list.
   **Must fix before billing is wired or automated CI/CD push is set up.**
 
-- [ ] **Verify Masa Shivaratri (🔱) and Sankatahara Chaturthi (🐘) icons display correctly**
-  in the app. Icons are defined in `festival_data.dart` — confirm they render in
-  the calendar grid and day detail cards on device.
+- [ ] **Replace Masa Shivaratri and Sankatahara Chaturthi icons** — current emoji (🔱, 🐘)
+  display but are not appropriate. Srikar to create custom icons and hand off.
+  Claude to swap them into `festival_data.dart` (the `icon` field, or switch to
+  image assets if custom PNGs are provided).
 
 ---
 
