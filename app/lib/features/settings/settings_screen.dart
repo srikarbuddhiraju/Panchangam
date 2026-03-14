@@ -215,68 +215,14 @@ class _NotificationSettingsTileState
       );
     }
 
-    // Notifications enabled — show test + scheduled-test buttons
+    // Notifications enabled — show status only
     return ListTile(
       leading: const Icon(Icons.notifications_active_outlined,
           color: AppTheme.kGold),
       title: Text(isTelugu ? 'నోటిఫికేషన్లు' : 'Notifications'),
       subtitle: Text(isTelugu ? 'అనుమతి ఇవ్వబడింది' : 'Permission granted'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () async {
-              await NotificationService.instance.showTestNotification(isTelugu);
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(isTelugu
-                        ? 'పరీక్ష నోటిఫికేషన్ పంపబడింది'
-                        : 'Test notification sent'),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-            child: Text(
-              isTelugu ? 'పరీక్ష' : 'Test',
-              style: const TextStyle(color: AppTheme.kGold),
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              try {
-                await NotificationService.instance
-                    .scheduleMinuteTestNotification(isTelugu);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(isTelugu
-                          ? 'నోటిఫికేషన్ 1 నిమిషంలో వస్తుంది'
-                          : 'Notification coming in ~1 minute'),
-                      duration: const Duration(seconds: 3),
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Scheduling failed: $e'),
-                      backgroundColor: Colors.red.shade700,
-                      duration: const Duration(seconds: 5),
-                    ),
-                  );
-                }
-              }
-            },
-            child: Text(
-              isTelugu ? 'షెడ్యూల్' : 'Sched.',
-              style: const TextStyle(color: AppTheme.kGold),
-            ),
-          ),
-        ],
-      ),
+      trailing: const Icon(Icons.check_circle_outline_rounded,
+          color: AppTheme.kAuspiciousGreen),
     );
   }
 }

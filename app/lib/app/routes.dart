@@ -3,7 +3,8 @@ import '../features/calendar/calendar_screen.dart';
 import '../features/events/event_form_screen.dart';
 import '../features/events/todo_form_screen.dart';
 import '../features/today/today_screen.dart';
-import '../features/family/family_screen.dart';
+import '../features/pro/pro_screen.dart';
+import '../features/events/my_events_screen.dart';
 import '../features/panchangam/panchangam_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../shared/widgets/main_scaffold.dart';
@@ -13,7 +14,7 @@ import '../shared/widgets/main_scaffold.dart';
 /// Tab structure:
 ///   /         → Calendar
 ///   /today    → Today (daily panchangam with day navigation)
-///   /family   → My Events (Pro) / upgrade teaser (free)
+///   /pro      → Pro tab (premium hub / upgrade teaser)
 ///   /settings → Settings
 ///
 /// Full-screen push routes (no bottom nav):
@@ -49,8 +50,8 @@ class AppRoutes {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/family',
-                builder: (context, state) => const FamilyScreen(),
+                path: '/pro',
+                builder: (context, state) => const ProScreen(),
               ),
             ],
           ),
@@ -64,6 +65,17 @@ class AppRoutes {
           ),
         ],
       ),
+      // My Events + To-Dos — full screen, pushed from Pro tab feature cards
+      // Optional ?tab=0 (Events) or ?tab=1 (To-Dos) to open a specific tab.
+      GoRoute(
+        path: '/my-events',
+        builder: (context, state) {
+          final tabStr = state.uri.queryParameters['tab'];
+          final tab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+          return MyEventsScreen(initialTab: tab);
+        },
+      ),
+
       // Day detail — full screen, pushed from calendar grid
       GoRoute(
         path: '/panchangam/:date',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../app/theme.dart';
 import '../../core/utils/app_strings.dart';
@@ -14,9 +15,10 @@ import 'user_todo.dart';
 import 'user_todo_provider.dart';
 
 /// Lists personal tithi events and To-Dos in two tabs.
-/// Shown in the Pro tab. Prompts sign-in if not authenticated.
+/// [initialTab] selects which tab opens first: 0 = Events, 1 = To-Dos.
 class MyEventsScreen extends ConsumerStatefulWidget {
-  const MyEventsScreen({super.key});
+  final int initialTab;
+  const MyEventsScreen({super.key, this.initialTab = 0});
 
   @override
   ConsumerState<MyEventsScreen> createState() => _MyEventsScreenState();
@@ -29,7 +31,11 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTab.clamp(0, 1),
+    );
     _tabController.addListener(() => setState(() {})); // update FAB on tab change
   }
 
@@ -44,29 +50,61 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen>
     final user = ref.watch(authStateProvider).valueOrNull;
     final isTelugu = S.isTelugu;
 
+    final cs = Theme.of(context).colorScheme;
+
     // Not signed in — show prompt without tabs
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: Text(isTelugu ? 'నా సందర్భాలు' : 'My Events'),
-          centerTitle: true,
         ),
         body: _SignInPrompt(isTelugu: isTelugu),
       );
     }
 
+    final eventCount = ref.watch(userEventProvider).length;
+    final todoCount = ref.watch(userTodoProvider
+        .select((t) => t.where((x) => !x.isCompleted).length));
+
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(isTelugu ? 'నా సందర్భాలు' : 'My Events'),
-        centerTitle: true,
+        backgroundColor: cs.primaryContainer,
+        foregroundColor: cs.onPrimaryContainer,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              isTelugu ? 'నా సందర్భాలు' : 'My Events',
+              style: GoogleFonts.notoSansTelugu(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: cs.onPrimaryContainer,
+              ),
+            ),
+            Text(
+              isTelugu
+                  ? '$eventCount సందర్భాలు · $todoCount పెండింగ్'
+                  : '$eventCount event${eventCount == 1 ? '' : 's'} · '
+                    '$todoCount pending',
+              style: GoogleFonts.notoSansTelugu(
+                fontSize: 12,
+                color: cs.onPrimaryContainer.withValues(alpha: 0.65),
+              ),
+            ),
+          ],
+        ),
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: AppTheme.kGold,
-          labelColor: AppTheme.kGold,
-          unselectedLabelColor:
-              Theme.of(context).colorScheme.onSurfaceVariant,
+          indicatorWeight: 3,
+          labelColor: cs.onPrimaryContainer,
+          unselectedLabelColor: cs.onPrimaryContainer.withValues(alpha: 0.55),
+          labelStyle: GoogleFonts.notoSansTelugu(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+          unselectedLabelStyle: GoogleFonts.notoSansTelugu(fontSize: 14),
           tabs: [
             Tab(text: isTelugu ? 'సందర్భాలు' : 'Events'),
             Tab(text: isTelugu ? 'టు-డూలు' : 'To-Dos'),
@@ -190,7 +228,7 @@ class _EventsTab extends ConsumerWidget {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
       itemCount: sorted.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (_, idx) => const SizedBox(height: 8),
       itemBuilder: (_, i) => _EventTile(event: sorted[i]),
     );
   }
@@ -305,7 +343,8 @@ class _EventTileState extends ConsumerState<_EventTile> {
                   Switch(
                     value: event.isActive,
                     onChanged: (_) => notifier.toggleActive(event.id),
-                    activeColor: AppTheme.kGold,
+                    activeThumbColor: AppTheme.kGold,
+                    activeTrackColor: AppTheme.kGold.withValues(alpha: 0.4),
                   ),
                   IconButton(
                     icon: Icon(Icons.edit_outlined,
