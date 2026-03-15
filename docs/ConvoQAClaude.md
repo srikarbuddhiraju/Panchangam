@@ -118,3 +118,22 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 > - Release build (`flutter build apk --release`) — Rule #8
 > - Device spot-check on dates outside lookup range (Jan 15 2024, Oct 10 2028)
 > - Commit Session 23 changes, then merge feature/amrita-ramakumar-formula → main
+
+---
+
+## Session: Mar 15, 2026 — GitHub Pages + Pre-Release Prep (Session 28)
+
+**Q1. Contact email — replace personal Gmail with domain email?**
+> Yes. Domain is `srikarbuddhiraju.com`. Set up a contact email there (e.g. hello@ or support@).
+> **Decision**: Do NOT replace yet — wait until domain email is ready. Tracked as pre-release to-do.
+> Files to update once ready: `docs/privacy-policy.md:63`, `docs/play-store/privacy-policy.md:59`.
+> Note: `srikarbuddhiraju@gmail.com` in `auth_service.dart` is a Pro tester whitelist entry — intentionally kept as-is.
+
+**Q2. Jekyll layout for GitHub Pages privacy policy?**
+> `layout: default` caused 404 — no `_layouts/default.html` exists in the repo.
+> **Fix**: Remove `layout:` line, keep only `title: Privacy Policy` in front matter.
+> GitHub Pages Jekyll renders `.md` with basic HTML output without a layout file.
+
+**Q3. Vehicle dynamics visualiser — start now?**
+> Planning doc exists at `/home/srikarbuddhiraju/vehicle-dynamics-visualiser.md`.
+> **Decision**: Handle in a separate Claude session. Panchangam takes priority (April 2026 launch).
