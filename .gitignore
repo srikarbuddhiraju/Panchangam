@@ -3,6 +3,10 @@
 # ======================
 # Never commit these to a public repo
 
+# Release build script (contains tester emails via --dart-define)
+# Template tracked as build_release.sh.example
+build_release.sh
+
 # Android SDK licenses (created by sdkmanager, not part of project)
 licenses/
 

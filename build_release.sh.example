@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# =============================================================================
+# build_release.sh.example — template for the real build_release.sh
+#
+# SETUP:
+#   cp build_release.sh.example build_release.sh
+#   chmod +x build_release.sh
+#   Edit build_release.sh and fill in real PRO_EMAILS
+#
+# build_release.sh is gitignored — emails never enter the repo.
+# Always build release via this script, never via plain `flutter build`.
+# =============================================================================
+
+set -euo pipefail
+
+cd "$(dirname "$0")/app"
+
+flutter build apk --release \
+  --dart-define=PRO_EMAILS="tester1@gmail.com,tester2@gmail.com"
+
+echo ""
+echo "✅  Release APK built: build/app/outputs/flutter-apk/app-release.apk"

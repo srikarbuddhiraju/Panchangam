@@ -73,7 +73,7 @@ signingConfigs {
 | Field | Detail |
 |-------|--------|
 | **Severity** | 🟡 MEDIUM |
-| **Status** | ❌ Open |
+| **Status** | ✅ Fixed (Apr 5, 2026) — emails moved to `--dart-define`, out of source |
 | **File** | `app/lib/services/auth_service.dart` lines 18–21 |
 | **Category** | Information disclosure / hardcoded secret |
 | **Confidence** | 8/10 |
@@ -85,7 +85,10 @@ signingConfigs {
 2. If the list is ever expanded to include paying customers' emails, their PII leaks publicly.
 3. An attacker who gains access to either Google account gets automatic Pro access.
 
-**Fix (short-term):** Gitignore `auth_service.dart` or move the whitelist to a gitignored file (same pattern as `paywall_screen.dart`).
+**Fix applied:** Emails injected at build time via `--dart-define=PRO_EMAILS="..."`. Source code uses `String.fromEnvironment('PRO_EMAILS')`. Real emails stored only in gitignored `build_release.sh`. Template at `build_release.sh.example` is tracked. Debug builds warn loudly if `PRO_EMAILS` is empty.
+
+**Residual:** Emails exist in git history prior to this fix — history not rewritten. Forward exposure is stopped.
+
 **Fix (long-term):** Move Pro status to Firestore — same fix as Finding 2. The email list disappears entirely from the codebase.
 
 **Owner:** Claude
