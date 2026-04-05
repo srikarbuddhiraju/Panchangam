@@ -17,6 +17,7 @@ class CityLookup {
     state: 'Telangana',
     lat: 17.3850,
     lng: 78.4867,
+    utcOffsetMinutes: 330,
   );
 
   /// Load the city database from the bundled asset.

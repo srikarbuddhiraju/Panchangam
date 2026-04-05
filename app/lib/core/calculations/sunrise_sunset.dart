@@ -19,9 +19,11 @@ class SunriseSunset {
   /// [date] — the calendar date (day, month, year used, time ignored)
   /// [lat] — latitude in degrees (positive = north)
   /// [lng] — longitude in degrees (positive = east)
+  /// [utcOffsetHours] — UTC offset for result DateTimes (default 5.5 = IST)
   ///
-  /// Returns [sunrise, sunset] as IST DateTimes.
-  static List<DateTime> compute(DateTime date, double lat, double lng) {
+  /// Returns [sunrise, sunset] as DateTimes in the specified timezone.
+  static List<DateTime> compute(DateTime date, double lat, double lng,
+      {double utcOffsetHours = 5.5}) {
     // Step 1: JD at 0h UT of the date
     final DateTime d0 = DateTime.utc(date.year, date.month, date.day);
     final double jd0 = JulianDay.fromDateTime(d0.year, d0.month, d0.day);
@@ -35,8 +37,8 @@ class SunriseSunset {
     double setApprox = _iterateSun(jd0, noonUT + (6.0 / 24.0), lat, lng,
         _h0Sun, rising: false);
 
-    final DateTime sunrise = JulianDay.toIST(jd0 + riseApprox);
-    final DateTime sunset = JulianDay.toIST(jd0 + setApprox);
+    final DateTime sunrise = JulianDay.toOffset(jd0 + riseApprox, utcOffsetHours);
+    final DateTime sunset = JulianDay.toOffset(jd0 + setApprox, utcOffsetHours);
 
     return [sunrise, sunset];
   }
@@ -78,7 +80,9 @@ class SunriseSunset {
 
   /// Simpler, more reliable sunrise computation using the NOAA algorithm.
   /// This is the primary method used in production.
-  static List<DateTime> computeNOAA(DateTime date, double lat, double lng) {
+  /// [utcOffsetHours] controls the timezone of returned DateTimes (default IST).
+  static List<DateTime> computeNOAA(DateTime date, double lat, double lng,
+      {double utcOffsetHours = 5.5}) {
     // JD at noon UT on this date
     final double jdNoon = JulianDay.fromDateTime(
       date.year, date.month, date.day, 12, 0, 0,
@@ -95,7 +99,7 @@ class SunriseSunset {
 
     if (cosH < -1.0 || cosH > 1.0) {
       // Polar day/night — return midday for both
-      final DateTime noon = JulianDay.toIST(jdNoon);
+      final DateTime noon = JulianDay.toOffset(jdNoon, utcOffsetHours);
       return [noon, noon];
     }
 
@@ -110,8 +114,8 @@ class SunriseSunset {
     final double jd0 =
         JulianDay.fromDateTime(date.year, date.month, date.day);
 
-    final DateTime sunrise = JulianDay.toIST(jd0 + sunriseUT / 24.0);
-    final DateTime sunset = JulianDay.toIST(jd0 + sunsetUT / 24.0);
+    final DateTime sunrise = JulianDay.toOffset(jd0 + sunriseUT / 24.0, utcOffsetHours);
+    final DateTime sunset = JulianDay.toOffset(jd0 + sunsetUT / 24.0, utcOffsetHours);
 
     return [sunrise, sunset];
   }

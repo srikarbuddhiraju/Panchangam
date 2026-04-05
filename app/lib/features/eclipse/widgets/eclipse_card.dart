@@ -48,10 +48,10 @@ class EclipseCard extends StatelessWidget {
                         ),
                   ),
                 ),
-                if (eclipse.isVisibleInIndia)
+                if (eclipse.isVisibleFromLocation)
                   Chip(
                     label: Text(
-                      isTelugu ? 'భారత్‌లో కనిపిస్తుంది' : 'Visible in India',
+                      isTelugu ? 'మీ ప్రాంతంలో కనిపిస్తుంది' : 'Visible from your location',
                       style: const TextStyle(fontSize: 10, color: AppTheme.kAuspiciousGreen, fontWeight: FontWeight.w600),
                     ),
                     backgroundColor: AppTheme.kAuspiciousGreen.withValues(alpha: 0.15),
@@ -61,7 +61,7 @@ class EclipseCard extends StatelessWidget {
                 else
                   Chip(
                     label: Text(
-                      isTelugu ? 'భారత్‌లో కనిపించదు' : 'Not visible in India',
+                      isTelugu ? 'మీ ప్రాంతంలో కనిపించదు' : 'Not visible from your location',
                       style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                     ),
                     backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,

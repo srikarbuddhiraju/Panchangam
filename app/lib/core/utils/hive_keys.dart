@@ -12,6 +12,7 @@ class HiveKeys {
   static const String city = 'city';
   static const String latitude = 'lat';
   static const String longitude = 'lng';
+  static const String utcOffsetMinutes = 'utcOffsetMins';
   static const String language = 'language';
   static const String themeMode = 'themeMode';
   static const String timeFormat = 'timeFormat';

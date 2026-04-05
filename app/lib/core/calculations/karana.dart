@@ -64,8 +64,8 @@ class Karana {
   /// Is this Karana inauspicious? (Vishti/Bhadra = #7 is the main one).
   static bool isInauspicious(int karanaNumber) => karanaNumber == 7;
 
-  /// Find the end time (IST) of the current Karana (when diff crosses next 6° boundary).
-  static DateTime endTime(double jd) {
+  /// Find the end time of the current Karana (when diff crosses next 6° boundary).
+  static DateTime endTime(double jd, {double utcOffsetHours = 5.5}) {
     final int t = Tithi.number(jd);
     final double diff = Tithi.moonSunDiff(jd);
     final double excessInTithi = diff - (t - 1) * 12.0;
@@ -97,6 +97,6 @@ class Karana {
       if ((hi - lo) * 86400 < 30) break;
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 }

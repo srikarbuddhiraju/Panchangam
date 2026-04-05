@@ -53,9 +53,9 @@ class Yoga {
     return y.clamp(1, 27);
   }
 
-  /// Find the end time (IST) of the current Yoga.
+  /// Find the end time of the current Yoga.
   /// Sun+Moon combined moves at ~13.18 + 0.98 ≈ 14.16°/day.
-  static DateTime endTime(double jd) {
+  static DateTime endTime(double jd, {double utcOffsetHours = 5.5}) {
     final int yNum = number(jd);
     final double targetSum = yNum * _yogaSpan;
 
@@ -82,6 +82,6 @@ class Yoga {
       if ((hi - lo) * 86400 < 30) break;
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 }

@@ -10,6 +10,10 @@ class AppSettings {
   final String cityName;
   final double lat;
   final double lng;
+
+  /// UTC offset in minutes for the selected city (e.g. 330 = IST, 240 = UAE).
+  final int utcOffsetMinutes;
+
   final AppLanguage language;
   final ThemeMode themeMode;
   final bool use24h;
@@ -23,23 +27,28 @@ class AppSettings {
     required this.cityName,
     required this.lat,
     required this.lng,
+    this.utcOffsetMinutes = 330,
     required this.language,
     required this.themeMode,
     required this.use24h,
     this.isPremium = false,
   });
 
+  double get utcOffsetHours => utcOffsetMinutes / 60.0;
+
   CityData get city => CityData(
         name: cityName,
         state: '',
         lat: lat,
         lng: lng,
+        utcOffsetMinutes: utcOffsetMinutes,
       );
 
   AppSettings copyWith({
     String? cityName,
     double? lat,
     double? lng,
+    int? utcOffsetMinutes,
     AppLanguage? language,
     ThemeMode? themeMode,
     bool? use24h,
@@ -49,6 +58,7 @@ class AppSettings {
         cityName: cityName ?? this.cityName,
         lat: lat ?? this.lat,
         lng: lng ?? this.lng,
+        utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
         language: language ?? this.language,
         themeMode: themeMode ?? this.themeMode,
         use24h: use24h ?? this.use24h,
@@ -85,6 +95,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
           .toDouble(),
       lng: (box.get(HiveKeys.longitude, defaultValue: 78.4867) as num)
           .toDouble(),
+      utcOffsetMinutes:
+          (box.get(HiveKeys.utcOffsetMinutes, defaultValue: 330) as num)
+              .toInt(),
       language: language,
       themeMode: themeMode,
       use24h:
@@ -99,10 +112,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await box.put(HiveKeys.city, city.name);
     await box.put(HiveKeys.latitude, city.lat);
     await box.put(HiveKeys.longitude, city.lng);
+    await box.put(HiveKeys.utcOffsetMinutes, city.utcOffsetMinutes);
     state = state.copyWith(
       cityName: city.name,
       lat: city.lat,
       lng: city.lng,
+      utcOffsetMinutes: city.utcOffsetMinutes,
     );
   }
 

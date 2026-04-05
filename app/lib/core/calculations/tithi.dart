@@ -43,9 +43,10 @@ class Tithi {
     return t.clamp(1, 30);
   }
 
-  /// Find the end time (IST) of the current Tithi at a given JD.
+  /// Find the end time of the current Tithi at a given JD.
   /// The end time is when (Moon-Sun diff) crosses the next 12° boundary.
-  static DateTime endTime(double jd) {
+  /// [utcOffsetHours] controls the timezone of the returned DateTime (default IST).
+  static DateTime endTime(double jd, {double utcOffsetHours = 5.5}) {
     final int tNum = number(jd);
     final double targetDiff = tNum * 12.0; // upper boundary in degrees
 
@@ -74,7 +75,7 @@ class Tithi {
       if ((hi - lo) * 86400 < 30) break; // 30-second precision
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 
   /// Paksha (lunar fortnight): 'Shukla' (tithis 1–15) or 'Krishna' (16–30).
