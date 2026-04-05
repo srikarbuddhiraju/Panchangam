@@ -1,43 +1,56 @@
-# Latest Task — Session 28 Complete
+# Latest Task — Session 29 Complete
 
-**Last updated:** Mar 15, 2026
+**Last updated:** Apr 5, 2026
 **Branch:** `main`
 
 ---
 
-## STATUS: Push + GitHub Pages done — Play Store next
+## STATUS: Security hardening done — Play Store blocked on $25 dev account
 
-### Session 28 — What was done
+### Session 29 — What was done
 
-1. ✅ Pushed all Session 27 work to GitHub (`git push origin main`)
-2. ✅ GitHub Pages enabled — publishing from `main` branch `/docs` folder
-3. ✅ Privacy policy live at `https://srikarbuddhiraju.github.io/Panchangam/privacy-policy`
-   - Fixed Jekyll 404: removed `layout: default` (no `_layouts/` dir), kept `title` only
-4. ✅ Documented email replacement as pre-release to-do (not changed yet)
+1. ✅ Contact email updated to `panchangam@srikarbuddhiraju.com`
+   - `docs/privacy-policy.md:63` and `docs/play-store/privacy-policy.md:59`
+2. ✅ F3 security fix: moved `_proEmails` out of source
+   - `auth_service.dart` now uses `String.fromEnvironment('PRO_EMAILS')`
+   - Real emails in gitignored `build_release.sh` only
+   - Template at `build_release.sh.example` (tracked)
+   - Debug mode warns loudly if `PRO_EMAILS` is empty
+3. ✅ Git history rewritten: tester emails → `[REDACTED]` in all `auth_service.dart` blobs
+   - Force pushed `main` — history is clean on GitHub
+   - `security-findings.md` F3 marked resolved
+4. 🔄 Marketing discussion started — not completed (session ended)
 
 ---
 
 ## NEXT SESSION — START HERE
 
-### Goal: Play Store internal testing
+### Blocked (external)
+- **Play Store**: Google Play Developer account ($25) — budget, Srikar's call on timing
 
-1. Play Store Console: upload APK, add 5+ testers, submit listing
-2. Tackle F3 (email whitelist in git) — move `_proEmails` out of source
+### Ready to continue
+- **Marketing discussion** — answer this first:
+  > Who is the primary user? Elder daily user or younger person planning muhurtams?
+  > Telugu diaspora (NRI) or primarily India-based?
 
-### Srikar's tasks (independent)
-- [ ] Google Play Developer account ($25 one-time) if not done
+### Build process (CHANGED — always use this)
+```bash
+./build_release.sh    # gitignored, has --dart-define=PRO_EMAILS
+```
+Never run `flutter build apk --release` directly — that builds with no Pro access.
+
+### Srikar's pending tasks
+- [ ] Google Play Developer account ($25) — when budget allows
 - [ ] Feature graphic: 1024×500px (deep navy bg, centered icon, "Panchangam" in gold)
-- [ ] Retake `ps-04-pro-tab.png` screenshot after adding test events (current is empty state)
-- [ ] Set up contact email on srikarbuddhiraju.com (e.g. hello@ or support@)
-  → Once done, replace `[REDACTED]` in:
-  → `docs/privacy-policy.md:63`
-  → `docs/play-store/privacy-policy.md:59`
+- [ ] Retake `ps-04-pro-tab.png` screenshot (current is empty state)
 
 ---
 
 ## Key file locations
 - Release keystore: `app/android/app/release.jks` (gitignored, local only)
 - Signing credentials: `app/android/key.properties` (gitignored, local only)
+- Build script: `build_release.sh` (gitignored) — USE FOR ALL RELEASE BUILDS
+- Build template: `build_release.sh.example` (tracked)
 - Security findings: `docs/security-findings.md`
 - Play Store listing: `docs/play-store/listing.md`
 - Privacy policy (GitHub Pages): `docs/privacy-policy.md`
