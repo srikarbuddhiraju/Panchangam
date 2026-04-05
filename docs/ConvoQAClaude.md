@@ -125,8 +125,8 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 
 **Q1. Contact email — replace personal Gmail with domain email?**
 > Yes. Domain is `srikarbuddhiraju.com`. Set up a contact email there (e.g. hello@ or support@).
-> **Decision**: Do NOT replace yet — wait until domain email is ready. Tracked as pre-release to-do.
-> Files to update once ready: `docs/privacy-policy.md:63`, `docs/play-store/privacy-policy.md:59`.
+> **Decision**: ✅ DONE (Apr 5, 2026) — `panchangam@srikarbuddhiraju.com` set in both privacy policy files.
+> Updated: `docs/privacy-policy.md:63`, `docs/play-store/privacy-policy.md:59`.
 > Note: `srikarbuddhiraju@gmail.com` in `auth_service.dart` is a Pro tester whitelist entry — intentionally kept as-is.
 
 **Q2. Jekyll layout for GitHub Pages privacy policy?**

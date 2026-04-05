@@ -56,4 +56,4 @@ at the top will reflect any changes.
 
 ## Contact
 
-Questions? Email: srikarbuddhiraju@gmail.com
+Questions? Email: panchangam@srikarbuddhiraju.com
