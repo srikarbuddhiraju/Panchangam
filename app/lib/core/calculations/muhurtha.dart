@@ -167,19 +167,27 @@ class Muhurtha {
     DateTime sunset,
     DateTime previousSunset, {
     double lng = 80.5, // user longitude for deshantar correction; default = Kondavidu
+    double utcOffsetHours = 5.5,
   }) {
     // Sringeri lookup table — exact published times, covers Mar 2025 – Apr 2027.
     // Source: దేశాంతర సంస్కార నిర్ణయము, Sringeri Panchangam p.66.
+    // Lookup values are in IST. For non-IST locations, we convert to local time.
     final DateTime dateOnly = DateTime(sunrise.year, sunrise.month, sunrise.day);
     if (!dateOnly.isBefore(AmritaLookup.rangeStart) &&
         !dateOnly.isAfter(AmritaLookup.rangeEnd)) {
       final (int, int)? entry = AmritaLookup.lookup(dateOnly);
       if (entry != null) {
         final (int h, int m) = entry;
-        final int correctionMinutes = ((lng - 80.5) * 4).round();
+        // Deshantar correction only valid within India's longitude range.
+        final int correctionMinutes = (lng >= 68.0 && lng <= 97.0)
+            ? ((lng - 80.5) * 4).round()
+            : 0;
+        // Create IST DateTime, then shift to local timezone.
+        final DateTime amritIST =
+            DateTime(sunrise.year, sunrise.month, sunrise.day, h, m);
+        final int offsetDiffMin = ((utcOffsetHours - 5.5) * 60).round();
         final DateTime amritStart =
-            DateTime(sunrise.year, sunrise.month, sunrise.day, h, m)
-                .add(Duration(minutes: correctionMinutes));
+            amritIST.add(Duration(minutes: offsetDiffMin + correctionMinutes));
         return [amritStart, amritStart.add(const Duration(minutes: 96))];
       }
       // In range but entry is null: this is a confirmed no-amrita day.
@@ -271,9 +279,10 @@ class Muhurtha {
     required DateTime from,
     required DateTime to,
     required double targetLon,
+    double utcOffsetHours = 5.5,
   }) {
-    double lo = JulianDay.fromIST(from);
-    double hi = JulianDay.fromIST(to);
+    double lo = JulianDay.fromOffset(from, utcOffsetHours);
+    double hi = JulianDay.fromOffset(to, utcOffsetHours);
 
     for (int i = 0; i < 50; i++) {
       final double mid = (lo + hi) / 2;
@@ -286,7 +295,7 @@ class Muhurtha {
       }
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 
   // ── ARCHIVED: 27×7 lookup table (superseded by formula above) ───────────────

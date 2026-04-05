@@ -11,7 +11,13 @@ class EclipseScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int currentYear = DateTime.now().year;
-    final asyncEclipses = ref.watch(eclipseProvider(currentYear));
+    final settings = ref.watch(settingsProvider);
+    final asyncEclipses = ref.watch(eclipseProvider(EclipseParams(
+      year: currentYear,
+      lat: settings.lat,
+      lng: settings.lng,
+      utcOffsetHours: settings.utcOffsetHours,
+    )));
     final bool use24h = ref.watch(settingsProvider).use24h;
 
     return Scaffold(

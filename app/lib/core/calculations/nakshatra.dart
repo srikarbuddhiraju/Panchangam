@@ -54,9 +54,9 @@ class Nakshatra {
     return (intoNakshatra / (_nakshatraSpan / 4)).floor() + 1;
   }
 
-  /// Find the end time (IST) of the current Nakshatra.
+  /// Find the end time of the current Nakshatra.
   /// Ends when Moon's sidereal longitude crosses the next 13.333° boundary.
-  static DateTime endTime(double jd) {
+  static DateTime endTime(double jd, {double utcOffsetHours = 5.5}) {
     final int nNum = number(jd);
     final double targetLon = nNum * _nakshatraSpan; // upper boundary
 
@@ -85,6 +85,6 @@ class Nakshatra {
       if ((hi - lo) * 86400 < 30) break;
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 }

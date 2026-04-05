@@ -11,7 +11,8 @@ final panchangamForDateProvider = FutureProvider.autoDispose
 
   return compute(
     _computePanchangam,
-    _Params(date: date, lat: settings.lat, lng: settings.lng),
+    _Params(date: date, lat: settings.lat, lng: settings.lng,
+        utcOffsetHours: settings.utcOffsetHours),
   );
 });
 
@@ -19,7 +20,9 @@ class _Params {
   final DateTime date;
   final double lat;
   final double lng;
-  const _Params({required this.date, required this.lat, required this.lng});
+  final double utcOffsetHours;
+  const _Params({required this.date, required this.lat, required this.lng,
+      this.utcOffsetHours = 5.5});
 }
 
 PanchangamData _computePanchangam(_Params params) {
@@ -27,5 +30,6 @@ PanchangamData _computePanchangam(_Params params) {
     date: params.date,
     lat: params.lat,
     lng: params.lng,
+    utcOffsetHours: params.utcOffsetHours,
   );
 }

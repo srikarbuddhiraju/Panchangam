@@ -52,6 +52,23 @@ class JulianDay {
     return utc.add(istOffset);
   }
 
+  /// Convert a [DateTime] treated as local time (given UTC offset in hours)
+  /// to Julian Day Number in UT.
+  static double fromOffset(DateTime local, double utcOffsetHours) {
+    final offset = Duration(minutes: (utcOffsetHours * 60).round());
+    final utc = local.subtract(offset);
+    return fromDateTime(
+      utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second,
+    );
+  }
+
+  /// Convert a Julian Day Number (UT) to [DateTime] in the given UTC offset.
+  static DateTime toOffset(double jd, double utcOffsetHours) {
+    final utc = toUTC(jd);
+    final offset = Duration(minutes: (utcOffsetHours * 60).round());
+    return utc.add(offset);
+  }
+
   /// Convert a Julian Day Number (UT) to Dart [DateTime] in UTC.
   static DateTime toUTC(double jd) {
     final int z = (jd + 0.5).floor();

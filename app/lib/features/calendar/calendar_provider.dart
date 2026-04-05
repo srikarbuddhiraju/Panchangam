@@ -26,6 +26,7 @@ final monthDataProvider = FutureProvider
       month: ym.month,
       lat: settings.lat,
       lng: settings.lng,
+      utcOffsetHours: settings.utcOffsetHours,
     ),
   );
 
@@ -35,7 +36,12 @@ final monthDataProvider = FutureProvider
 
   // Overlay eclipse markers — await so they are always present on first load
   final List<EclipseData> eclipses =
-      await ref.watch(eclipseProvider(ym.year).future);
+      await ref.watch(eclipseProvider(EclipseParams(
+        year: ym.year,
+        lat: settings.lat,
+        lng: settings.lng,
+        utcOffsetHours: settings.utcOffsetHours,
+      )).future);
 
   // Overlay personal event markers — watch state (not notifier) for reactivity.
   final bool isPremium = ref.watch(settingsProvider).isPremium;

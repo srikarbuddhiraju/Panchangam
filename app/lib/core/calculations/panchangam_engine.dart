@@ -14,56 +14,59 @@ import 'telugu_calendar.dart';
 /// The main computation entry point.
 ///
 /// Call [PanchangamEngine.compute] to get all Panchangam data for a date + city.
-/// All DateTime fields in [PanchangamData] are in IST (UTC+5:30).
+/// All DateTime fields in [PanchangamData] are in the timezone specified by
+/// [utcOffsetHours] (default 5.5 = IST for backward compatibility).
 class PanchangamEngine {
   PanchangamEngine._();
 
   /// Compute complete Panchangam data for a given date and location.
   ///
-  /// [date] — the Gregorian calendar date (only year/month/day used)
-  /// [lat]  — latitude in degrees (north positive)
-  /// [lng]  — longitude in degrees (east positive)
+  /// [date]           — the Gregorian calendar date (only year/month/day used)
+  /// [lat]            — latitude in degrees (north positive)
+  /// [lng]            — longitude in degrees (east positive)
+  /// [utcOffsetHours] — UTC offset for all returned DateTimes (default 5.5 = IST)
   static PanchangamData compute({
     required DateTime date,
     required double lat,
     required double lng,
+    double utcOffsetHours = 5.5,
   }) {
     // ── Sunrise & Sunset ──────────────────────────────────────────────────
     final List<DateTime> sunTimes =
-        SunriseSunset.computeNOAA(date, lat, lng);
+        SunriseSunset.computeNOAA(date, lat, lng, utcOffsetHours: utcOffsetHours);
     final DateTime sunrise = sunTimes[0];
     final DateTime sunset = sunTimes[1];
 
     // JD at sunrise (the reference point for all five limbs in Panchangam)
-    final double jdSunrise = JulianDay.fromIST(sunrise);
+    final double jdSunrise = JulianDay.fromOffset(sunrise, utcOffsetHours);
 
     // ── Five Limbs ────────────────────────────────────────────────────────
 
     // 1. Tithi
     final int tithiNum = Tithi.number(jdSunrise);
-    final DateTime tithiEnd = Tithi.endTime(jdSunrise);
+    final DateTime tithiEnd = Tithi.endTime(jdSunrise, utcOffsetHours: utcOffsetHours);
 
     // 2. Vara (weekday)
     final int varaNum = Vara.number(jdSunrise);
 
     // 3. Nakshatra
     final int nakshatraNum = Nakshatra.number(jdSunrise);
-    final DateTime nakshatraEnd = Nakshatra.endTime(jdSunrise);
+    final DateTime nakshatraEnd = Nakshatra.endTime(jdSunrise, utcOffsetHours: utcOffsetHours);
 
     // 4. Yoga
     final int yogaNum = Yoga.number(jdSunrise);
-    final DateTime yogaEnd = Yoga.endTime(jdSunrise);
+    final DateTime yogaEnd = Yoga.endTime(jdSunrise, utcOffsetHours: utcOffsetHours);
 
     // 5. Karana (first and second of the day)
     final int karanaNum = Karana.number(jdSunrise);
-    final DateTime karanaEnd = Karana.endTime(jdSunrise);
+    final DateTime karanaEnd = Karana.endTime(jdSunrise, utcOffsetHours: utcOffsetHours);
     // Second karana: compute 1 minute past the end of the first
-    final double jdAfterKarana = JulianDay.fromIST(karanaEnd) + (1.0 / 1440);
+    final double jdAfterKarana = JulianDay.fromOffset(karanaEnd, utcOffsetHours) + (1.0 / 1440);
     final int karana2Num = Karana.number(jdAfterKarana);
-    final DateTime karana2End = Karana.endTime(jdAfterKarana);
+    final DateTime karana2End = Karana.endTime(jdAfterKarana, utcOffsetHours: utcOffsetHours);
 
     // ── Moonrise & Moonset ────────────────────────────────────────────────
-    final List<DateTime?> moonTimes = MoonriseMoonset.compute(date, lat, lng);
+    final List<DateTime?> moonTimes = MoonriseMoonset.compute(date, lat, lng, utcOffsetHours: utcOffsetHours);
     final DateTime? moonrise = moonTimes[0];
     final DateTime? moonset = moonTimes[1];
 
@@ -80,9 +83,10 @@ class PanchangamEngine {
         Muhurtha.durMuhurta(varaNum, sunrise, sunset);
     final DateTime yesterday = date.subtract(const Duration(days: 1));
     final DateTime previousSunset =
-        SunriseSunset.computeNOAA(yesterday, lat, lng)[1];
+        SunriseSunset.computeNOAA(yesterday, lat, lng, utcOffsetHours: utcOffsetHours)[1];
     final List<DateTime>? amritTimes =
-        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset, previousSunset, lng: lng);
+        Muhurtha.amritKalam(nakshatraNum, varaNum, sunrise, sunset, previousSunset,
+            lng: lng, utcOffsetHours: utcOffsetHours);
 
     // ── Calendar Context ──────────────────────────────────────────────────
     final int rashiNum = Rashi.number(jdSunrise);
@@ -363,10 +367,12 @@ class DayData {
   });
 
   /// Compute a DayData (lighter than full PanchangamData) for the calendar grid.
-  static DayData compute(DateTime date, double lat, double lng) {
+  static DayData compute(DateTime date, double lat, double lng,
+      {double utcOffsetHours = 5.5}) {
     // Use sunrise JD as reference (Panchangam convention)
-    final List<DateTime> sunTimes = SunriseSunset.computeNOAA(date, lat, lng);
-    final double jdSunrise = JulianDay.fromIST(sunTimes[0]);
+    final List<DateTime> sunTimes = SunriseSunset.computeNOAA(date, lat, lng,
+        utcOffsetHours: utcOffsetHours);
+    final double jdSunrise = JulianDay.fromOffset(sunTimes[0], utcOffsetHours);
 
     final int tNum = Tithi.number(jdSunrise);
     final int nNum = Nakshatra.number(jdSunrise);
@@ -393,12 +399,14 @@ class MonthComputeParams {
   final int month;
   final double lat;
   final double lng;
+  final double utcOffsetHours;
 
   const MonthComputeParams({
     required this.year,
     required this.month,
     required this.lat,
     required this.lng,
+    this.utcOffsetHours = 5.5,
   });
 
   Map<String, dynamic> toMap() => {
@@ -406,6 +414,7 @@ class MonthComputeParams {
         'month': month,
         'lat': lat,
         'lng': lng,
+        'utcOffsetHours': utcOffsetHours,
       };
 
   factory MonthComputeParams.fromMap(Map<String, dynamic> m) =>
@@ -414,6 +423,7 @@ class MonthComputeParams {
         month: m['month'] as int,
         lat: m['lat'] as double,
         lng: m['lng'] as double,
+        utcOffsetHours: (m['utcOffsetHours'] as num?)?.toDouble() ?? 5.5,
       );
 }
 
@@ -425,7 +435,8 @@ List<DayData> computeMonthData(MonthComputeParams params) {
 
   for (int day = 1; day <= daysInMonth; day++) {
     final DateTime date = DateTime(params.year, params.month, day);
-    result.add(DayData.compute(date, params.lat, params.lng));
+    result.add(DayData.compute(date, params.lat, params.lng,
+        utcOffsetHours: params.utcOffsetHours));
   }
   return result;
 }

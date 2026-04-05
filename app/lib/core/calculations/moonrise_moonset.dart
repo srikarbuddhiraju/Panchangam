@@ -18,13 +18,15 @@ class MoonriseMoonset {
 
   /// Compute moonrise and moonset for a given date and location.
   ///
+  /// [utcOffsetHours] controls the timezone of returned DateTimes (default IST).
   /// Returns [moonrise, moonset] where either can be null (Moon above/below horizon all day).
-  static List<DateTime?> compute(DateTime date, double lat, double lng) {
+  static List<DateTime?> compute(DateTime date, double lat, double lng,
+      {double utcOffsetHours = 5.5}) {
     final double jd0 =
         JulianDay.fromDateTime(date.year, date.month, date.day);
 
-    final DateTime? rise = _findEvent(jd0, lat, lng, rising: true);
-    final DateTime? set_ = _findEvent(jd0, lat, lng, rising: false);
+    final DateTime? rise = _findEvent(jd0, lat, lng, rising: true, utcOffsetHours: utcOffsetHours);
+    final DateTime? set_ = _findEvent(jd0, lat, lng, rising: false, utcOffsetHours: utcOffsetHours);
 
     return [rise, set_];
   }
@@ -33,7 +35,7 @@ class MoonriseMoonset {
     double jd0,
     double lat,
     double lng,
-    {required bool rising}
+    {required bool rising, double utcOffsetHours = 5.5}
   ) {
     // Search in 24h window; Moon can rise/set any time of day
     // Use binary search between jd0 and jd0+1
@@ -100,7 +102,7 @@ class MoonriseMoonset {
       if ((hi - lo) * 86400 < 60) break; // 1 minute precision
     }
 
-    return JulianDay.toIST((lo + hi) / 2);
+    return JulianDay.toOffset((lo + hi) / 2, utcOffsetHours);
   }
 
   static bool _hasCrossing(
