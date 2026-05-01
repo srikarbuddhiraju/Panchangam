@@ -112,7 +112,7 @@ All screenshots taken and uploaded to Play Console.
 | `ps-01-calendar.png` | Calendar — May 2026, festival highlights | ✅ uploaded |
 | `ps-02-today.png` | Today — Five Limbs + Daily Timings | ✅ uploaded |
 | `ps-03-timings.png` | Muhurthas + Amrit Kalam + Sringeri attribution | ✅ uploaded |
-| `ps-04-pro-tab.png` | Paywall + Pro features + ₹99/month | ✅ uploaded |
+| `ps-04-pro-tab.png` | Paywall + Pro features | ✅ uploaded |
 | `ps-05-eclipse.png` | Aug 12 2026 Annular Solar Eclipse + Sutak | ✅ uploaded |
 | `ps-06-settings.png` | Language, City, Theme, Notifications | ✅ uploaded |
 | `tablet-7in-01-calendar.png` | 7" tablet calendar (600×1024) | ✅ uploaded |

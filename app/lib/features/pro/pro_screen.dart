@@ -25,7 +25,7 @@ class ProScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).valueOrNull;
-    final isPremium = ref.watch(settingsProvider).isPremium;
+    final isPremium = ref.watch(isPremiumProvider);
     final isTelugu = S.isTelugu;
 
     return Scaffold(
@@ -692,8 +692,8 @@ class _UpgradeSection extends ConsumerWidget {
             icon: const Icon(Icons.star_rounded),
             label: Text(
               isTelugu
-                  ? 'సబ్‌స్క్రైబ్ — ₹99/నెల'
-                  : 'Subscribe — ₹99/month',
+                  ? 'సబ్‌స్క్రైబ్ — ₹149 నుండి'
+                  : 'Subscribe — from ₹149',
             ),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.kGold,
