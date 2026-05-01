@@ -9,14 +9,27 @@
 #
 # build_release.sh is gitignored — emails never enter the repo.
 # Always build release via this script, never via plain `flutter build`.
+#
+# Usage:
+#   ./build_release.sh        → AAB (for Play Store upload)
+#   ./build_release.sh --apk  → APK (for local device install/testing)
 # =============================================================================
 
 set -euo pipefail
 
 cd "$(dirname "$0")/app"
 
-flutter build apk --release \
-  --dart-define=PRO_EMAILS="tester1@gmail.com,tester2@gmail.com"
+PRO_EMAILS="tester1@gmail.com,tester2@gmail.com"
 
-echo ""
-echo "✅  Release APK built: build/app/outputs/flutter-apk/app-release.apk"
+if [[ "${1:-}" == "--apk" ]]; then
+  flutter build apk --release \
+    --dart-define=PRO_EMAILS="$PRO_EMAILS"
+  echo ""
+  echo "✅  Release APK built: build/app/outputs/flutter-apk/app-release.apk"
+else
+  flutter build appbundle --release \
+    --dart-define=PRO_EMAILS="$PRO_EMAILS"
+  echo ""
+  echo "✅  Release AAB built: build/app/outputs/bundle/release/app-release.aab"
+  echo "    Upload this file to Play Console."
+fi
