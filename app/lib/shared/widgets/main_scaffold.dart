@@ -8,10 +8,17 @@ class MainScaffold extends StatelessWidget {
 
   const MainScaffold({super.key, required this.navigationShell});
 
+  static const double _maxWidth = 560;
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final Widget body = width > _maxWidth
+        ? Center(child: SizedBox(width: _maxWidth, child: navigationShell))
+        : navigationShell;
+
     return Scaffold(
-      body: navigationShell,
+      body: body,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: (index) => navigationShell.goBranch(
