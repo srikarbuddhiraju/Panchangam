@@ -8,12 +8,15 @@ class MainScaffold extends StatelessWidget {
 
   const MainScaffold({super.key, required this.navigationShell});
 
-  static const double _maxWidth = 560;
+  // Tab index 0 = Calendar: full width (grid fills screen naturally).
+  // Tabs 1–3 (Today/Pro/Settings): constrain on wide screens.
+  static const double _maxWidth = 600;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final Widget body = width > _maxWidth
+    final bool isCalendar = navigationShell.currentIndex == 0;
+    final Widget body = (!isCalendar && width > _maxWidth)
         ? Center(child: SizedBox(width: _maxWidth, child: navigationShell))
         : navigationShell;
 

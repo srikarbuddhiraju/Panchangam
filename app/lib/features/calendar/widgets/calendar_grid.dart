@@ -50,7 +50,10 @@ class CalendarGrid extends ConsumerWidget {
       builder: (context, constraints) {
         final double cellWidth =
             (constraints.maxWidth - labelWidth - 1) / numWeeks;
-        final double cellHeight = constraints.maxHeight / 7;
+        // Fill the screen height, but cap at 1.5× cell width so cells stay
+        // roughly square on very tall screens (e.g. 10" portrait tablets).
+        final double cellHeight =
+            (constraints.maxHeight / 7).clamp(0.0, cellWidth * 1.5);
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
