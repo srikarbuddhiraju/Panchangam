@@ -5,22 +5,23 @@
 
 ---
 
-## STATUS: Play Store submission in progress
+## STATUS: Closed testing submitted — awaiting Google review
 
 ### Session 31 — What was done
 
-1. ✅ Play Console account created (May 1, 2026) — all verifications done
-2. ✅ AAB build: `build_release.sh` updated — default now builds AAB (Play Store), `--apk` flag for device testing
-   - AAB at: `app/build/app/outputs/bundle/release/app-release.aab` (48.0 MB)
-3. ✅ Screenshots taken (all 6, retaken with Pro tab):
-   - `ps-01-calendar.png` — May 2026 calendar with festival highlights
-   - `ps-02-today.png` — Five Limbs + Daily Timings
-   - `ps-03-timings.png` — Muhurthas + Amrit Kalam + Calendar Context
-   - `ps-04-pro-tab.png` — Paywall + Pro features + ₹99/month CTA
-   - `ps-05-eclipse.png` — Aug 12 2026 Annular Solar Eclipse with Sutak
-   - `ps-06-settings.png` — Language, City, Theme, Notifications
-4. ✅ Feature graphic generated: `docs/screenshots/feature-graphic.png` (1024×500px)
-   - Deep navy (#0B1437), centered icon, gold "Panchangam" title, no tagline
+1. ✅ Play Console account created + all verifications done (May 1, 2026)
+2. ✅ `build_release.sh` updated — default builds AAB, `--apk` for device testing
+3. ✅ All 10 screenshots taken and uploaded to Play Console
+   - Phone (6): calendar, today, timings, pro tab, eclipse, settings
+   - 7" tablet (2): 600×1024 — calendar, today
+   - 10" tablet (2): 1080×1920 (9:16) — calendar, today
+4. ✅ Feature graphic: `docs/screenshots/feature-graphic.png` (1024×500px, navy + gold)
+5. ✅ Tablet layout fixed: calendar fills full width + aspect-ratio cell height cap
+6. ✅ Security F2: `isPremiumProvider` derived from Firebase auth stream — Hive removed
+7. ✅ Security F4: GoRouter redirect blocks `/events/*`, `/todos/*`, `/my-events` for signed-out users
+8. ✅ Delete account page: `https://srikarbuddhiraju.github.io/Panchangam/delete-account`
+9. ✅ Docs/logo: `docs/logo/icon-solid.png` + `icon-transparent.png`
+10. ✅ AAB submitted to Play Console closed testing — version 1.0.0+2
 
 ### Package name
 `com.sbb.panchangam` (permanent — set in Play Console)
@@ -30,19 +31,22 @@
 ## NEXT SESSION — START HERE
 
 ### Play Console status
-- App **In Review** — submission already done
-- Need **12 testers opted-in for 14 days** before production access
-- Delete account page live: `https://srikarbuddhiraju.github.io/Panchangam/delete-account`
+- ✅ AAB v1.0.0+2 submitted to closed testing — **awaiting Google review**
+- Once approved: share tester invite link from Play Console
+- Need **12 testers opted-in for 14 days** → then apply for production
 
-### Security (both fixed this session)
-- ✅ F2 — isPremium now derived from Firebase auth stream (`isPremiumProvider`) — Hive storage removed, tamper-proof
-- ✅ F4 — GoRouter redirect guard blocks `/events/*`, `/todos/*`, `/my-events` for signed-out users
-- ❌ F1, F3 already fixed in prior sessions
-- **Remaining**: F2/F4 fixes shipped; billing (IAP) still not live — implement when ready
+### To do next session
+1. **Recruit 12 testers** — post invite link once Google approves (family/WhatsApp groups)
+2. **After 14 days** → apply for production in Play Console
+3. **IAP billing** — implement ₹99/month when ready
+4. **DST handling** (v1.1) — `timezone` package for proper DST (deferred)
 
-### After 14-day closed test
-- Apply for production in Play Console
-- DST handling (v1.1): Add `timezone` package for proper DST support (deferred)
+### Security — all done
+- ✅ F1: Debug keystore (Session 27)
+- ✅ F2: isPremiumProvider from auth stream — Hive removed (Session 31)
+- ✅ F3: Email whitelist out of git (Session 29)
+- ✅ F4: GoRouter route guards (Session 31)
+- Remaining: IAP server-side verification — implement with billing
 
 ### Build process
 ```bash

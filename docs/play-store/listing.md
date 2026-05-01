@@ -103,27 +103,22 @@ Questionnaire answers (fill during Play Console setup):
 
 ---
 
-## Screenshots Plan
+## Screenshots — DONE (May 1, 2026)
 
-Play Store: **2–8 screenshots**, phone (portrait), PNG or JPEG.
-Recommended: 6 screenshots covering key features.
+All screenshots taken and uploaded to Play Console.
 
-| # | Screen | What to show | Status |
-|---|--------|--------------|--------|
-| 1 | Calendar | March/April 2026 with Ugadi highlighted | ⚠️ retake (Pro tab now exists) |
-| 2 | Today tab | Full panchangam for a festival day | ⚠️ retake |
-| 3 | Day detail | Kalams + Amrit Kalam with Sringeri source | ⚠️ retake (new attribution UI) |
-| 4 | Pro tab | Hero + feature cards + events list | 🆕 need to capture |
-| 5 | Eclipse | Eclipse day card on calendar or day detail | ⚠️ retake |
-| 6 | Settings | City picker / language toggle | existing ok |
-
-All old screenshots (Feb 22) are pre-Pro tab and pre-amrit attribution — **retake all except Settings**.
-
-### How to take screenshots
-```bash
-# Connect device, then:
-adb exec-out screencap -p > docs/screenshots/XX-name.png
-```
+| File | Screen | Status |
+|------|--------|--------|
+| `ps-01-calendar.png` | Calendar — May 2026, festival highlights | ✅ uploaded |
+| `ps-02-today.png` | Today — Five Limbs + Daily Timings | ✅ uploaded |
+| `ps-03-timings.png` | Muhurthas + Amrit Kalam + Sringeri attribution | ✅ uploaded |
+| `ps-04-pro-tab.png` | Paywall + Pro features + ₹99/month | ✅ uploaded |
+| `ps-05-eclipse.png` | Aug 12 2026 Annular Solar Eclipse + Sutak | ✅ uploaded |
+| `ps-06-settings.png` | Language, City, Theme, Notifications | ✅ uploaded |
+| `tablet-7in-01-calendar.png` | 7" tablet calendar (600×1024) | ✅ uploaded |
+| `tablet-7in-02-today.png` | 7" tablet today tab | ✅ uploaded |
+| `tablet-10in-01-calendar.png` | 10" tablet calendar (1080×1920) | ✅ uploaded |
+| `tablet-10in-02-today.png` | 10" tablet today tab | ✅ uploaded |
 
 ---
 
