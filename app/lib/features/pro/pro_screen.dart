@@ -692,8 +692,8 @@ class _UpgradeSection extends ConsumerWidget {
             icon: const Icon(Icons.star_rounded),
             label: Text(
               isTelugu
-                  ? 'సబ్‌స్క్రైబ్ — ₹149 నుండి'
-                  : 'Subscribe — from ₹149',
+                  ? 'అన్‌లాక్ చేయండి — ₹149'
+                  : 'Unlock Pro — ₹149',
             ),
             style: FilledButton.styleFrom(
               backgroundColor: AppTheme.kGold,

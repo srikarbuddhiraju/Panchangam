@@ -38,7 +38,7 @@
 ### To do next session
 1. **Recruit 12 testers** — post invite link once Google approves (family/WhatsApp groups)
 2. **After 14 days** → apply for production in Play Console
-3. **IAP billing** — implement when ready (₹149 one-time or ₹99/month or ₹299/year)
+3. **IAP billing** — ₹149 one-time lifetime, regional pricing via Play Console per country
 4. **DST handling** (v1.1) — `timezone` package for proper DST (deferred)
 
 ### Security — all done
