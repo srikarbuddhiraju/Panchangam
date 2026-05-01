@@ -137,3 +137,37 @@ _Questions Claude asked + Srikar's answers, saved for cross-session memory._
 **Q3. Vehicle dynamics visualiser — start now?**
 > Planning doc exists at `/home/srikarbuddhiraju/vehicle-dynamics-visualiser.md`.
 > **Decision**: Handle in a separate Claude session. Panchangam takes priority (April 2026 launch).
+
+---
+
+## Session: May 1, 2026 — Play Store Submission (Session 31)
+
+**Q1. Play Store closed testing — need 12 testers, don't know 12 people?**
+> Google requires 12 testers opted-in for 14 days before production access.
+> **Strategy**: Family/friends WhatsApp groups, temple WhatsApp groups, colleagues.
+> Testers just need to accept invite link and keep app installed for 14 days.
+
+**Q2. Tablet screenshots — 10" rejected for being too small?**
+> Play Console requires 9:16 ratio with each side ≥ 1,080px for 10" screenshots.
+> **Fix**: Reconfigured AVD to 1,080×1,920. Also optimised tablet layout:
+> - Calendar fills full screen width (no max-width constraint)
+> - Cell height = min(screen_height/7, cell_width × 1.5) — prevents stretching
+> - Today/Pro/Settings constrained to 600px centred on wide screens.
+
+**Q3. Pricing model — subscription or one-time?**
+> One-time lifetime purchase. Subscription doesn't fit a reference tool.
+> **Decision**: ₹149 one-time lifetime unlock as base price (India).
+> Regional pricing via Play Console per country — Google suggests local equivalents.
+> Decide final tiers after first 500 installs, based on real conversion data.
+> No subscription tiers. No annual plan. Simple.
+
+**Q4. Distribution strategy?**
+> Not yet tackled. Identified channels: temple WhatsApp groups, Telugu associations
+> (TANA/ATA/NATS), YouTube Telugu devotion channels, Facebook "Telugus in [city]" groups.
+> Key differentiator to lead with: "Verified against Sringeri Sharada Peetham Panchangam."
+> **Decision**: Address after Play Store goes live.
+
+**Q5. Security — all 4 findings resolved this session?**
+> Yes. F2 (isPremiumProvider from auth stream, Hive removed) and F4 (GoRouter
+> redirect guards for /events/*, /todos/*, /my-events) fixed in Session 31.
+> F1 and F3 were fixed in Sessions 27 and 29 respectively. All 4 closed.
