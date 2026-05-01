@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/events/event_form_screen.dart';
@@ -7,7 +9,22 @@ import '../features/pro/pro_screen.dart';
 import '../features/events/my_events_screen.dart';
 import '../features/panchangam/panchangam_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../services/auth_service.dart';
 import '../shared/widgets/main_scaffold.dart';
+
+/// Notifies GoRouter when auth state changes so redirects are re-evaluated.
+class _AuthNotifier extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _sub;
+  _AuthNotifier() {
+    _sub = AuthService.instance.authStateChanges
+        .listen((_) => notifyListeners());
+  }
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
 
 /// App-wide navigation config using go_router.
 ///
@@ -26,6 +43,17 @@ class AppRoutes {
 
   static final GoRouter router = GoRouter(
     initialLocation: '/',
+    refreshListenable: _AuthNotifier(),
+    redirect: (context, state) {
+      final path = state.matchedLocation;
+      final isProtected = path.startsWith('/events') ||
+          path.startsWith('/todos') ||
+          path == '/my-events';
+      if (isProtected && AuthService.instance.currentUser == null) {
+        return '/pro';
+      }
+      return null;
+    },
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

@@ -9,3 +9,10 @@ import '../../services/auth_service.dart';
 final authStateProvider = StreamProvider<User?>(
   (ref) => AuthService.instance.authStateChanges,
 );
+
+/// Derives Pro status live from the auth stream — never stored in Hive.
+/// Immune to local storage tampering: status always matches the signed-in email.
+final isPremiumProvider = Provider<bool>((ref) {
+  final user = ref.watch(authStateProvider).valueOrNull;
+  return AuthService.isProEmail(user?.email);
+});

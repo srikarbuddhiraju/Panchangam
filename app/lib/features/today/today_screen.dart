@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../core/calculations/panchangam_engine.dart';
 import '../../core/utils/app_strings.dart';
 import '../../app/theme.dart';
+import '../auth/auth_provider.dart';
 import '../settings/settings_provider.dart';
 import '../panchangam/panchangam_provider.dart';
 import '../panchangam/widgets/five_limbs_card.dart';
@@ -151,7 +152,7 @@ class _TodayContent extends ConsumerWidget {
     final festivals = ref.watch(festivalsForDateProvider(data.date));
 
     // Personal events: only for Pro users
-    final isPremium = ref.watch(settingsProvider).isPremium;
+    final isPremium = ref.watch(isPremiumProvider);
     final allUserEvents = isPremium ? ref.watch(userEventProvider) : <UserTithiEvent>[];
     final personalEvents = UserEventCalculator.matchingEvents(
       events: allUserEvents,

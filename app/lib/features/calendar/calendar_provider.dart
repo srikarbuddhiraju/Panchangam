@@ -7,6 +7,7 @@ import '../../features/events/user_event_calculator.dart';
 import '../../features/events/user_event_provider.dart';
 import '../../features/festivals/festival_provider.dart';
 import '../../features/eclipse/eclipse_provider.dart';
+import '../auth/auth_provider.dart';
 import '../settings/settings_provider.dart';
 
 /// The currently displayed month (year, month) in the calendar.
@@ -44,7 +45,7 @@ final monthDataProvider = FutureProvider
       )).future);
 
   // Overlay personal event markers — watch state (not notifier) for reactivity.
-  final bool isPremium = ref.watch(settingsProvider).isPremium;
+  final bool isPremium = ref.watch(isPremiumProvider);
   final List<UserTithiEvent> userEvents = isPremium
       ? ref.watch(userEventProvider).where((e) => e.isActive).toList()
       : const [];

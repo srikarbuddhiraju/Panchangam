@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
-import '../settings/settings_provider.dart';
+import '../auth/auth_provider.dart';
 
 /// Wraps a premium-gated widget.
 ///
@@ -16,7 +16,7 @@ class PremiumGuard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPremium = ref.watch(settingsProvider).isPremium;
+    final isPremium = ref.watch(isPremiumProvider);
     if (isPremium) return child;
     return const PremiumTeaser();
   }

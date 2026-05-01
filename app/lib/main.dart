@@ -161,19 +161,6 @@ class PanchangamApp extends ConsumerWidget {
           home: const LoginScreen(),
         ),
         data: (user) {
-          // Sync isPremium with Firebase auth on every rebuild.
-          // Clears stale Hive value when signed out.
-          {
-            final isPro =
-                user != null && AuthService.isProEmail(user.email);
-            final current = ref.read(settingsProvider).isPremium;
-            if (current != isPro) {
-              Future.microtask(
-                () => ref.read(settingsProvider.notifier).setIsPremium(isPro),
-              );
-            }
-          }
-
           return MaterialApp.router(
             title: 'పంచాంగం',
             debugShowCheckedModeBanner: false,

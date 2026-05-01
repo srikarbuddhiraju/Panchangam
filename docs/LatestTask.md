@@ -1,4 +1,4 @@
-# Latest Task — Session 31 In Progress
+# Latest Task — Session 31 Complete
 
 **Last updated:** May 1, 2026
 **Branch:** `main`
@@ -29,19 +29,20 @@
 
 ## NEXT SESSION — START HERE
 
-### Play Console submission checklist
-- [ ] Upload AAB (`app/build/app/outputs/bundle/release/app-release.aab`)
-- [ ] Upload feature graphic (`docs/screenshots/feature-graphic.png`)
-- [ ] Upload screenshots (all 6 from `docs/screenshots/`)
-- [ ] Fill store listing (copy from `docs/play-store/listing.md`)
-- [ ] Privacy policy URL: `https://srikarbuddhiraju.github.io/Panchangam/privacy-policy`
-- [ ] Content rating questionnaire (all None/No → Everyone)
-- [ ] Submit for review
+### Play Console status
+- App **In Review** — submission already done
+- Need **12 testers opted-in for 14 days** before production access
+- Delete account page live: `https://srikarbuddhiraju.github.io/Panchangam/delete-account`
 
-### After submission
-- **DST handling** (v1.1): Add `timezone` package for proper DST support (deferred)
-- **Security F2**: Client-side `isPremium` fix before billing goes live
-- **Security F4**: GoRouter redirect guard for `/events/*` and `/todos/*`
+### Security (both fixed this session)
+- ✅ F2 — isPremium now derived from Firebase auth stream (`isPremiumProvider`) — Hive storage removed, tamper-proof
+- ✅ F4 — GoRouter redirect guard blocks `/events/*`, `/todos/*`, `/my-events` for signed-out users
+- ❌ F1, F3 already fixed in prior sessions
+- **Remaining**: F2/F4 fixes shipped; billing (IAP) still not live — implement when ready
+
+### After 14-day closed test
+- Apply for production in Play Console
+- DST handling (v1.1): Add `timezone` package for proper DST support (deferred)
 
 ### Build process
 ```bash

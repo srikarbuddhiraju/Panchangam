@@ -36,6 +36,7 @@ class PanchangamScreen extends ConsumerWidget {
     final asyncData = ref.watch(panchangamForDateProvider(date));
     final settings = ref.watch(settingsProvider);
     final user = ref.watch(authStateProvider).valueOrNull;
+    final isPremium = ref.watch(isPremiumProvider);
 
     final String dateLabel = S.isTelugu
         ? DateFormat('d MMMM y', 'te').format(date)
@@ -93,14 +94,14 @@ class PanchangamScreen extends ConsumerWidget {
                 context,
                 tithiNumber: asyncData.valueOrNull!.tithiNumber,
                 user: user,
-                isPremium: settings.isPremium,
+                isPremium: isPremium,
               ),
-              backgroundColor: settings.isPremium
+              backgroundColor: isPremium
                   ? AppTheme.kGold
                   : AppTheme.kGold.withValues(alpha: 0.55),
               foregroundColor: Colors.white,
               icon: Icon(
-                settings.isPremium
+                isPremium
                     ? Icons.bookmark_add_outlined
                     : Icons.lock_outline_rounded,
               ),
@@ -293,7 +294,7 @@ class _PanchangamContent extends ConsumerWidget {
     final festivals = ref.watch(festivalsForDateProvider(data.date));
 
     // Personal events: only for Pro users
-    final isPremium = ref.watch(settingsProvider).isPremium;
+    final isPremium = ref.watch(isPremiumProvider);
     final allUserEvents =
         isPremium ? ref.watch(userEventProvider) : <UserTithiEvent>[];
     final personalEvents = UserEventCalculator.matchingEvents(
